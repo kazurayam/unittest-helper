@@ -1,2 +1,2 @@
-rootProject.name = 'unittesthelper'
+rootProject.name = 'unittest-helper'
 include('lib', 'app')

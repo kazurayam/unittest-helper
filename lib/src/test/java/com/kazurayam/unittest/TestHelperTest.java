@@ -31,8 +31,8 @@ public class TestHelperTest {
         assertThat(p.getParent()).exists();
         assertThat(p.getParent().getFileName().toString())
                 .isEqualTo("test-output");
-        assertThat(p.toAbsolutePath()
-                .getParent()   // expect the test-output directory
+        assertThat(p.getParent()   // expecting the test-output directory
+                .getParent()       // expecting the lib directory
                 .getFileName().toString())
                 .isEqualTo("lib");
     }
@@ -44,7 +44,17 @@ public class TestHelperTest {
                         .setOutputDirPath(Paths.get("build/tmp/testOutput"));
         Path p = th.resolveOutput("hello.txt");
         Files.write(p, "Hello, world!".getBytes("utf-8"));
-        assertThat(p.getParent().getFileName().toString())
+        assertThat(p.getParent()                   // expecting testOutput
+                .getFileName().toString())
                 .isEqualTo("testOutput");
+        assertThat(p.getParent()                   // expecting testOutput
+                .getParent()                       // expecting tmp
+                .getFileName().toString())
+                .isEqualTo("tmp");
+        assertThat(p.getParent()                   // expecting testOutput
+                .getParent()                       // expecting tmp
+                .getParent()                       // expecting build
+                .getFileName().toString())
+                .isEqualTo("build");
     }
 }
