@@ -23,6 +23,7 @@ gradle-app.setting
 # Ignore Gradle build output directory
 build
 
-
 # test classes write the temporary files into the projectDir/test-output directory
 test-output
+
+pageSource*.html

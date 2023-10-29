@@ -1,17 +1,26 @@
 package io.github.bonigarcia.webdriver.jupiter.ch02.helloworld;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.kazurayam.unittest.TestHelper;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class HelloWorldChromeJupiterTest {
+
+    Logger log = LoggerFactory.getLogger(HelloWorldChromeJupiterTest.class);
 
     WebDriver driver;
 
@@ -31,8 +40,67 @@ class HelloWorldChromeJupiterTest {
     }
 
     @Test
-    void test() {
+    void test_unfavorable_location() throws Exception {
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
-        Assertions.assertThat(driver.getTitle()).contains("Selenium WebDriver");
+        assertThat(driver.getTitle()).contains("Selenium WebDriver");
+
+        // Now I want to save the source of the Web page into a file
+        String pageSource = driver.getPageSource();
+        log.info("[test_unfavorable_location] user.dir = " + System.getProperty("user.dir"));
+        Path out = Paths.get("pageSource1.html");
+        log.info("[test_unfavorable_location] out.toAbsolutePath() = " + out.toAbsolutePath());
+        Files.write(out, pageSource.getBytes(StandardCharsets.UTF_8));
+        // the file will be saved into a file at
+        //     "unittest-helper/pageSource.html"
+        // .... this location is not welcomed. I would rather like
+        //     "unittest-helper/app/test-output/pageSource.html"
+        // but how?
     }
+
+    /**
+     * Here it is assumed that this test is built and executed in Gradle
+     */
+    @Test
+    void test_app_test_output_dir() throws Exception {
+        driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
+        assertThat(driver.getTitle()).contains("Selenium WebDriver");
+
+        // Now I want to save the source of the Web page into a file
+        String pageSource = driver.getPageSource();
+        Path out = new TestHelper(this.getClass())
+                .resolveOutput("pageSource2.html");
+        Files.write(out, pageSource.getBytes(StandardCharsets.UTF_8));
+        // the file will be saved into a file at
+        //     "unittest-helper/app/test-output/pageSource.html"
+    }
+
+    /**
+     * Here it is assumed that this test is built and executed in Gradle
+     */
+    @Test
+    void test_app_build_dir() throws Exception {
+        driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
+        assertThat(driver.getTitle()).contains("Selenium WebDriver");
+
+        // Now I want to save the source of the Web page into a file
+        String pageSource = driver.getPageSource();
+        TestHelper th = new TestHelper(this.getClass())
+                .setOutputDirPath(Paths.get("build/tmp/testOutput"));
+        Path out = th.resolveOutput("pageSource3.html");
+        Files.write(out, pageSource.getBytes(StandardCharsets.UTF_8));
+        // the file will be saved into a file at
+        //     "unittest-helper/app/build/tmp/testOutput/pageSource.html"
+        assertThat(out.getParent().getFileName().toString()).isEqualTo("testOutput");
+        assertThat(out.getParent()
+                .getParent().getFileName().toString()).isEqualTo("tmp");
+        assertThat(out.getParent()
+                .getParent()
+                .getParent().getFileName().toString()).isEqualTo("build");
+        assertThat(out.getParent()
+                .getParent()
+                .getParent()
+                .getParent().getFileName().toString()).isEqualTo("app");
+
+    }
+
 }

@@ -39,6 +39,9 @@ public class ProjectDirectoryResolver {
 
     private List<List<String>> sublistPatterns;
 
+    /**
+     * Sole constructor.
+     */
     public ProjectDirectoryResolver() {
         this.sublistPatterns = new ArrayList<>();
         sublistPatterns.add(Arrays.asList("build", "classes", "java", "test"));  // Gradle
@@ -64,6 +67,8 @@ public class ProjectDirectoryResolver {
      * e.g, "/Users/somebody/selenium-webdriver-java/selenium-webdriver-junit4/build/classes/java/test/" when built by Gradle
      * e.g, "/Users/somebody/selenium-webdriver-java/selenium-webdriver-junit4/target/test-classes/" when built by Maven
      *
+     * @param clazz the Class object based on which the project dir is resolved
+     * @return a java.nio.file.Path instance which is derived by clazz.getProtectionDomain().getCodeSource().getLocation()
      */
     public static final Path getCodeSourceAsPath(Class clazz) {
         CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
@@ -97,6 +102,11 @@ public class ProjectDirectoryResolver {
      * So this method look up the file name "build" or "target" in the code source
      * of the TestHelper class.
      * Then we can get the Path value of the project directory properly.
+     *
+     * @param clazz the Class object based on which the project dir is resolved
+     * @return a java.nio.file.Path instance that represents the project directory.
+     *         if the project is a Gradle Multiproject, then this method returns the
+     *         path of the subproject's root dir.
      */
     public Path getProjectDirViaClasspath(Class clazz) {
         Path codeSourcePath = ProjectDirectoryResolver.getCodeSourceAsPath(clazz);

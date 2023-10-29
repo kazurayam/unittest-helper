@@ -9,21 +9,40 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+/**
+ * Provides utility methods that helps JUnit4/JUnit5/TestNG tests with
+ * the getProjectDirViaClasspath() method and the resolveOutput().
+ * These methods are useful for Gradle Multiprojects where
+ * the Current Working Directory is NOT equal to the sub-projects' root directory.
+ */
 public class TestHelper {
 
     private static final Logger log = LoggerFactory.getLogger(TestHelper.class);
 
+    /**
+     * The name of the directory created by TestHelper as default
+     * when you do not call setOutputDirPath(Path)
+     */
     public static final Path DEFAULT_OUTPUT_DIR_PATH = Paths.get("test-output");
 
     private Path projectDir;
 
     private Path outputDirPath;
 
+    /**
+     *
+     * @param clazz the Class object based on which the project dir is resolved
+     */
     public TestHelper(Class clazz) {
         projectDir = new ProjectDirectoryResolver().getProjectDirViaClasspath(clazz);
         outputDirPath = DEFAULT_OUTPUT_DIR_PATH;
     }
 
+    /**
+     *
+     * @param outputDirPath e.g, Paths.get("build/tmp/testOutput")
+     * @return the reference to this instance
+     */
     public TestHelper setOutputDirPath(Path outputDirPath) {
         Objects.requireNonNull(outputDirPath);
         this.outputDirPath = outputDirPath;
@@ -34,6 +53,9 @@ public class TestHelper {
         return projectDir.resolve(outputDirPath);
     }
 
+    /**
+     * @return the project directory where the clazz is hosted
+     */
     public Path getProjectDirViaClasspath() {
         return projectDir;
     }
@@ -49,6 +71,8 @@ public class TestHelper {
      *
      *                 e.g. "foo/bar.txt" ->  "selenium-webdriver-java/selenium-webdriver-junit4/test-output/foo/bar.txt"
      *                 will be returned, the "foo" directory will be silently created
+     *
+     * @return Path of a file as the output written by a test class
      */
     public Path resolveOutput(String fileName) {
         Path outFile = getOutputDir().resolve(fileName);

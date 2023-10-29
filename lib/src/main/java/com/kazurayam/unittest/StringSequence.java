@@ -38,6 +38,12 @@ public class StringSequence {
         this.sequence = sequence;
     }
 
+    /**
+     * returns the value equal to indexListOfSubsequence().get(0)
+     *
+     * @param subsequence List of String as marker to look for
+     * @return the index in the sequence where the subsequence is found. return -1 if not found.
+     */
     public Integer indexOfSubsequence(List<String> subsequence) {
         Objects.requireNonNull(subsequence);
         if (sequence.isEmpty())
