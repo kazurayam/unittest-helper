@@ -27,3 +27,5 @@ build
 test-output
 
 pageSource*.html
+
+sample*txt

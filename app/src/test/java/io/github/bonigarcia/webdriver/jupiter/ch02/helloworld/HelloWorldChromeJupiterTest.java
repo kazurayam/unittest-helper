@@ -46,9 +46,11 @@ class HelloWorldChromeJupiterTest {
 
         // Now I want to save the source of the Web page into a file
         String pageSource = driver.getPageSource();
+
         log.info("[test_unfavorable_location] user.dir = " + System.getProperty("user.dir"));
         Path out = Paths.get("pageSource1.html");
         log.info("[test_unfavorable_location] out.toAbsolutePath() = " + out.toAbsolutePath());
+
         Files.write(out, pageSource.getBytes(StandardCharsets.UTF_8));
         // the file will be saved into a file at
         //     "unittest-helper/pageSource.html"
@@ -61,14 +63,15 @@ class HelloWorldChromeJupiterTest {
      * Here it is assumed that this test is built and executed in Gradle
      */
     @Test
-    void test_app_test_output_dir() throws Exception {
+    void test_write_into_default_dir() throws Exception {
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
         assertThat(driver.getTitle()).contains("Selenium WebDriver");
 
         // Now I want to save the source of the Web page into a file
-        String pageSource = driver.getPageSource();
         Path out = new TestHelper(this.getClass())
                 .resolveOutput("pageSource2.html");
+
+        String pageSource = driver.getPageSource();
         Files.write(out, pageSource.getBytes(StandardCharsets.UTF_8));
         // the file will be saved into a file at
         //     "unittest-helper/app/test-output/pageSource.html"
@@ -78,15 +81,16 @@ class HelloWorldChromeJupiterTest {
      * Here it is assumed that this test is built and executed in Gradle
      */
     @Test
-    void test_app_build_dir() throws Exception {
+    void test_gradle_build_dir() throws Exception {
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
         assertThat(driver.getTitle()).contains("Selenium WebDriver");
 
         // Now I want to save the source of the Web page into a file
-        String pageSource = driver.getPageSource();
         TestHelper th = new TestHelper(this.getClass())
                 .setOutputDirPath(Paths.get("build/tmp/testOutput"));
         Path out = th.resolveOutput("pageSource3.html");
+
+        String pageSource = driver.getPageSource();
         Files.write(out, pageSource.getBytes(StandardCharsets.UTF_8));
         // the file will be saved into a file at
         //     "unittest-helper/app/build/tmp/testOutput/pageSource.html"
