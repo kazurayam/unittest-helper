@@ -1,0 +1,60 @@
+plugins {
+    id "java"
+}
+
+jar {
+    archiveBaseName = "unittesthelper"
+    archiveVersion = "0.1.0-SNAPSHOT"
+}
+
+compileTestJava {
+    sourceCompatibility = 8
+    targetCompatibility = 8
+}
+
+test {
+    useJUnitPlatform() {
+        if (project.hasProperty("groups")) {
+            includeTags "$groups"
+        }
+        if (project.hasProperty("excludedGroups")) {
+            excludeTags "$excludedGroups"
+        }
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+
+    System.setProperty("webdriver.http.factory", "jdk-http-client")
+    systemProperties System.properties
+
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    slf4jVersion  = "2.0.9"
+    logbackVersion  = "1.4.11"
+
+    seleniumVersion = "4.13.0"
+
+    junit5Version = "5.10.0"
+    assertjVersion = "3.24.2"
+    wdmVersion = "5.5.3"
+}
+
+dependencies {
+    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
+    implementation("ch.qos.logback:logback-classic:${logbackVersion}")
+
+    testImplementation("org.seleniumhq.selenium:selenium-java:${seleniumVersion}")
+    testImplementation("org.seleniumhq.selenium:selenium-http-jdk-client:${seleniumVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter:${junit5Version}")
+    testImplementation("org.assertj:assertj-core:${assertjVersion}")
+    testImplementation("io.github.bonigarcia:webdrivermanager:${wdmVersion}")
+
+}
