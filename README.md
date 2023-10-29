@@ -1,6 +1,6 @@
 # unittest-helper
 
-Using the `com.kazurayam.unittest.TestHelper` class, you can easily prepare a directory where your unit-test can write files. The class is independent on the unit-test frameworks. You can use this helper class with JUnit4, JUnit5 and TestNG.
+Using the `com.kazurayam.unittest.TestHelper` class, you can easily prepare a directory into which your unit-test can write files. The helper class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG.
 
 ## Short explanation
 
