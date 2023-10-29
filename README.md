@@ -1,5 +1,7 @@
 # unittest-helper
 
+Using the `com.kazurayam.unittest.TestHelper` class, you can easily prepare a directory where your unit-test can write files. The class is independent on the unit-test frameworks. You can use this helper class with JUnit4, JUnit5 and TestNG.
+
 ## Short explanation
 
 You want to write the build.gradle file as follows:
@@ -22,9 +24,8 @@ Here I assume you have a Gradle project with a JUnit5 test class which is to wri
 2. under the default directory: `<projectDir>/test-output`
 3. under a custom directory: `<projectDir>/build/tmp/testOutput`
 
-Using the `com.kazurayam.unittest.TestHelper` class, you can prepare the output location easily. You can use this helper class with JUnit5 and TestNG as well.
 
-#### Ex1 write a file immediately under the project dir
+#### Ex1: Write a file immediately under the project dir
 
 ```
 package my;
@@ -49,14 +50,11 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/sample1.txt`
 
-In this case we used `Paths.get("sample1.txt") which will be located in the `System.getProperty("user.dir")` directory.
+In this case we used `Paths.get("sample1.txt")`. This expression will locate the directory which `System.getProperty("user.dir")` expression stands for.
 
-You should note that the value of the `user.dir` is dependent on the runtime environment. It could be changed by the config of IDE and build tools so that `user.dir` is sometimes unreliable.
+However, you should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools so that `user.dir` is not reliable sometimes.
 
-
-
-
-#### Ex2 write a file under the default test-output directory
+#### Ex2: Write a file under the default test-output directory
 
 ```
     @Test
@@ -73,7 +71,7 @@ The `<projectDir>/test-output` directory will be silently created if not there.
 
 The `com.kazurayam.unittest.TestHelper` class resolves the project directory via classpath. If you use Gradle to build the project, then most probably you have the class file at `<projectDir>/build/classes/java/test/my/SampleTest.class`. This case the project directory is presumed as the parent of the `build` directory. If you use Maven to build the project, then most probably you have the class file at `<projectDir>/target/test-classes/my/SampleTest.class`. This case the project directory is presumed as the parent of the `target` directory.
 
-#### Ex3 write a file under a custom directory
+#### Ex3: Write a file under a custom directory
 
 ```
     @Test
@@ -83,7 +81,6 @@ The `com.kazurayam.unittest.TestHelper` class resolves the project directory via
                 .resolveOutput("sample3.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
     }
-
 ```
 
 This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`.
