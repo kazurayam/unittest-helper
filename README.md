@@ -19,8 +19,8 @@ dependencies {
 Here I assume you have a Gradle project with a JUnit5 test class which is to write an output file into the local directory. You want to choose the output directory amongst the following 3:
 
 1. immediately under the `<projectDir>`
-2. under the `<projectDir>/test-output` directory
-3. under the `<projectDir>/build/tmp/testOutput` directory
+2. under the default directory: `<projectDir>/test-output`
+3. under a custom directory: `<projectDir>/build/tmp/testOutput`
 
 Using the `com.kazurayam.unittest.TestHelper` class, you can prepare the output location easily. You can use this helper class with JUnit5 and TestNG as well.
 
@@ -49,6 +49,13 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/sample1.txt`
 
+In this case we used `Paths.get("sample1.txt") which will be located in the `System.getProperty("user.dir")` directory.
+
+You should note that the value of the `user.dir` is dependent on the runtime environment. It could be changed by the config of IDE and build tools so that `user.dir` is sometimes unreliable.
+
+
+
+
 #### Ex2 write a file under the default test-output directory
 
 ```
@@ -63,6 +70,8 @@ This will create a file at `<projectDir>/sample1.txt`
 This will create a file at `<projectDir>/test-output/sample2.txt`
 
 The `<projectDir>/test-output` directory will be silently created if not there.
+
+The `com.kazurayam.unittest.TestHelper` class resolves the project directory via classpath. If you use Gradle to build the project, then most probably you have the class file at `<projectDir>/build/classes/java/test/my/SampleTest.class`. This case the project directory is presumed as the parent of the `build` directory. If you use Maven to build the project, then most probably you have the class file at `<projectDir>/target/test-classes/my/SampleTest.class`. This case the project directory is presumed as the parent of the `target` directory.
 
 #### Ex3 write a file under a custom directory
 
@@ -80,6 +89,7 @@ The `<projectDir>/test-output` directory will be silently created if not there.
 This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`.
 
 The `<projectDir>/build/tmp/testOutput` directory will be silently created if not there.
+
 
 ## Long explanation
 
