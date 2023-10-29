@@ -92,3 +92,5 @@ The `<projectDir>/build/tmp/testOutput` directory will be silently created if no
 
 - [English](https://kazurayam.github.io/unittest-helper/index.md)
 - [日本語](https://kazurayam.github.io/unittest-helper/index_ja.md)
+
+- [Javadoc](https://kazurayam.github.io/unittest-helper/api/)
