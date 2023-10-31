@@ -37,7 +37,7 @@ public class ProjectDirectoryResolver {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectDirectoryResolver.class);
 
-    private List<List<String>> sublistPatterns;
+    private final List<List<String>> sublistPatterns;
 
     /**
      * Sole constructor.

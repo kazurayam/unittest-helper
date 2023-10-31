@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 public class StringSequence {
 
-    List<String> sequence;
+    private final List<String> sequence;
 
     /**
      *

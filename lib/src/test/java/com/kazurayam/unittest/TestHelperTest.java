@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,9 +17,26 @@ public class TestHelperTest {
     @Test
     public void test_getProjectDirViaClasspath() {
         Path p = new TestHelper(this.getClass()).getProjectDirViaClasspath();
-        log.info("project dir : " + p);
+        log.info("[test_getProjectDirViaClasspath] project dir : " + p);
         assertThat(p.getFileName().toString()).isEqualTo("lib");
         assertThat(p.getFileName().toString()).isNotEqualTo("unittest-helper");
+    }
+
+    @Test
+    public void test_getOutputDir_default() {
+        Path p = new TestHelper(this.getClass()).getOutputDir();
+        log.info("[test_getOutputDir_default] output dir : " + p);
+        assertThat(p.getFileName().toString()).isEqualTo("test-output");
+    }
+
+    @Test
+    public void test_getOutputDir_custom() {
+        String dirName = "customDir";
+        Path p = new TestHelper(this.getClass())
+                .setOutputDirPath(Paths.get(dirName))
+                .getOutputDir();
+        log.info("[test_getOutputDir_custom] output dir : " + p);
+        assertThat(p.getFileName().toString()).isEqualTo(dirName);
     }
 
     @Test

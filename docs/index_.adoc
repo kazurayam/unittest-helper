@@ -1,6 +1,46 @@
+= Unit Test Helper
 
+== Why I needed this
 
-https://github.com/kazurayam/selenium-webdriver-java/issues/8
+See https://github.com/kazurayam/selenium-webdriver-java/issues/8
+
+== What is provided
+
+This project provides a JVM class `com.kazurayam.unittest.TestHelper`.
+
+This class helps you to write unit-tests. Using this class, you can easily prepare a directory into which your unit tests can write files. The location of the output directory is resolved via the classpath of the unit-test class.
+The helper class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG.
+
+== Difficulty of Gradle Multiproject
+
+Let me assume, I have a Gradle Multiproject, which has a project tree like this:
+
+```
+.
+├── README.md
+├── app
+│   ├── build
+│   ├── build.gradle
+│   └── src
+├── gradle
+│   └── wrapper
+├── gradlew
+├── gradlew.bat
+├── lib
+│   ├── build
+│   ├── build.gradle
+│   └── src
+└── settings.gradle
+```
+
+But why do I need this class? If I write in a unit-test class:
+
+```
+Path outdir = Paths.get("test-output/screenshot.png");
+```
+
+then, the png file will be written into the "Current Working Directory". But, hold on? What is the "Current Working Directory"?
+
 
 = MarkdownUtils
 

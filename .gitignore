@@ -24,8 +24,10 @@ gradle-app.setting
 build
 
 # test classes write the temporary files into the projectDir/test-output directory
-test-output
+test-output*
 
 pageSource*.html
 
 sample*txt
+
+.DS_Store

@@ -25,12 +25,14 @@ public class TestHelper {
      */
     public static final Path DEFAULT_OUTPUT_DIR_PATH = Paths.get("test-output");
 
-    private Path projectDir;
+    private final Path projectDir;
 
     private Path outputDirPath;
 
     /**
-     *
+     * The clazz parameter is required.
+     * The ProjectDirectoryResolver resolves the project directory
+     * for the clazz specified via the runtime classpath.
      * @param clazz the Class object based on which the project dir is resolved
      */
     public TestHelper(Class clazz) {
@@ -39,8 +41,9 @@ public class TestHelper {
     }
 
     /**
+     * e.g., you can pass Paths.get("build/tmp/testOutput") to specify the output dir location
+     * @param outputDirPath e.g, Paths.get("build/tmp/testOutput"). This could be relative to the project directory.
      *
-     * @param outputDirPath e.g, Paths.get("build/tmp/testOutput")
      * @return the reference to this instance
      */
     public TestHelper setOutputDirPath(Path outputDirPath) {
@@ -49,7 +52,13 @@ public class TestHelper {
         return this;
     }
 
-    private Path getOutputDir() {
+    /**
+     * @return returns the java.nio.file.Path object of the output directory.
+     * The default is "(projectDir)/test-output".
+     * You can customize the name of the output directory by calling setOutputDir(Path.get("dirName")),
+     * which is relative to the project directory.
+     */
+    public Path getOutputDir() {
         return projectDir.resolve(outputDirPath);
     }
 
@@ -62,16 +71,11 @@ public class TestHelper {
 
     /**
      * returns the Path of a file that a test class write its output into.
-     * the Path will be under the "test-output" directory.
-     * The "test-output" will be silently created under
-     * the "selenium-webdriver-java/selenium-webdriver-junit4" directory if not yet exists.
+     * As default, the output file will be located under the "test-output" directory.
+     * You can change the directory location by calling setOutputDirPath(Path).
+     * The parent directory the output will be silently created.
      *
-     * @param fileName e.g. "extentReport.html" -> "selenium-webdriver-java/selenium-webdriver-junit4/test-output/extentReport.html"
-     *                 will be returned
-     *
-     *                 e.g. "foo/bar.txt" ->  "selenium-webdriver-java/selenium-webdriver-junit4/test-output/foo/bar.txt"
-     *                 will be returned, the "foo" directory will be silently created
-     *
+     * @param fileName the file name
      * @return Path of a file as the output written by a test class
      */
     public Path resolveOutput(String fileName) {
