@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,7 +45,7 @@ public class TestHelper {
      * e.g., you can pass Paths.get("build/tmp/testOutput") to specify the output dir location
      * @param outputDirPath e.g, Paths.get("build/tmp/testOutput"). This could be relative to the project directory.
      *
-     * @return the reference to this instance
+     * @return the reference to this TestHelper instance
      */
     public TestHelper setOutputDirPath(Path outputDirPath) {
         Objects.requireNonNull(outputDirPath);
@@ -70,6 +71,13 @@ public class TestHelper {
     }
 
     /**
+     * @return the project directory where the clazz is hosted
+     */
+    public Path getProjectDir() {
+        return projectDir;
+    }
+
+    /**
      * returns the Path of a file that a test class write its output into.
      * As default, the output file will be located under the "test-output" directory.
      * You can change the directory location by calling setOutputDirPath(Path).
@@ -89,5 +97,40 @@ public class TestHelper {
             }
         }
         return outFile;
+    }
+
+    /**
+     * This method is meant to be used in messages and documentations.
+     * You do not want to show your own personal name in the console messages, right?
+     * So you want to hide the username part of paths.
+     *
+     * Translate a Path of "/User/kazurayam/github/unittest-helper/app/foo.txt"
+     * to "~/github/unittest-helper/app/foo.txt" which is relative to the $HOME
+     * of the user if the path is located under the $HOME. If the path is NOT
+     * located under the $HOME, just stringify the absolute path.
+     *
+     * @return a path string prepended by tilde `~` if the path starts with "user.home"
+     */
+    static final String TILDE = "~";
+    public static String toHomeRelativeString(Path other) {
+        Objects.requireNonNull(other);
+        Path p = other.toAbsolutePath();
+        String userHomeString = System.getProperty("user.home");
+        if (userHomeString == null) {
+            throw new IllegalStateException("System property user.home is null");
+        }
+        Path userHome = Paths.get(userHomeString);
+        try {
+            if (p.toUri().toURL().toString().startsWith(
+                    userHome.toAbsolutePath().toUri().toURL().toString())) {
+                // the other path is under the user.dir
+                Path relativePath = userHome.relativize(p).normalize();
+                return TILDE + "/" + relativePath.toString();
+            } else {
+                return p.toString();
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,9 +33,8 @@ public class TestHelperTest {
     @Test
     public void test_getOutputDir_custom() {
         String dirName = "customDir";
-        Path p = new TestHelper(this.getClass())
-                .setOutputDirPath(Paths.get(dirName))
-                .getOutputDir();
+        TestHelper th = new TestHelper(this.getClass()).setOutputDirPath(Paths.get(dirName));
+        Path p = th.getOutputDir();
         log.info("[test_getOutputDir_custom] output dir : " + p);
         assertThat(p.getFileName().toString()).isEqualTo(dirName);
     }
@@ -43,7 +43,7 @@ public class TestHelperTest {
     public void test_resolveOutput() throws Exception {
         Path p = new TestHelper(this.getClass())
                 .resolveOutput("hello.json");
-        Files.write(p, "Hello, world!".getBytes("utf-8"));
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p.getParent()).exists();
         assertThat(p.getParent().getFileName().toString())
                 .isEqualTo("test-output");
@@ -55,11 +55,10 @@ public class TestHelperTest {
 
     @Test
     public void test_resolveOutput_into_custom_location() throws Exception {
-        TestHelper th =
-                new TestHelper(this.getClass())
-                        .setOutputDirPath(Paths.get("build/tmp/testOutput"));
+        TestHelper th = new TestHelper(this.getClass())
+                .setOutputDirPath(Paths.get("build/tmp/testOutput"));
         Path p = th.resolveOutput("hello.txt");
-        Files.write(p, "Hello, world!".getBytes("utf-8"));
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p.getParent()                   // expecting testOutput
                 .getFileName().toString())
                 .isEqualTo("testOutput");
@@ -72,5 +71,35 @@ public class TestHelperTest {
                 .getParent()                       // expecting build
                 .getFileName().toString())
                 .isEqualTo("build");
+    }
+
+    @Test
+    public void test_toHomeRelativeString_simple() {
+        Path p = new TestHelper(this.getClass()).getProjectDir();
+        String s = TestHelper.toHomeRelativeString(p);
+        log.info("[test_toHomeRelativeString_simple] s = " + s);
+        assertThat(s).isEqualTo("~/github/unittest-helper/lib");
+    }
+
+    @Test
+    public void test_toHomeRelativeString_simple_more() {
+        Path p = new TestHelper(this.getClass()).resolveOutput("foo.txt");
+        String s = TestHelper.toHomeRelativeString(p);
+        assertThat(s).isEqualTo(
+                "~/github/unittest-helper/lib/test-output/foo.txt");
+    }
+
+    @Test
+    public void test_toHomeRelativeString_HOME_itself() {
+        Path p = Paths.get(System.getProperty("user.home"));
+        String s = TestHelper.toHomeRelativeString(p);
+        assertThat(s).isEqualTo("~/");
+    }
+
+    @Test
+    public void test_toHomeRelativeString_when_not_relative() {
+        Path p = Paths.get("/Applications");
+        String s = TestHelper.toHomeRelativeString(p);
+        assertThat(s).isEqualTo("/Applications");
     }
 }
