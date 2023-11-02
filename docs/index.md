@@ -12,17 +12,19 @@
 
 ### Is "Current Working Directory" reliable for unit-tests? --- Not always
 
-I encountered some difficulties in a TestNG test case in a Gradle Multiproject. I expected that a call to `System.getProperty("user.dir")` would return the Path of sub-project’s directory. In most cases, yes. It works fine. But sometimes it failed. See the following post for detail:
+I encountered some difficulties in a TestNG test case in a Gradle Multi-project. I expected that a call to `System.getProperty("user.dir")` would return the Path of sub-project’s directory. In most cases, yes. It works fine. But sometimes it failed. See the following post for detail:
 
 -   <https://github.com/kazurayam/selenium-webdriver-java/issues/22>
 
 I couldn’t find out the reason why the current working directory got different from the project directory.
 
-### I want my test classes to write files into a single dedicated directory, not under the current working directory
+### A single dedicated output directory, not under the current working directory
 
-In the book ["Selenium WebDriver in Java" by Boni Garcia](https://github.com/bonigarcia/selenium-webdriver-java), which is very good book, the sample test classes write a lot of files into the sub-project’s root directory. In my opinion, it is a bad practice. I want to create a dedicated directory where all test classes write their output into. See the following issue for more detail.
+In the book ["Selenium WebDriver in Java" by Boni Garcia](https://github.com/bonigarcia/selenium-webdriver-java), which is very good book, the sample test classes write a lot of files into the subproject’s root directory.
 
 -   <https://github.com/kazurayam/selenium-webdriver-java/issues/8>
+
+Temporary files located in the project directory make the project dirty and difficult to manage. I want to create a dedicated directory where all test classes write their output into.
 
 ## Solution
 
