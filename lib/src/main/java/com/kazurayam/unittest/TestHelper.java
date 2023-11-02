@@ -32,6 +32,8 @@ public final class TestHelper {
 
     private Path outputDirPath;
 
+    private Path subDir;
+
     /**
      * The clazz parameter is required.
      * The ProjectDirectoryResolver resolves the project directory
@@ -39,8 +41,18 @@ public final class TestHelper {
      * @param clazz the Class object based on which the project dir is resolved
      */
     public TestHelper(Class clazz) {
-        projectDir = new ProjectDirectoryResolver().getProjectDirViaClasspath(clazz);
+        projectDir =
+                new ProjectDirectoryResolver()
+                        .getProjectDirViaClasspath(clazz);
         outputDirPath = DEFAULT_OUTPUT_DIR_PATH;
+        subDir = null;
+    }
+
+    /**
+     * @return the project directory where the clazz is hosted
+     */
+    public Path getProjectDir() {
+        return projectDir;
     }
 
     /**
@@ -72,12 +84,25 @@ public final class TestHelper {
         return projectDir.resolve(outputDirPath);
     }
 
-
     /**
-     * @return the project directory where the clazz is hosted
+     * optional.
+     * set a sub-directory path under the output directory.
+     *
+     * @param subDir e.g., Paths.get(this.getClass().getName()) or
+     *               Paths.get("com.kazurayam.unittesthelperdemo.WithHelperTest")
+     * @return the reference to this TestHelper instance
      */
-    public Path getProjectDir() {
-        return projectDir;
+    public TestHelper setSubDir(Path subDir) {
+        Objects.requireNonNull(subDir);
+        if (subDir.isAbsolute()) {
+            throw new IllegalArgumentException("subDir must not be absolute: " + subDir);
+        }
+        this.subDir = subDir;
+        return this;
+    }
+
+    public Path getSubDir() {
+        return subDir;
     }
 
     /**
@@ -91,7 +116,11 @@ public final class TestHelper {
      * @return Path of a file as the output written by a test class
      */
     public Path resolveOutput(String fileName) {
-        Path outFile = getOutputDir().resolve(fileName);
+        Path outFile =
+                (subDir != null) ?
+                        getOutputDir().resolve(subDir).resolve(fileName) :
+                        getOutputDir().resolve(fileName);
+        // make sure the parent directory to be present
         Path parentDir = outFile.getParent();
         if (!Files.exists(parentDir)) {
             try {

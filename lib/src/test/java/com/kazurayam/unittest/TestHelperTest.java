@@ -55,6 +55,15 @@ public class TestHelperTest {
     }
 
     @Test
+    public void test_resolveOutput_with_subDir() throws Exception {
+        Path p = new TestHelper(this.getClass())
+                .setSubDir(Paths.get(this.getClass().getName()))
+                .resolveOutput("test_resolveOutput_with_subDir/hello.json");
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        assertThat(p.getParent()).exists();
+    }
+
+    @Test
     public void test_resolveOutput_into_custom_location() throws Exception {
         TestHelper th = new TestHelper(this.getClass())
                 .setOutputDirPath(Paths.get("build/tmp/testOutput"));
