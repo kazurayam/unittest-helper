@@ -48,9 +48,9 @@ The `TestHelper` class is compiled by Java8.
 
 ## Description by examples
 
-### Resolving a file path by Current Working Directory
+### Example 1: Resolving a file path by Current Working Directory
 
-    package com.kazurayam.unittest.demo;
+    package com.kazurayam.unittesthelperdemo;
 
     import com.kazurayam.unittest.TestHelper;
     import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ The `TestHelper` class is compiled by Java8.
     import java.nio.file.Path;
     import java.nio.file.Paths;
 
-    public class HelperlessDemo {
+    public class HelperlessTest {
 
         /*
          * will create a file `<projectDir>/sample1.txt`
@@ -81,4 +81,103 @@ This code calls `Paths.get("sample1_txt")` to resolve the path of output file. M
 
 The call to `Paths.get(p)` interpretes a relative path to the runtime **Current Working Directory** of the process. In the above case, `~/github/unittest-helper/app/` is the current working directory, and it happened to be equal to the project directory.
 
-Is the current working directory equal to the project directory? --- Usually yes. But sometimes not. When the current working directory has got different from the project directory, it will confuse us very much. So I do not like to depend on the current working directory in my unit-tests.
+Is the current working directory equal to the project directory? --- Usually yes. But sometimes not. When the current working directory has got to be different from the project directory, it will confuse us very much. So I do not like to depend on the current working directory in my unit-tests.
+
+### Example 2 : resolve the project dir via classpath
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestHelper;
+    import org.junit.jupiter.api.Test;
+
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.nio.file.Paths;
+
+    public class WithHelperTest {
+
+        @Test
+        public void test_getProjectDir() {
+            Path projectDir = new TestHelper(this.getClass()).getProjectDir();
+            System.out.println("[test_getProjectDir] projectDir = " +
+                    TestHelper.toHomeRelativeString(projectDir));
+        }
+
+`new TestHelper(this.getClass()).getProjectDir()` returns the `java.nio.file.Path` of the project directory.
+
+This test prints the following result in the console:
+
+    sublistPattern [build, classes, java, test] is found in the code source path [Users, kazurayam, github, unittest-helper, app, build, classes, java, test] at the index 5
+    [test_getProjectDir] projectDir = ~/github/unittest-helper/app
+
+This message tells how `TestHelper.getProject()` internally works.
+
+1.  The constructor call `new TestHelper(this.getClass())` tells the `TestHelper` instance that the class was loaded from the directory `/Users/kazurayam/github/unittest-helper/app/build/classes/java/test`.
+
+2.  The `TestHelper` internally tries to find out which build tool you used: Maven or Gradle? If you used Maven, the project directory would have a subdirectory `target/test-classes`. So `TestHelper` tries to find `target/test-classes` in the code source path. If the pattern is found, then the parent directory of the `target` directory is presumed to be the project directory. If you used Gradle, the project directory would have a subdirectory `build/classes/java/test`. So `TestHelper` tries to find `build/classes/java/test` in the code source path. When the subdirectory pattern is found in the code source path, then the parent directory of the `build` directory is presumed to be the project dir.
+
+The following patterns are implemented in the `com.kazurayam.unittest.ProjectRepositoryResolver` class:
+
+-   \[target, test-classes\]
+
+-   \[build, classes, java, test\]
+
+-   \[build, classes, groovy, test\]
+
+-   \[build, classes, kotlin, test\]
+
+You can add more sublist patterns for your own need by calling the `TestHelper.addSublistPattern(List<String>)` method.
+
+### Example 3 : locate the default output directory `test-output`
+
+Quickly find the `test-output` directory by calling `getOutputDir()`.
+
+        @Test
+        public void test_getOutputDir_as_default() {
+            Path outputDir = new TestHelper(this.getClass()).getOutputDir();
+            System.out.println("[test_getOutputDir_as_default] outputDir = " +
+                    TestHelper.toHomeRelativeString(outputDir));
+        }
+
+### Example 3 : create a custom output directory
+
+        @Test
+        public void test_getOutputDir_custom() {
+            Path outputDir = new TestHelper(this.getClass())
+                    .setOutputDirPath(Paths.get("test-output-another"))
+                    .getOutputDir();
+            System.out.println("[test_getOutputDir_as_default] outputDir = " +
+                    TestHelper.toHomeRelativeString(outputDir));
+        }
+
+### Example 4 : write a file into the default output directory
+
+        @Test
+        public void test_write_into_the_default_dir() throws Exception {
+            Path p = new TestHelper(this.getClass())
+                    .resolveOutput("sample2.txt");
+            Files.writeString(p, "Hello, world!");
+            System.out.println("[test_write_into_the_default_dir] p = " +
+                    TestHelper.toHomeRelativeString(p));
+        }
+
+### Example 5 : write a file into a subdirectory under the test-output
+
+        @Test
+        public void test_write_into_subdir_under_the_default_dir() throws Exception {
+            Path p = new TestHelper(this.getClass())
+                    .resolveOutput("sub/sample4.txt");
+            Files.writeString(p, "Hello, world!");
+            System.out.println("[test_write_into_subdir_under_the_default_dir] p = " + TestHelper.toHomeRelativeString(p));
+        }
+
+### Example 6 : write a file into a custom output directory
+
+        @Test
+        public void test_write_into_custom_dir() throws Exception {
+            Path p = new TestHelper(this.getClass())
+                    .setOutputDirPath(Paths.get("build/tmp/testOutput"))
+                    .resolveOutput("sample6.txt");
+            Files.writeString(p, "Hello, world!");
+            System.out.println("[test_write_into_custom_dir] p = " + TestHelper.toHomeRelativeString(p));
+        }

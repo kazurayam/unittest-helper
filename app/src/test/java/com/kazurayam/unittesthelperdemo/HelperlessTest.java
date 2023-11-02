@@ -1,4 +1,4 @@
-package com.kazurayam.unittest.demo;
+package com.kazurayam.unittesthelperdemo;
 
 import com.kazurayam.unittest.TestHelper;
 import org.junit.jupiter.api.Test;
