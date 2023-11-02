@@ -64,8 +64,8 @@ public class TestHelper {
     }
 
     /**
+     * To be deprecated
      * @return the project directory where the clazz is hosted
-     * @Deprecated
      */
     public Path getProjectDirViaClasspath() {
         return projectDir;

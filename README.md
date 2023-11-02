@@ -12,28 +12,25 @@ repositories {
 }
 
 dependencies {
-    testImplementation("com.kazurayam:unittest-helper:0.1.0")
+    testImplementation("com.kazurayam:unittest-helper:0.1.2")
 }
 ```
 
 ### Test code examples
 
-Here I assume you have a Gradle project with a JUnit5 test class which is to write an output file into the local directory. You want to choose the output directory amongst the following 3:
+Here I assume you have a Gradle project with a JUnit5 test class. The test wants to write a file into a local directory. You want to choose the directory amongst the following 3:
 
-1. immediately under the `<projectDir>`
-2. under the default directory: `<projectDir>/test-output`
+1. immediately under the project directory
+2. under a directory named `test-output` by minimum coding effort
 3. under a custom directory: `<projectDir>/build/tmp/testOutput`
-
 
 #### Ex1: Write a file immediately under the project dir
 
 ```
 package my;
 
-import com.kazurayam.unittest.TestHelper;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,14 +49,18 @@ This will create a file at `<projectDir>/sample1.txt`
 
 In this case we used `Paths.get("sample1.txt")`. This expression will locate the directory which `System.getProperty("user.dir")` expression stands for.
 
-However, you should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools so that `user.dir` is not reliable sometimes.
+However, you should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools' settings so that `user.dir` is not very much reliable.
 
 #### Ex2: Write a file under the default test-output directory
 
 ```
+import com.kazurayam.unittest.TestHelper;
+...
+public class SampleTest {
+
     @Test
     public void test_write_into_the_default_dir() throws Exception {
-        Path p = new TestHelper(SampleTest.class)
+        Path p = new TestHelper(this.getClass())
                 .resolveOutput("sample2.txt");
         Files.writeString(p, "Hello, world!");
     }
@@ -67,13 +68,19 @@ However, you should note that the value of the system property `user.dir` is dep
 
 This will create a file at `<projectDir>/test-output/sample2.txt`
 
-The `<projectDir>/test-output` directory will be silently created if not there.
+The `<projectDir>/test-output` directory will be silently created if it is not there.
 
 The `com.kazurayam.unittest.TestHelper` class resolves the project directory via classpath. 
 
-If you use Gradle to build the project, then most probably you have the class file at `<projectDir>/build/classes/java/test/my/SampleTest.class`. This case the project directory is presumed as the parent of the `build` directory. 
+Here I said "the class resolves a path via classpath"? What do I mean here?
 
-If you use Maven to build the project, then most probably you have the class file at `<projectDir>/target/test-classes/my/SampleTest.class`. This case the project directory is presumed as the parent of the `target` directory.
+If you use Gradle to build the project, then most probably you have the class file under the `build/classes/java/test/` directory with sub-path `my/SampleTest.class`. This case, the parent of the `build` directory is presumed to be the project directory. 
+
+If you use Maven to build the project, then most probably you have the class file under the `target/test-classes/` directory with sub-path `my/SampleTest.class`. This case, the parent of the `target` directory is presumed to be the project directory.
+
+Are you using other build tools so that the project file tree is different from Maven & Gradle? --- This case you can tell your own tree structure to the `TestHelper` instance. See the long explanation for detail.
+
+Resolving the project directory via classpath means that `TestHelper` object does not depend on the current working directory (= `System.getProperty('user.dir')`) of the process.
 
 ## Long explanation
 

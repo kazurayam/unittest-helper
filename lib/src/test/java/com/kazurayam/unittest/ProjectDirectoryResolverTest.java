@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,6 +26,17 @@ public class ProjectDirectoryResolverTest {
         assertThat(p).isNotNull().exists();
         assertThat(p.getFileName().toString())
                 .isEqualTo("lib");
+    }
+
+    @Test
+    public void test_getSublistPatterns() {
+        List<List<String>> sublistPatterns =
+                new ProjectDirectoryResolver().getSublistPatterns();
+        assertThat(sublistPatterns).isNotNull();
+        assertThat(sublistPatterns.size()).isGreaterThanOrEqualTo(2);
+        for (List<String> p : sublistPatterns) {
+            log.info("sublistPattern : " + p);
+        }
     }
 
 }

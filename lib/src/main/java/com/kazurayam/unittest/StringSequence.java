@@ -94,4 +94,9 @@ public class StringSequence {
         }
         return indexList;
     }
+
+    @Override
+    public String toString() {
+        return sequence.toString();
+    }
 }

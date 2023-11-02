@@ -44,8 +44,10 @@ public class ProjectDirectoryResolver {
      */
     public ProjectDirectoryResolver() {
         this.sublistPatterns = new ArrayList<>();
-        sublistPatterns.add(Arrays.asList("build", "classes", "java", "test"));  // Gradle
         sublistPatterns.add(Arrays.asList("target", "test-classes"));   // Maven
+        sublistPatterns.add(Arrays.asList("build", "classes", "java", "test"));  // Gradle, Java
+        sublistPatterns.add(Arrays.asList("build", "classes", "groovy", "test"));  // Gradle, Groovy
+        sublistPatterns.add(Arrays.asList("build", "classes", "kotlin", "test"));  // Gradle, Kotlin
     }
 
     /**
@@ -58,6 +60,18 @@ public class ProjectDirectoryResolver {
             throw new IllegalArgumentException("sublistPattern must not be null");
         }
         this.sublistPatterns.add(sublistPattern);
+    }
+
+    public List<List<String>> getSublistPatterns() {
+        List<List<String>> clone = new ArrayList<>();
+        for (List<String> l : sublistPatterns) {
+            List<String> e = new ArrayList<>();
+            for (String le : l) {
+                e.add(le);
+            }
+            clone.add(e);
+        }
+        return clone;
     }
 
     /**
@@ -75,7 +89,7 @@ public class ProjectDirectoryResolver {
         URL url = codeSource.getLocation();
         try {
             Path path = Paths.get(url.toURI());
-            log.debug("The code source : " + path);
+            log.trace("The code source : " + path);
             return path;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -118,7 +132,12 @@ public class ProjectDirectoryResolver {
             int indexOfBuildDir = ss.indexOfSubsequence(sublistPattern);
             if (indexOfBuildDir > 0) {
                 boundary = indexOfBuildDir;
+                log.debug(String.format("sublistPattern %s is found in the code source path %s at the index %d",
+                        sublistPattern, ss, boundary));
                 break;
+            } else {
+                log.debug(String.format("sublistPattern %s is NOT found in the code source path %s",
+                        sublistPattern, ss));
             }
         }
         if (boundary == -1) {

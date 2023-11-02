@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class HelperlessDemo {
+public class HelperlessTest {
 
     /*
      * will create a file `<projectDir>/sample1.txt`

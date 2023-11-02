@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class WithHelperDemo {
+public class WithHelperTest {
 
     @Test
     public void test_getProjectDir() {
@@ -59,7 +59,7 @@ public class WithHelperDemo {
     public void test_write_into_custom_dir() throws Exception {
         Path p = new TestHelper(this.getClass())
                 .setOutputDirPath(Paths.get("build/tmp/testOutput"))
-                .resolveOutput("sample3.txt");
+                .resolveOutput("sample6.txt");
         Files.writeString(p, "Hello, world!");
         System.out.println("[test_write_into_custom_dir] p = " + TestHelper.toHomeRelativeString(p));
     }
@@ -71,7 +71,7 @@ public class WithHelperDemo {
                 .setOutputDirPath(Paths.get("test-output-another"))
                 .getOutputDir();
         Files.createDirectories(outdir);
-        Path p = outdir.resolve("sample5.txt");
+        Path p = outdir.resolve("sample7.txt");
         Files.writeString(p, "Hello, world!");
         System.out.println("[test_write_into_another_custom_dir] p = " +
                 TestHelper.toHomeRelativeString(p));
