@@ -6,29 +6,17 @@
 
 -   source project: <https://github.com/kazurayam/unittest-helper>
 
--   javadoc: <https://kazurayam.github.io/unittest-helper/api>\]
+-   javadoc: <https://kazurayam.github.io/unittest-helper/api>
 
 ## Problems to solve
 
 ### Is "Current Working Directory" reliable for unit-tests? --- Not always
 
-I encountered some difficulties in a TestNG test case in a Gradle Multiproject. I expected that a call to `System.getProperty("user.dir")` would return the Path of sub-project’s directory. In most cases, it works fine but sometimes it mal-functioned. See the following post for detail:
+I encountered some difficulties in a TestNG test case in a Gradle Multiproject. I expected that a call to `System.getProperty("user.dir")` would return the Path of sub-project’s directory. In most cases, yes. It works fine. But sometimes it failed. See the following post for detail:
 
 -   <https://github.com/kazurayam/selenium-webdriver-java/issues/22>
 
-I haven’t managed to find out the reason why the current working directory got different from the project directory. I have given up trying to find.
-
-The following post in the Gradle forum gave me a clue:
-
--   <https://discuss.gradle.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379>
-
-> luke\_daley
-> Gradle Employee
-> Nov '13
->
-> Loading from the filesystem using relative paths during unit tests is problematic because different environments will set a different working directory for the test process. For example, Gradle uses the projects directory while IntelliJ uses the directory of the root project.
->
-> The only really safe way to solve this problem is to load via the classpath. Is this a possibility for your scenario?
+I couldn’t find out the reason why the current working directory got different from the project directory.
 
 ### I want my test classes to write files into a single dedicated directory, not under the current working directory
 
@@ -45,6 +33,20 @@ The `TestHelper` helps your unit tests to save files into a dedicated directory 
 The `TestHelper` class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG.
 
 The `TestHelper` class is compiled by Java8.
+
+### Background
+
+The following post in the Gradle forum gave me a clue:
+
+-   <https://discuss.gradle.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379>
+
+> luke\_daley
+> Gradle Employee
+> Nov '13
+>
+> Loading from the filesystem using relative paths during unit tests is problematic because different environments will set a different working directory for the test process. For example, Gradle uses the projects directory while IntelliJ uses the directory of the root project.
+>
+> The only really safe way to solve this problem is to load via the classpath. Is this a possibility for your scenario?
 
 ## Description by examples
 
@@ -79,9 +81,11 @@ This code calls `Paths.get("sample1_txt")` to resolve the path of output file. M
     > Task :app:testClasses
     [test_write_under_current_working_directory] p = ~/github/unittest-helper/app/sample1.txt
 
-The call to `Paths.get(p)` interpretes a relative path to the runtime **Current Working Directory** of the process. In the above case, `~/github/unittest-helper/app/` is the current working directory, and it happened to be equal to the project directory.
+The call to `Paths.get(p)` interpretes a relative path to the runtime **Current Working Directory** of the process. In the above case, the current working directory WILL be set `~/github/unittest-helper/app/`. And the path is equal to the project directory.
 
-Is the current working directory equal to the project directory? --- Usually yes. But sometimes not. When the current working directory has got to be different from the project directory, it will confuse us very much. So I do not like to depend on the current working directory in my unit-tests.
+Is the current working directory equal to the project directory always? --- Usually yes. But sometimes not. When the current working directory is different from the project directory, we will be really confused.
+
+So I do not like my unit-tests to depend on the current working directory. Any other way?
 
 ### Example 2 : resolve the project dir via classpath
 
@@ -118,15 +122,15 @@ This message tells how `TestHelper.getProject()` internally works.
 
 The following patterns are implemented in the `com.kazurayam.unittest.ProjectRepositoryResolver` class:
 
--   \[target, test-classes\]
+-   `[target, test-classes]`
 
--   \[build, classes, java, test\]
+-   `[build, classes, java, test]`
 
--   \[build, classes, groovy, test\]
+-   `[build, classes, groovy, test]`
 
--   \[build, classes, kotlin, test\]
+-   `[build, classes, kotlin, test]`
 
-You can add more sublist patterns for your own need by calling the `TestHelper.addSublistPattern(List<String>)` method.
+You can add more sublist patterns for your own needs by calling the `TestHelper.addSublistPattern(List<String>)` method.
 
 ### Example 3 : locate the default output directory `test-output`
 
@@ -155,7 +159,7 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
         @Test
         public void test_write_into_the_default_dir() throws Exception {
             Path p = new TestHelper(this.getClass())
-                    .resolveOutput("sample2.txt");
+                    .resolveOutput("sample4.txt");
             Files.writeString(p, "Hello, world!");
             System.out.println("[test_write_into_the_default_dir] p = " +
                     TestHelper.toHomeRelativeString(p));
@@ -166,7 +170,7 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
         @Test
         public void test_write_into_subdir_under_the_default_dir() throws Exception {
             Path p = new TestHelper(this.getClass())
-                    .resolveOutput("sub/sample4.txt");
+                    .resolveOutput("sub/sample5.txt");
             Files.writeString(p, "Hello, world!");
             System.out.println("[test_write_into_subdir_under_the_default_dir] p = " + TestHelper.toHomeRelativeString(p));
         }
@@ -181,3 +185,27 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
             Files.writeString(p, "Hello, world!");
             System.out.println("[test_write_into_custom_dir] p = " + TestHelper.toHomeRelativeString(p));
         }
+
+### Translating a Path to a Home Relative string
+
+A Path object can be stringified to an absolute path string like
+
+    /Users/kazurayam/github/unittest-helper/lib/
+
+In this string you can find my personal name `kazurayam`. I do not like exposing my name in the blog posts and the documentations. I would prefer Home Relative path expression starting with tilde character, like:
+
+    ~/github/unittest-helper/lib/
+
+The `TestHelper` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
+
+        @Test
+        public void test_toHomeRelativeString_simple() {
+            Path p = new TestHelper(this.getClass()).getProjectDir();
+            String s = TestHelper.toHomeRelativeString(p);
+            System.out.println("[test_toHomeRelativeString_simple] s = " + s);
+            assertThat(s).isEqualTo("~/github/unittest-helper/lib");
+        }
+
+This test prints the following output in the console:
+
+    [test_toHomeRelativeString_simple] s = ~/github/unittest-helper/lib

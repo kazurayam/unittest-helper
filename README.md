@@ -47,9 +47,9 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/sample1.txt`
 
-In this case we used `Paths.get("sample1.txt")`. This expression will locate the directory which `System.getProperty("user.dir")` expression stands for.
+In this case we used `Paths.get("sample1.txt")`. This expression will locate the file `sample1.txt` in the directory which `System.getProperty("user.dir")` expression stands for.
 
-However, you should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools' settings so that `user.dir` is not very much reliable.
+You should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools' settings. Though rarely, the `user.dir` is not very much reliable. See [this isseue](https://github.com/kazurayam/selenium-webdriver-java/issues/21) for example. 
 
 #### Ex2: Write a file under the default test-output directory
 
@@ -68,11 +68,11 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/test-output/sample2.txt`
 
-The `<projectDir>/test-output` directory will be silently created if it is not there.
+The `<projectDir>/test-output` directory will be silently created if it is not yet there.
 
-The `com.kazurayam.unittest.TestHelper` class resolves the project directory via classpath. 
+#### Project directory is resolved via classpath
 
-Here I said "the class resolves a path via classpath"? What do I mean here?
+The `com.kazurayam.unittest.TestHelper` class resolves the project directory via classpath. Here I said "the class resolves a path via classpath"? What do I mean here?
 
 If you use Gradle to build the project, then most probably you have the class file under the `build/classes/java/test/` directory with sub-path `my/SampleTest.class`. This case, the parent of the `build` directory is presumed to be the project directory. 
 
@@ -84,7 +84,7 @@ Resolving the project directory via classpath means that `TestHelper` object doe
 
 ## Long explanation
 
-- [English](https://kazurayam.github.io/unittest-helper/index.md)
+- [English](https://kazurayam.github.io/unittest-helper/)
 
 ## Javadoc
 

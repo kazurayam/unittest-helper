@@ -38,7 +38,7 @@ public class WithHelperTest {
     @Test
     public void test_write_into_the_default_dir() throws Exception {
         Path p = new TestHelper(this.getClass())
-                .resolveOutput("sample2.txt");
+                .resolveOutput("sample4.txt");
         Files.writeString(p, "Hello, world!");
         System.out.println("[test_write_into_the_default_dir] p = " +
                 TestHelper.toHomeRelativeString(p));
@@ -47,7 +47,7 @@ public class WithHelperTest {
     @Test
     public void test_write_into_subdir_under_the_default_dir() throws Exception {
         Path p = new TestHelper(this.getClass())
-                .resolveOutput("sub/sample4.txt");
+                .resolveOutput("sub/sample5.txt");
         Files.writeString(p, "Hello, world!");
         System.out.println("[test_write_into_subdir_under_the_default_dir] p = " + TestHelper.toHomeRelativeString(p));
     }

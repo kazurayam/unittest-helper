@@ -77,7 +77,7 @@ public class TestHelperTest {
     public void test_toHomeRelativeString_simple() {
         Path p = new TestHelper(this.getClass()).getProjectDir();
         String s = TestHelper.toHomeRelativeString(p);
-        log.info("[test_toHomeRelativeString_simple] s = " + s);
+        System.out.println("[test_toHomeRelativeString_simple] s = " + s);
         assertThat(s).isEqualTo("~/github/unittest-helper/lib");
     }
 
