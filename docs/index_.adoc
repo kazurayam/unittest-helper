@@ -67,9 +67,9 @@ This code calls `Paths.get("sample1_txt")` to resolve the path of output file. M
 [test_write_under_current_working_directory] p = ~/github/unittest-helper/app/sample1.txt
 ----
 
-The call to `Paths.get(p)` interpretes a relative path to the runtime *Current Working Directory* of the process. In the above case, the current working directory WILL be set `~/github/unittest-helper/app/`. And the path is equal to the project directory.
+The call to `Paths.get("sample1.txt")` regards the paramenter `sample1.txt` as relative to the runtime *Current Working Directory*. In the above case, the current working directory WILL be set `~/github/unittest-helper/app/`. And the path is equal to the project directory. So the `Paths.get("sample1.txt")` will return a Path object of `~/github.unittest-helper/app/sample1.txt`.
 
-Is the current working directory equal to the project directory always? --- Usually yes. But sometimes not. When the current working directory is different from the project directory, we will be really confused.
+Is the *current working directory* equal to the *project directory* ? --- Usually yes. But sometimes not. It depends on the runtime environment. When the current working directory is different from the project directory, we will be really confused.
 
 So I do not like my unit-tests to depend on the current working directory. Any other way?
 

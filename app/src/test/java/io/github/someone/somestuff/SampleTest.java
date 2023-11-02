@@ -2,6 +2,7 @@ package io.github.someone.somestuff;
 
 import com.kazurayam.unittest.TestHelper;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,12 +18,16 @@ public class SampleTest {
 
     private static TestHelper th;
 
-    private static DateTimeFormatter dtf;
+    private DateTimeFormatter dtf;
 
     @BeforeAll
     public static void beforeAll() throws IOException {
         th = TestHelperFactory.create(SampleTest.class);
         th.cleanOutputDirectory();
+    }
+
+    @BeforeEach
+    public void setup() {
         dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
     }
 
@@ -34,7 +39,7 @@ public class SampleTest {
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p).isNotNull().exists();
         assertThat(p.toFile().length()).isGreaterThan(0);
-        System.out.println("[test_write_file] " +
+        System.out.println("[test_write_file] output is found at " +
                 TestHelper.toHomeRelativeString(p));
     }
 }
