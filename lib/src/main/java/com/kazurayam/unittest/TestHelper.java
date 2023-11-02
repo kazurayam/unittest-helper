@@ -22,30 +22,19 @@ public final class TestHelper {
 
     private static final Logger log = LoggerFactory.getLogger(TestHelper.class);
 
-    /**
-     * The name of the directory created by TestHelper as default
-     * when you do not call setOutputDirPath(Path)
-     */
-    public static final Path DEFAULT_OUTPUT_DIR_PATH = Paths.get("test-output");
-
-    private final Path projectDir;
-
+    private Class clazz;
+    private Path projectDir;
     private Path outputDirPath;
-
-    private Path subDir;
+    private Path subDirPath;
 
     /**
-     * The clazz parameter is required.
-     * The ProjectDirectoryResolver resolves the project directory
-     * for the clazz specified via the runtime classpath.
-     * @param clazz the Class object based on which the project dir is resolved
+     * @param builder TestHelper.Builder instance
      */
-    public TestHelper(Class clazz) {
-        projectDir =
-                new ProjectDirectoryResolver()
-                        .getProjectDirViaClasspath(clazz);
-        outputDirPath = DEFAULT_OUTPUT_DIR_PATH;
-        subDir = null;
+    private TestHelper(Builder builder) {
+        this.clazz = builder.clazz;
+        this.projectDir = builder.projectDir;
+        this.outputDirPath = builder.outputDirPath;
+        this.subDirPath = builder.subDirPath;
     }
 
     /**
@@ -53,25 +42,6 @@ public final class TestHelper {
      */
     public Path getProjectDir() {
         return projectDir;
-    }
-
-    /**
-     * e.g., you can pass Paths.get("build/tmp/testOutput")
-     * to specify the output dir location
-     *
-     * @param outputDirPath e.g, Paths.get("build/tmp/testOutput").
-     *                      This could be relative to the project directory.
-     *
-     * @return the reference to this TestHelper instance
-     */
-    public TestHelper setOutputDirPath(Path outputDirPath) {
-        Objects.requireNonNull(outputDirPath);
-        if (outputDirPath.isAbsolute()) {
-            throw new IllegalArgumentException(
-                    "outputDirPath should not be absolute: " + outputDirPath);
-        }
-        this.outputDirPath = outputDirPath;
-        return this;
     }
 
     /**
@@ -85,24 +55,28 @@ public final class TestHelper {
     }
 
     /**
-     * optional.
-     * set a sub-directory path under the output directory.
      *
-     * @param subDir e.g., Paths.get(this.getClass().getName()) or
-     *               Paths.get("com.kazurayam.unittesthelperdemo.WithHelperTest")
-     * @return the reference to this TestHelper instance
+     * @return subDirPath
      */
-    public TestHelper setSubDir(Path subDir) {
-        Objects.requireNonNull(subDir);
-        if (subDir.isAbsolute()) {
-            throw new IllegalArgumentException("subDir must not be absolute: " + subDir);
-        }
-        this.subDir = subDir;
-        return this;
+    public Path getSubDirPath() {
+        return subDirPath;
     }
 
-    public Path getSubDir() {
-        return subDir;
+    /**
+     * removed the output directory recursively if it is already present
+     *
+     * @return the reference to this TestHelper instance
+     * @throws IOException during removing files/directories
+     */
+    public TestHelper cleanOutputDirectory() throws IOException {
+        Path outputDir = this.getOutputDir();
+        if (Files.exists(outputDir)) {
+            Files.walk(outputDir)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        }
+        return this;
     }
 
     /**
@@ -117,8 +91,8 @@ public final class TestHelper {
      */
     public Path resolveOutput(String fileName) {
         Path outFile =
-                (subDir != null) ?
-                        getOutputDir().resolve(subDir).resolve(fileName) :
+                (subDirPath != null) ?
+                        getOutputDir().resolve(subDirPath).resolve(fileName) :
                         getOutputDir().resolve(fileName);
         // make sure the parent directory to be present
         Path parentDir = outFile.getParent();
@@ -131,6 +105,10 @@ public final class TestHelper {
         }
         return outFile;
     }
+
+
+
+    //---------- static section -----------------------------------------------
 
     static final String TILDE = "~";
 
@@ -170,19 +148,77 @@ public final class TestHelper {
     }
 
     /**
-     * removed the output directory recursively if it is already present
-     *
-     * @return the reference to this TestHelper instance
-     * @throws IOException
+     * Joshua Bloch's "Builder" for the TestHelper class
      */
-    public TestHelper cleanOutputDirectory() throws IOException {
-        Path outputDir = this.getOutputDir();
-        if (Files.exists(outputDir)) {
-            Files.walk(outputDir)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+    public static class Builder {
+        private Class clazz;
+        private Path projectDir;
+        private Path outputDirPath;
+        private Path subDirPath;
+
+        /**
+         * The name of the directory created by TestHelper as default
+         * when you do not call setOutputDirPath(Path)
+         */
+        private static final Path DEFAULT_OUTPUT_DIR_PATH = Paths.get("test-output");
+
+        /**
+         * Sole constructor
+         *
+         * @param clazz the Class object of a test class
+         */
+        public Builder(Class clazz) {
+            this.clazz = clazz;
+            this.projectDir =
+                    new ProjectDirectoryResolver()
+                            .getProjectDirViaClasspath(clazz);
+            this.outputDirPath = DEFAULT_OUTPUT_DIR_PATH;
+            this.subDirPath = null;
         }
-        return this;
+
+        /**
+         * e.g., you can pass Paths.get("build/tmp/testOutput")
+         * to specify the output dir location
+         *
+         * @param outputDirPath e.g, Paths.get("build/tmp/testOutput").
+         *                      This could be relative to the project directory.
+         *
+         * @return the reference to this TestHelper.Builder instance
+         */
+        public Builder outputDirPath(Path outputDirPath) {
+            Objects.requireNonNull(outputDirPath);
+            if (outputDirPath.isAbsolute()) {
+                throw new IllegalArgumentException(
+                        "outputDirPath should not be absolute: " + outputDirPath);
+            }
+            this.outputDirPath = outputDirPath;
+            return this;
+        }
+
+        /**
+         * optional.
+         * set a sub-directory path under the output directory.
+         *
+         * @param subDirPath e.g., Paths.get(this.getClass().getName()) or
+         *               Paths.get("com.kazurayam.unittesthelperdemo.WithHelperTest")
+         * @return the reference to this Builder.Builder instance
+         */
+        public Builder subDirPath(Path subDirPath) {
+            Objects.requireNonNull(subDirPath);
+            if (subDirPath.isAbsolute()) {
+                throw new IllegalArgumentException(
+                        "subDirPath must not be absolute: " + subDirPath);
+            }
+            this.subDirPath = subDirPath;
+            return this;
+        }
+
+        /**
+         * @return TestHelper object
+         */
+        public TestHelper build() {
+            return new TestHelper(this);
+        }
+
     }
 }

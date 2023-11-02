@@ -3,6 +3,7 @@ package com.kazurayam.unittesthelperdemo;
 import com.kazurayam.unittest.TestHelper;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,23 +12,26 @@ public class WithHelperTest {
 
     @Test
     public void test_getProjectDir() {
-        Path projectDir = new TestHelper(this.getClass()).getProjectDir();
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
+        Path projectDir = th.getProjectDir();
         System.out.println("[test_getProjectDir] projectDir = " +
                 TestHelper.toHomeRelativeString(projectDir));
     }
 
     @Test
     public void test_getOutputDir_as_default() {
-        Path outputDir = new TestHelper(this.getClass()).getOutputDir();
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
+        Path outputDir = th.getOutputDir();
         System.out.println("[test_getOutputDir_as_default] outputDir = " +
                 TestHelper.toHomeRelativeString(outputDir));
     }
 
     @Test
     public void test_getOutputDir_custom() {
-        Path outputDir = new TestHelper(this.getClass())
-                .setOutputDirPath(Paths.get("test-output-another"))
-                .getOutputDir();
+        TestHelper th = new TestHelper.Builder(this.getClass())
+                .outputDirPath(Paths.get("test-output-another"))
+                .build();
+        Path outputDir = th.getOutputDir();
         System.out.println("[test_getOutputDir_as_default] outputDir = " +
                 TestHelper.toHomeRelativeString(outputDir));
     }
@@ -37,18 +41,18 @@ public class WithHelperTest {
      */
     @Test
     public void test_write_into_the_default_dir() throws Exception {
-        Path p = new TestHelper(this.getClass())
-                .resolveOutput("sample4.txt");
-        Files.writeString(p, "Hello, world!");
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
+        Path p = th.resolveOutput("sample4.txt");
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         System.out.println("[test_write_into_the_default_dir] p = " +
                 TestHelper.toHomeRelativeString(p));
     }
 
     @Test
     public void test_write_into_subdir_under_the_default_dir() throws Exception {
-        Path p = new TestHelper(this.getClass())
-                .resolveOutput("sub/sample5.txt");
-        Files.writeString(p, "Hello, world!");
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
+        Path p = th.resolveOutput("sub/sample5.txt");
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         System.out.println("[test_write_into_subdir_under_the_default_dir] p = " + TestHelper.toHomeRelativeString(p));
     }
 
@@ -57,25 +61,26 @@ public class WithHelperTest {
      */
     @Test
     public void test_write_into_custom_dir() throws Exception {
-        Path p = new TestHelper(this.getClass())
-                .setOutputDirPath(Paths.get("build/tmp/testOutput"))
-                .resolveOutput("sample6.txt");
-        Files.writeString(p, "Hello, world!");
+        TestHelper th =
+                new TestHelper.Builder(this.getClass())
+                        .outputDirPath(Paths.get("build/tmp/testOutput"))
+                        .build();
+        Path p = th.resolveOutput("sample6.txt");
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         System.out.println("[test_write_into_custom_dir] p = " + TestHelper.toHomeRelativeString(p));
     }
 
-
     @Test
     public void test_write_into_another_custom_dir() throws Exception {
-        Path outdir = new TestHelper(this.getClass())
-                .setOutputDirPath(Paths.get("test-output-another"))
-                .getOutputDir();
+        TestHelper th =
+                new TestHelper.Builder(this.getClass())
+                        .outputDirPath(Paths.get("test-output-another"))
+                        .build();
+        Path outdir = th.getOutputDir();
         Files.createDirectories(outdir);
         Path p = outdir.resolve("sample7.txt");
-        Files.writeString(p, "Hello, world!");
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         System.out.println("[test_write_into_another_custom_dir] p = " +
                 TestHelper.toHomeRelativeString(p));
     }
-
-
 }

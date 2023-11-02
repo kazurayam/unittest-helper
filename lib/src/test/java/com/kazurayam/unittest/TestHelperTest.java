@@ -18,7 +18,8 @@ public class TestHelperTest {
 
     @Test
     public void test_getProjectDir() {
-        Path p = new TestHelper(this.getClass()).getProjectDir();
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
+        Path p = th.getProjectDir();
         log.info("[test_getProjectDirViaClasspath] project dir : " + p);
         assertThat(p.getFileName().toString()).isEqualTo("lib");
         assertThat(p.getFileName().toString()).isNotEqualTo("unittest-helper");
@@ -26,7 +27,8 @@ public class TestHelperTest {
 
     @Test
     public void test_getOutputDir_default() {
-        Path p = new TestHelper(this.getClass()).getOutputDir();
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
+        Path p = th.getOutputDir();
         log.info("[test_getOutputDir_default] output dir : " + p);
         assertThat(p.getFileName().toString()).isEqualTo("test-output");
     }
@@ -34,7 +36,10 @@ public class TestHelperTest {
     @Test
     public void test_getOutputDir_custom() {
         String dirName = "customDir";
-        TestHelper th = new TestHelper(this.getClass()).setOutputDirPath(Paths.get(dirName));
+        TestHelper th =
+                new TestHelper.Builder(this.getClass())
+                        .outputDirPath(Paths.get(dirName))
+                        .build();
         Path p = th.getOutputDir();
         log.info("[test_getOutputDir_custom] output dir : " + p);
         assertThat(p.getFileName().toString()).isEqualTo(dirName);
@@ -42,8 +47,8 @@ public class TestHelperTest {
 
     @Test
     public void test_resolveOutput() throws Exception {
-        Path p = new TestHelper(this.getClass())
-                .resolveOutput("hello.json");
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
+        Path p = th.resolveOutput("hello.json");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p.getParent()).exists();
         assertThat(p.getParent().getFileName().toString())
@@ -55,18 +60,22 @@ public class TestHelperTest {
     }
 
     @Test
-    public void test_resolveOutput_with_subDir() throws Exception {
-        Path p = new TestHelper(this.getClass())
-                .setSubDir(Paths.get(this.getClass().getName()))
-                .resolveOutput("test_resolveOutput_with_subDir/hello.json");
+    public void test_resolveOutput_with_subDirPath() throws Exception {
+        TestHelper th =
+                new TestHelper.Builder(this.getClass())
+                        .subDirPath(Paths.get(this.getClass().getName()))
+                        .build();
+        Path p = th.resolveOutput("test_resolveOutput_with_subDir/hello.json");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p.getParent()).exists();
     }
 
     @Test
     public void test_resolveOutput_into_custom_location() throws Exception {
-        TestHelper th = new TestHelper(this.getClass())
-                .setOutputDirPath(Paths.get("build/tmp/testOutput"));
+        TestHelper th =
+                new TestHelper.Builder(this.getClass())
+                        .outputDirPath(Paths.get("build/tmp/testOutput"))
+                        .build();
         Path p = th.resolveOutput("hello.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p.getParent()                   // expecting testOutput
@@ -85,17 +94,19 @@ public class TestHelperTest {
 
     @Test
     public void test_toHomeRelativeString_simple() {
-        Path p = new TestHelper(this.getClass()).getProjectDir();
-        String s = TestHelper.toHomeRelativeString(p);
-        System.out.println("[test_toHomeRelativeString_simple] s = " + s);
-        assertThat(s).isEqualTo("~/github/unittest-helper/lib");
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
+        Path projectDir = th.getProjectDir();
+        String homeRelative = TestHelper.toHomeRelativeString(projectDir);
+        System.out.println("[test_toHomeRelativeString_simple] " + homeRelative);
+        assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
     }
 
     @Test
     public void test_toHomeRelativeString_simple_more() {
-        Path p = new TestHelper(this.getClass()).resolveOutput("foo.txt");
-        String s = TestHelper.toHomeRelativeString(p);
-        assertThat(s).isEqualTo(
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
+        Path p = th.resolveOutput("foo.txt");
+        String homeRelative = TestHelper.toHomeRelativeString(p);
+        assertThat(homeRelative).isEqualTo(
                 "~/github/unittest-helper/lib/test-output/foo.txt");
     }
 
@@ -116,7 +127,7 @@ public class TestHelperTest {
     @Test
     public void test_cleanOutputDirectory() throws IOException {
         // given
-        TestHelper th = new TestHelper(this.getClass());
+        TestHelper th = new TestHelper.Builder(this.getClass()).build();
         Path p = th.resolveOutput("sub/foo.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p).exists();
