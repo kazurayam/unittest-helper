@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.kazurayam.unittest"}];updateSearchResults();
+packageSearchIndex = [{"l":"com.kazurayam.unittest"},{"l":"すべてのパッケージ","u":"allpackages-index.html"}];updateSearchResults();

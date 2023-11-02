@@ -33,7 +33,7 @@ ext {
     assertjVersion = "3.24.2"
     wdmVersion = "5.5.3"
 
-    unittesthelperVersion = '0.1.1'
+    unittesthelperVersion = '0.1.2'
 }
 
 dependencies {

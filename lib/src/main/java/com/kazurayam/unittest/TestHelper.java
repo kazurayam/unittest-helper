@@ -65,6 +65,7 @@ public class TestHelper {
 
     /**
      * @return the project directory where the clazz is hosted
+     * @Deprecated
      */
     public Path getProjectDirViaClasspath() {
         return projectDir;
@@ -99,6 +100,8 @@ public class TestHelper {
         return outFile;
     }
 
+    static final String TILDE = "~";
+
     /**
      * This method is meant to be used in messages and documentations.
      * You do not want to show your own personal name in the console messages, right?
@@ -109,12 +112,12 @@ public class TestHelper {
      * of the user if the path is located under the $HOME. If the path is NOT
      * located under the $HOME, just stringify the absolute path.
      *
+     * @param path a Path object to be translated into a Home Relative path string
      * @return a path string prepended by tilde `~` if the path starts with "user.home"
      */
-    static final String TILDE = "~";
-    public static String toHomeRelativeString(Path other) {
-        Objects.requireNonNull(other);
-        Path p = other.toAbsolutePath();
+    public static String toHomeRelativeString(Path path) {
+        Objects.requireNonNull(path);
+        Path p = path.toAbsolutePath();
         String userHomeString = System.getProperty("user.home");
         if (userHomeString == null) {
             throw new IllegalStateException("System property user.home is null");

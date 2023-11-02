@@ -43,7 +43,7 @@ public class SampleTest {
     @Test
     public void test_write_under_the_project_dir() throws Exception {
         Path p = Paths.get("sample1.txt");
-        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        Files.writeString(p, "Hello, world!");
     }
 
 ```
@@ -61,7 +61,7 @@ However, you should note that the value of the system property `user.dir` is dep
     public void test_write_into_the_default_dir() throws Exception {
         Path p = new TestHelper(SampleTest.class)
                 .resolveOutput("sample2.txt");
-        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        Files.writeString(p, "Hello, world!");
     }
 ```
 
@@ -69,28 +69,16 @@ This will create a file at `<projectDir>/test-output/sample2.txt`
 
 The `<projectDir>/test-output` directory will be silently created if not there.
 
-The `com.kazurayam.unittest.TestHelper` class resolves the project directory via classpath. If you use Gradle to build the project, then most probably you have the class file at `<projectDir>/build/classes/java/test/my/SampleTest.class`. This case the project directory is presumed as the parent of the `build` directory. If you use Maven to build the project, then most probably you have the class file at `<projectDir>/target/test-classes/my/SampleTest.class`. This case the project directory is presumed as the parent of the `target` directory.
+The `com.kazurayam.unittest.TestHelper` class resolves the project directory via classpath. 
 
-#### Ex3: Write a file under a custom directory
+If you use Gradle to build the project, then most probably you have the class file at `<projectDir>/build/classes/java/test/my/SampleTest.class`. This case the project directory is presumed as the parent of the `build` directory. 
 
-```
-    @Test
-    public void test_write_into_custom_dir() throws Exception {
-        Path p = new TestHelper(SampleTest.class)
-                .setOutputDirPath(Paths.get("build/tmp/testOutput"))
-                .resolveOutput("sample3.txt");
-        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-    }
-```
-
-This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`.
-
-The `<projectDir>/build/tmp/testOutput` directory will be silently created if not there.
-
+If you use Maven to build the project, then most probably you have the class file at `<projectDir>/target/test-classes/my/SampleTest.class`. This case the project directory is presumed as the parent of the `target` directory.
 
 ## Long explanation
 
 - [English](https://kazurayam.github.io/unittest-helper/index.md)
-- [日本語](https://kazurayam.github.io/unittest-helper/index_ja.md)
+
+## Javadoc
 
 - [Javadoc](https://kazurayam.github.io/unittest-helper/api/)
