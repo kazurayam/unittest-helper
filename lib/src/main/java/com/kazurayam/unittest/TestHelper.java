@@ -3,11 +3,13 @@ package com.kazurayam.unittest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -16,7 +18,7 @@ import java.util.Objects;
  * These methods are useful for Gradle Multiprojects where
  * the Current Working Directory is NOT equal to the sub-projects' root directory.
  */
-public class TestHelper {
+public final class TestHelper {
 
     private static final Logger log = LoggerFactory.getLogger(TestHelper.class);
 
@@ -42,13 +44,20 @@ public class TestHelper {
     }
 
     /**
-     * e.g., you can pass Paths.get("build/tmp/testOutput") to specify the output dir location
-     * @param outputDirPath e.g, Paths.get("build/tmp/testOutput"). This could be relative to the project directory.
+     * e.g., you can pass Paths.get("build/tmp/testOutput")
+     * to specify the output dir location
+     *
+     * @param outputDirPath e.g, Paths.get("build/tmp/testOutput").
+     *                      This could be relative to the project directory.
      *
      * @return the reference to this TestHelper instance
      */
     public TestHelper setOutputDirPath(Path outputDirPath) {
         Objects.requireNonNull(outputDirPath);
+        if (outputDirPath.isAbsolute()) {
+            throw new IllegalArgumentException(
+                    "outputDirPath should not be absolute: " + outputDirPath);
+        }
         this.outputDirPath = outputDirPath;
         return this;
     }
@@ -63,13 +72,6 @@ public class TestHelper {
         return projectDir.resolve(outputDirPath);
     }
 
-    /**
-     * To be deprecated
-     * @return the project directory where the clazz is hosted
-     */
-    public Path getProjectDirViaClasspath() {
-        return projectDir;
-    }
 
     /**
      * @return the project directory where the clazz is hosted
@@ -79,10 +81,11 @@ public class TestHelper {
     }
 
     /**
-     * returns the Path of a file that a test class write its output into.
+     * Create the output directory if it is not yet there.
+     *
+     * Returns the Path of a file that a test class write its output into.
      * As default, the output file will be located under the "test-output" directory.
      * You can change the directory location by calling setOutputDirPath(Path).
-     * The parent directory the output will be silently created.
      *
      * @param fileName the file name
      * @return Path of a file as the output written by a test class
@@ -135,5 +138,22 @@ public class TestHelper {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * removed the output directory recursively if it is already present
+     *
+     * @return the reference to this TestHelper instance
+     * @throws IOException
+     */
+    public TestHelper cleanOutputDirectory() throws IOException {
+        Path outputDir = this.getOutputDir();
+        if (Files.exists(outputDir)) {
+            Files.walk(outputDir)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        }
+        return this;
     }
 }

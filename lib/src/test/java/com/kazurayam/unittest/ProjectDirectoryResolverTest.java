@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProjectDirectoryResolverTest {
+public final class ProjectDirectoryResolverTest {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectDirectoryResolverTest.class);
 

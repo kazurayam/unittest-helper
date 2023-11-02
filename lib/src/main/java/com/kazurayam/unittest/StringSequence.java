@@ -23,7 +23,7 @@ import java.util.Objects;
  * Provided with this result, I can create a directory into which my test classes write output files.
  *     /Users/me/tmp/selenium-webdriver-java/selenium-webdriver-junit/test-output
  */
-public class StringSequence {
+public final class StringSequence {
 
     private final List<String> sequence;
 

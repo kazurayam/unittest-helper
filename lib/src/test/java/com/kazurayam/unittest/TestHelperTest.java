@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,8 +17,8 @@ public class TestHelperTest {
     private static final Logger log = LoggerFactory.getLogger(TestHelperTest.class);
 
     @Test
-    public void test_getProjectDirViaClasspath() {
-        Path p = new TestHelper(this.getClass()).getProjectDirViaClasspath();
+    public void test_getProjectDir() {
+        Path p = new TestHelper(this.getClass()).getProjectDir();
         log.info("[test_getProjectDirViaClasspath] project dir : " + p);
         assertThat(p.getFileName().toString()).isEqualTo("lib");
         assertThat(p.getFileName().toString()).isNotEqualTo("unittest-helper");
@@ -101,5 +102,19 @@ public class TestHelperTest {
         Path p = Paths.get("/Applications");
         String s = TestHelper.toHomeRelativeString(p);
         assertThat(s).isEqualTo("/Applications");
+    }
+
+    @Test
+    public void test_cleanOutputDirectory() throws IOException {
+        // given
+        TestHelper th = new TestHelper(this.getClass());
+        Path p = th.resolveOutput("sub/foo.txt");
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        assertThat(p).exists();
+        // when
+        th.cleanOutputDirectory();
+        // then
+        Path od = th.getOutputDir();
+        assertThat(od).doesNotExist();
     }
 }

@@ -33,7 +33,7 @@ import java.util.Objects;
  *     Is this a possibility for your scenario?</p>
  * </blockquote>
  */
-public class ProjectDirectoryResolver {
+public final class ProjectDirectoryResolver {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectDirectoryResolver.class);
 
@@ -62,6 +62,10 @@ public class ProjectDirectoryResolver {
         this.sublistPatterns.add(sublistPattern);
     }
 
+    /**
+     *
+     * @return the list of Sublist Patterns including both builtin and ones you added
+     */
     public List<List<String>> getSublistPatterns() {
         List<List<String>> clone = new ArrayList<>();
         for (List<String> l : sublistPatterns) {

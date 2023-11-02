@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StringSequenceTest {
+public final class StringSequenceTest {
 
     @Test
     public void test_indexListOfSubsequence_trivial() {
