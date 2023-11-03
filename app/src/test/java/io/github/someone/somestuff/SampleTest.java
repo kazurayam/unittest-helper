@@ -42,4 +42,16 @@ public class SampleTest {
         System.out.println("[test_write_file] output is found at " +
                 TestOutputOrganizer.toHomeRelativeString(p));
     }
+
+    @Test
+    public void test_write_file_once_more() throws IOException {
+        LocalDateTime ldt = LocalDateTime.now();
+        Path p = too.resolveOutput(
+                String.format("test_write_file_once_more/sample_%s.txt", dtf.format(ldt)));
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        assertThat(p).isNotNull().exists();
+        assertThat(p.toFile().length()).isGreaterThan(0);
+        System.out.println("[test_write_file_once_more] output is found at " +
+                TestOutputOrganizer.toHomeRelativeString(p));
+    }
 }

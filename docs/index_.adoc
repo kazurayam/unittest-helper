@@ -279,7 +279,7 @@ The following test class uses the Factory.
 
 [source]
 ----
-include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[]
+include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[lines=1..44]
 ----
 
 When you ran the test, the output directory will look like this:
@@ -295,3 +295,45 @@ app/build/tmp/testOutput
 Which test class, which method created this file? --- It's obvious to see in this file tree.
 
 Please note that here 2 layers of directories are inserted amongst the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`. The first layer is the FQCN of the test class, the second layer is the method name which actually wrote the file. This tree helps you well organize the output files created by your test cases.
+
+=== One more layer of subdirectory to distinguish outputs by 2 or more test methods
+
+The link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java[io.github.someone.somestuff.SampleTest] class has one more test method:
+
+[source]
+----
+include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[lines=46..57]
+----
+
+When you ran this test, you would get the following output:
+
+```
+$ tree app/build/tmp/testOutput
+app/build/tmp/testOutput
+└── io.github.someone.somestuff.SampleTest
+    ├── test_write_file
+    │   └── sample_20231103_124015.txt
+    └── test_write_file_once_more
+        └── sample_20231103_124015.txt
+```
+
+Please find that one more directory layer is inserted between the output dir and the files.
+
+- `test_write_file`
+- `test_write_file_once_more`
+
+How these directories were created? If you read the source of the test class, you would find that it effectively executed the following calls
+
+[source]
+----
+    Path p = too.resolveOutut("test_write_file/sample_20231103_124015.txt");
+----
+
+and
+
+[source]
+----
+    Path p = too.resolveOutut("test_write_file_once_more/sample_20231103_124015.txt");
+----
+
+I am sure you can find a small twist in the above code fragments. It is thus easy to insert layers of directories under the output directory using the `TestOutputOrganizer. This technique makes it easy to organize output files created by multiple methods in a single test class.

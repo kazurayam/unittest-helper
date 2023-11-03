@@ -15,6 +15,7 @@
         -   [Removing the output directory recursively](#removing-the-output-directory-recursively)
         -   [Translating a Path to a Home Relative string](#translating-a-path-to-a-home-relative-string)
         -   [You should create a Factory class for your customized TestOutputOrganizer](#you-should-create-a-factory-class-for-your-customized-testoutputorganizer)
+        -   [One more layer of subdirectory to distinguish outputs by 2 or more test methods](#one-more-layer-of-subdirectory-to-distinguish-outputs-by-2-or-more-test-methods)
 
 # Unit Test Helper
 
@@ -309,6 +310,18 @@ The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which
             System.out.println("[test_write_file] output is found at " +
                     TestOutputOrganizer.toHomeRelativeString(p));
         }
+
+        @Test
+        public void test_write_file_once_more() throws IOException {
+            LocalDateTime ldt = LocalDateTime.now();
+            Path p = too.resolveOutput(
+                    String.format("test_write_file_once_more/sample_%s.txt", dtf.format(ldt)));
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            assertThat(p).isNotNull().exists();
+            assertThat(p.toFile().length()).isGreaterThan(0);
+            System.out.println("[test_write_file_once_more] output is found at " +
+                    TestOutputOrganizer.toHomeRelativeString(p));
+        }
     }
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java)
@@ -435,7 +448,6 @@ The following test class uses the Factory.
             System.out.println("[test_write_file] output is found at " +
                     TestOutputOrganizer.toHomeRelativeString(p));
         }
-    }
 
 When you ran the test, the output directory will look like this:
 
@@ -447,3 +459,46 @@ When you ran the test, the output directory will look like this:
 Which test class, which method created this file? --- It’s obvious to see in this file tree.
 
 Please note that here 2 layers of directories are inserted amongst the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`. The first layer is the FQCN of the test class, the second layer is the method name which actually wrote the file. This tree helps you well organize the output files created by your test cases.
+
+### One more layer of subdirectory to distinguish outputs by 2 or more test methods
+
+The [io.github.someone.somestuff.SampleTest](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java) class has one more test method:
+
+        @Test
+        public void test_write_file_once_more() throws IOException {
+            LocalDateTime ldt = LocalDateTime.now();
+            Path p = too.resolveOutput(
+                    String.format("test_write_file_once_more/sample_%s.txt", dtf.format(ldt)));
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            assertThat(p).isNotNull().exists();
+            assertThat(p.toFile().length()).isGreaterThan(0);
+            System.out.println("[test_write_file_once_more] output is found at " +
+                    TestOutputOrganizer.toHomeRelativeString(p));
+        }
+    }
+
+When you ran this test, you would get the following output:
+
+    $ tree app/build/tmp/testOutput
+    app/build/tmp/testOutput
+    └── io.github.someone.somestuff.SampleTest
+        ├── test_write_file
+        │   └── sample_20231103_124015.txt
+        └── test_write_file_once_more
+            └── sample_20231103_124015.txt
+
+Please find that one more directory layer is inserted between the output dir and the files.
+
+-   `test_write_file`
+
+-   `test_write_file_once_more`
+
+How these directories were created? If you read the source of the test class, you would find that it effectively executed the following calls
+
+        Path p = too.resolveOutut("test_write_file/sample_20231103_124015.txt");
+
+and
+
+        Path p = too.resolveOutut("test_write_file_once_more/sample_20231103_124015.txt");
+
+I am sure you can find a small twist in the above code fragments. It is thus easy to insert layers of directories under the output directory using the \`TestOutputOrganizer. This technique makes it easy to organize output files created by multiple methods in a single test class.
