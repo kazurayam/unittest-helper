@@ -1,7 +1,7 @@
 -   [Unit Test Helper](#unit-test-helper)
     -   [Problems to solve](#problems-to-solve)
         -   [Is "Current Working Directory" reliable for unit-tests? --- Not always](#is-current-working-directory-reliable-for-unit-tests-not-always)
-        -   [A single dedicated output directory, not under the current working directory](#a-single-dedicated-output-directory-not-under-the-current-working-directory)
+        -   [Temporary output files shouldn’t be located into the project’s directory](#temporary-output-files-shouldnt-be-located-into-the-projects-directory)
     -   [Solution](#solution)
         -   [Background](#background)
     -   [Description by examples](#description-by-examples)
@@ -14,6 +14,7 @@
         -   [Example 6 : write a file into a custom output directory](#example-6-write-a-file-into-a-custom-output-directory)
         -   [Removing the output directory recursively](#removing-the-output-directory-recursively)
         -   [Translating a Path to a Home Relative string](#translating-a-path-to-a-home-relative-string)
+        -   [Factory class for your customized TestOutputOrganizer](#factory-class-for-your-customized-testoutputorganizer)
 
 # Unit Test Helper
 
@@ -33,9 +34,9 @@ I encountered some difficulties in a TestNG test case in a Gradle Multi-project.
 
 -   <https://github.com/kazurayam/selenium-webdriver-java/issues/22>
 
-I couldn’t find out the reason why the current working directory got different from the project directory.
+I couldn’t find out the reason why the "current working directory" became the parent project’s directory, not the subproject directory.
 
-### A single dedicated output directory, not under the current working directory
+### Temporary output files shouldn’t be located into the project’s directory
 
 The easiest way to locate an output file from a unit-test is to call `java.io.File("some-file.txt")` or `java.nio.Paths("some-file.txt")`. Then the `some-file.txt` will be located under the current working directory = `System.getProperty("user.dir")`. Using Maven and Gradle, the current working directory will usually be equal to the project’s directory. By calling `java.io.File(relative path)` often, you will get a lot of temporary files located in the project directory, like this.
 
@@ -80,13 +81,13 @@ The easiest way to locate an output file from a unit-test is to call `java.io.Fi
 
 Here the files labeled with "--- x" are the temporary output files created by the unit-tests.
 
-Temporary files located in the project directory make the project dirty. The files scattered in the project directory are difficult to manage. If you want to remove them, you have to choose each files and delete them one by one.
+Temporary files located in the project directory make the project tree dirty. The files scattered in the project directory are difficult to manage. If you want to remove them, you have to choose each files and delete them one by one manually.
 
-I want to create a dedicated directory where all test classes should write their output into.
+Rather, I want to create a dedicated directory where all test classes should write their output into. I would list it in the `.gitignore` file to exclude the temporary files out of the git repository.
 
 ## Solution
 
-This project provides a Java class `com.kazurayam.unittest.TestOutputOrganizer`.
+This project provides a Java class [`com.kazurayam.unittest.TestOutputOrganizer`](https://github.com/kazurayam/unittest-helper/blob/develop/lib/src/main/java/com/kazurayam/unittest/TestOutputOrganizer.java).
 
 The `TestOutputOrganizer` helps your unit tests to save files into a dedicated directory in the Maven/Gradle project. Using this class, you can easily prepare a directory into which your unit tests can write files. The location of the output directory is resolved via the classpath of the unit-test class. The `TestOutputOrganizer` does ot depend on the value returned by `System.getProperty("user.dir")`.
 
@@ -98,7 +99,7 @@ The `TestOutputOrgainzer` class is compiled by Java8.
 
 The following post in the Gradle forum gave me a clue:
 
--   <https://discuss.gradlecd.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379>
+-   [Gradle Forums, How do I set the working dreictory for TestNG in a multi-project Gradle build?](https://discuss.gradle.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379/7)
 
 > luke\_daley
 > Gradle Employee
@@ -355,3 +356,93 @@ The `TestHelper` class implements a method `String toHomeRelativeString(Path p)`
 This test prints the following output in the console:
 
     [test_toHomeRelativeString_simple] s = ~/github/unittest-helper/lib
+
+### Factory class for your customized TestOutputOrganizer
+
+It is a good practice for you to create a factory class that creates TestOutputOrganizer instance with customized parameter values. See the following example.
+
+    package io.github.someone.somestuff;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+
+    import java.nio.file.Paths;
+
+    /**
+     * A Factory class that creates an instance of com.kazurayam.unittest.TestHelper
+     * initialized with custom values of "outputDirPath" and "subDirPath"
+     */
+    public class TestOutputOrganizerFactory {
+
+        public static TestOutputOrganizer create(Class clazz) {
+            return new TestOutputOrganizer.Builder(clazz)
+                    .outputDirPath(Paths.get("build/tmp/testOutput"))
+                    .subDirPath(Paths.get(clazz.getName()))
+                        // e.g, "io.github.somebody.somestuff.SampleTest"
+                    .build();
+        }
+    }
+
+The `create(Class)` method will instanciate a `com.kazurayam.unittest.TestOutputOrganizer` class with customized parameter values:
+
+1.  the output directory will be located at `<projectDir>/build/tmp/testOutput`
+
+2.  in the output directory, will will create subdirectory of which name is equal to the Fully Qualified Class Name of the test class.
+
+The following test class uses the Factory.
+
+    package io.github.someone.somestuff;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.BeforeAll;
+    import org.junit.jupiter.api.BeforeEach;
+    import org.junit.jupiter.api.Test;
+
+    import java.io.IOException;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.time.LocalDateTime;
+    import java.time.format.DateTimeFormatter;
+
+    import static org.assertj.core.api.Assertions.assertThat;
+
+    public class SampleTest {
+
+        private static TestOutputOrganizer too;
+
+        private DateTimeFormatter dtf;
+
+        @BeforeAll
+        public static void beforeAll() throws IOException {
+            too = TestOutputOrganizerFactory.create(SampleTest.class);
+            too.cleanOutputDirectory();   // remove the test-output dir recursively
+        }
+
+        @BeforeEach
+        public void setup() {
+            dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        }
+
+        @Test
+        public void test_write_file() throws IOException {
+            LocalDateTime ldt = LocalDateTime.now();
+            Path p = too.resolveOutput(
+                    String.format("test_write_file/sample_%s.txt", dtf.format(ldt)));
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            assertThat(p).isNotNull().exists();
+            assertThat(p.toFile().length()).isGreaterThan(0);
+            System.out.println("[test_write_file] output is found at " +
+                    TestOutputOrganizer.toHomeRelativeString(p));
+        }
+    }
+
+When you ran the test, the output directory will look like this:
+
+    app/build/tmp/testOutput
+    └── io.github.someone.somestuff.SampleTest
+        └── test_write_file
+            └── sample_20231103_094817.txt
+
+Which test class, which method created this file? --- It’s obvious to see in this file tree.
+
+Please note that here 2 layers of directories are inserted amongst the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`. The first layer is the FQCN of the test class, the second layer is the method name which actually wrote the file. This tree helps you organize the output files created by your test cases.
