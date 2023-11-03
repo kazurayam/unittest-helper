@@ -344,6 +344,8 @@ By `cleanOutputDirectory`, you would have a cleaner result, like:
         └── test_write_file
             └── sample_20231103_094817.txt
 
+There is `cleanOutputSubDirectory()` method as well. This will choose a specific sub directory specfied by `setSubDir(Path subDir)` method, remove and recreate it. It will leave other subdirectories in the output dir untouched.
+
 ### Translating a Path to a Home Relative string
 
 A Path object can be turned into a string, which is an absolute path string like:
@@ -365,7 +367,6 @@ The `TestOutputOrganizer` class implements a method `String toHomeRelativeString
             String homeRelative = TestOutputOrganizer.toHomeRelativeString(projectDir);
             System.out.println("[test_toHomeRelativeString_simple] " + homeRelative);
             assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
-        }
 
 This test prints the following output in the console:
 

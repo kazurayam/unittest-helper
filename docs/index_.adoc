@@ -227,6 +227,7 @@ app/build/tmp/testOutput
         └── sample_20231103_094817.txt
 ----
 
+There is `cleanOutputSubDirectory()` method as well. This will choose a specific sub directory specfied by `setSubDir(Path subDir)` method, remove and recreate it. It will leave other subdirectories in the output dir untouched.
 
 === Translating a Path to a Home Relative string
 
