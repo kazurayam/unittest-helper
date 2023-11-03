@@ -96,6 +96,10 @@ The `TestOutputOrgainzer` class is independent on the type of unit-testing frame
 
 The `TestOutputOrgainzer` class is compiled by Java8.
 
+Using the `TestOutputOrganizer` class, you can well-organize the files created by test classes, as follows:
+
+![well organized test outputs](https://kazurayam.github.io/unittest-helper/images/well-organized-test-outputs.png)
+
 ### Background
 
 The following post in the Gradle forum gave me a clue:
