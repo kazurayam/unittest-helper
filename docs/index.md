@@ -5,17 +5,17 @@
     -   [Solution](#solution)
         -   [Background](#background)
     -   [Description by examples](#description-by-examples)
-        -   [Example 1: Resolving a file path by Current Working Directory](#example-1-resolving-a-file-path-by-current-working-directory)
-        -   [Example 2 : resolve the project dir via classpath](#example-2-resolve-the-project-dir-via-classpath)
-        -   [Example 3 : locate the default output directory `test-output`](#example-3-locate-the-default-output-directory-test-output)
-        -   [Example 3 : create a custom output directory](#example-3-create-a-custom-output-directory)
-        -   [Example 4 : write a file into the default output directory](#example-4-write-a-file-into-the-default-output-directory)
-        -   [Example 5 : write a file into a subdirectory under the test-output](#example-5-write-a-file-into-a-subdirectory-under-the-test-output)
-        -   [Example 6 : write a file into a custom output directory](#example-6-write-a-file-into-a-custom-output-directory)
-        -   [Removing the output directory recursively](#removing-the-output-directory-recursively)
-        -   [Translating a Path to a Home Relative string](#translating-a-path-to-a-home-relative-string)
-        -   [You should create a Factory class for your customized TestOutputOrganizer](#you-should-create-a-factory-class-for-your-customized-testoutputorganizer)
-        -   [One more layer of subdirectory to distinguish outputs by 2 or more test methods](#one-more-layer-of-subdirectory-to-distinguish-outputs-by-2-or-more-test-methods)
+        -   [Example1 Resolving a file path by Current Working Directory](#example1-resolving-a-file-path-by-current-working-directory)
+        -   [Example2 Resolving the project dir via classpath](#example2-resolving-the-project-dir-via-classpath)
+        -   [Example3 Locating the default output directory](#example3-locating-the-default-output-directory)
+        -   [Example4 Creating a custom output directory](#example4-creating-a-custom-output-directory)
+        -   [Example5 Writing a file into the default output directory](#example5-writing-a-file-into-the-default-output-directory)
+        -   [Example6 Writing a file into a subdirectory under the default output directory](#example6-writing-a-file-into-a-subdirectory-under-the-default-output-directory)
+        -   [Example7 Writing a file into a custom output directory](#example7-writing-a-file-into-a-custom-output-directory)
+        -   [Example8 Removing the output directory recursively](#example8-removing-the-output-directory-recursively)
+        -   [Example9 Translating a Path to a Home Relative string](#example9-translating-a-path-to-a-home-relative-string)
+        -   [Example10 Factory class to create customized TestOutputOrganizer](#example10-factory-class-to-create-customized-testoutputorganizer)
+        -   [Example11 More layers of directory under the output sub-directory](#example11-more-layers-of-directory-under-the-output-sub-directory)
 
 # Unit Test Helper
 
@@ -112,7 +112,7 @@ The following post in the Gradle forum gave me a clue:
 
 ## Description by examples
 
-### Example 1: Resolving a file path by Current Working Directory
+### Example1 Resolving a file path by Current Working Directory
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -152,7 +152,7 @@ Is the **current working directory** equal to the **project directory** ? --- Us
 
 So I do not like my unit-tests to depend on the current working directory. Any other way?
 
-### Example 2 : resolve the project dir via classpath
+### Example2 Resolving the project dir via classpath
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -200,7 +200,7 @@ The following patterns are implemented in the `com.kazurayam.unittest.ProjectRep
 
 You can add more sublist patterns for your own needs by calling the `TestHelper.addSublistPattern(List<String>)` method.
 
-### Example 3 : locate the default output directory `test-output`
+### Example3 Locating the default output directory
 
 Quickly find the `test-output` directory by calling `getOutputDir()`.
 
@@ -209,11 +209,11 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
         @Test
         public void test_getOutputDir_as_default() {
             TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-            Path outputDir = too.getOutputDir();
+            Path outputDir = too.getOutputDirectory();
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
-### Example 3 : create a custom output directory
+### Example4 Creating a custom output directory
 
                     TestOutputOrganizer.toHomeRelativeString(outputDir));
         }
@@ -221,12 +221,12 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
         @Test
         public void test_getOutputDir_custom() {
             TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-                    .outputDirPath(Paths.get("test-output-another"))
+                    .outputDirPath("test-output-another")
                     .build();
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
-### Example 4 : write a file into the default output directory
+### Example5 Writing a file into the default output directory
 
         /*
          * will create a file `<projectDir>/test-output/sample2.txt`
@@ -238,7 +238,7 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
-### Example 5 : write a file into a subdirectory under the test-output
+### Example6 Writing a file into a subdirectory under the default output directory
 
             System.out.println("[test_write_into_the_default_dir] p = " +
                     TestOutputOrganizer.toHomeRelativeString(p));
@@ -250,7 +250,7 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
-### Example 6 : write a file into a custom output directory
+### Example7 Writing a file into a custom output directory
 
         /*
          * will create a file `<projectDir>/build/tmp/testOutput/sample3.txt`
@@ -262,7 +262,7 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
-### Removing the output directory recursively
+### Example8 Removing the output directory recursively
 
 The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which removes the output directory recursively. See the following sample test class.
 
@@ -346,7 +346,7 @@ By `cleanOutputDirectory`, you would have a cleaner result, like:
 
 There is `cleanOutputSubDirectory()` method as well. This will choose a specific sub directory specfied by `setSubDir(Path subDir)` method, remove and recreate it. It will leave other subdirectories in the output dir untouched.
 
-### Translating a Path to a Home Relative string
+### Example9 Translating a Path to a Home Relative string
 
 A Path object can be turned into a string, which is an absolute path string like:
 
@@ -372,7 +372,7 @@ This test prints the following output in the console:
 
     [test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
 
-### You should create a Factory class for your customized TestOutputOrganizer
+### Example10 Factory class to create customized TestOutputOrganizer
 
 It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` with customized parameter values. See the following example.
 
@@ -390,8 +390,8 @@ It is a good practice for you to create a factory class that creates an instance
 
         public static TestOutputOrganizer create(Class clazz) {
             return new TestOutputOrganizer.Builder(clazz)
-                    .outputDirPath(Paths.get("build/tmp/testOutput"))
-                    .subDirPath(Paths.get(clazz.getName()))
+                    .outputDirPath("build/tmp/testOutput")
+                    .subDirPath(clazz.getName())
                         // e.g, "io.github.somebody.somestuff.SampleTest"
                     .build();
         }
@@ -461,7 +461,7 @@ Which test class, which method created this file? --- It’s obvious to see in t
 
 Please note that here 2 layers of directories are inserted amongst the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`. The first layer is the FQCN of the test class, the second layer is the method name which actually wrote the file. This tree helps you well organize the output files created by your test cases.
 
-### One more layer of subdirectory to distinguish outputs by 2 or more test methods
+### Example11 More layers of directory under the output sub-directory
 
 The [io.github.someone.somestuff.SampleTest](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java) class has one more test method:
 
@@ -502,4 +502,6 @@ and
 
         Path p = too.resolveOutut("test_write_file_once_more/sample_20231103_124015.txt");
 
-I am sure you can find a small twist in the above code fragments. It is thus easy to insert layers of directories under the output directory using the \`TestOutputOrganizer. This technique makes it easy to organize output files created by multiple methods in a single test class.
+Note that the parameter string to the `resolveOutput(String)` method can contain `/`, which represents one or more directories under the output sub-directory. For example, you can insert a directory of which name stands for the test method name. This technique makes it easy to organize output files created by multiple methods in a single test class.
+
+(FIN)

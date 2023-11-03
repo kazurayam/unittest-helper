@@ -96,7 +96,7 @@ ____
 
 == Description by examples
 
-=== Example 1: Resolving a file path by Current Working Directory
+=== Example1 Resolving a file path by Current Working Directory
 
 [source,java]
 ----
@@ -117,7 +117,7 @@ Is the *current working directory* equal to the *project directory* ? --- Usuall
 
 So I do not like my unit-tests to depend on the current working directory. Any other way?
 
-=== Example 2 : resolve the project dir via classpath
+=== Example2 Resolving the project dir via classpath
 
 [source, java]
 ----
@@ -148,7 +148,7 @@ The following patterns are implemented in the `com.kazurayam.unittest.ProjectRep
 
 You can add more sublist patterns for your own needs by calling the `TestHelper.addSublistPattern(List<String>)` method.
 
-=== Example 3 : locate the default output directory `test-output`
+=== Example3 Locating the default output directory
 
 Quickly find the `test-output` directory by calling `getOutputDir()`.
 
@@ -158,7 +158,7 @@ include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentT
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
-=== Example 3 : create a custom output directory
+=== Example4 Creating a custom output directory
 
 [source, java]
 ----
@@ -167,7 +167,7 @@ include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentT
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
 
-=== Example 4 : write a file into the default output directory
+=== Example5 Writing a file into the default output directory
 
 [source, java]
 ----
@@ -176,7 +176,7 @@ include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentT
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
 
-=== Example 5 : write a file into a subdirectory under the test-output
+=== Example6 Writing a file into a subdirectory under the default output directory
 
 [source, java]
 ----
@@ -185,7 +185,7 @@ include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentT
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
 
-=== Example 6 : write a file into a custom output directory
+=== Example7 Writing a file into a custom output directory
 
 [source, java]
 ----
@@ -193,7 +193,7 @@ include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentT
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
-=== Removing the output directory recursively
+=== Example8 Removing the output directory recursively
 
 The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which removes the output directory recursively. See the following sample test class.
 
@@ -229,7 +229,7 @@ app/build/tmp/testOutput
 
 There is `cleanOutputSubDirectory()` method as well. This will choose a specific sub directory specfied by `setSubDir(Path subDir)` method, remove and recreate it. It will leave other subdirectories in the output dir untouched.
 
-=== Translating a Path to a Home Relative string
+=== Example9 Translating a Path to a Home Relative string
 
 A Path object can be turned into a string, which is an absolute path string like:
 
@@ -261,7 +261,7 @@ This test prints the following output in the console:
 [test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
 ----
 
-=== You should create a Factory class for your customized TestOutputOrganizer
+=== Example10 Factory class to create customized TestOutputOrganizer
 
 It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` with customized parameter values. See the following example.
 
@@ -297,7 +297,7 @@ Which test class, which method created this file? --- It's obvious to see in thi
 
 Please note that here 2 layers of directories are inserted amongst the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`. The first layer is the FQCN of the test class, the second layer is the method name which actually wrote the file. This tree helps you well organize the output files created by your test cases.
 
-=== One more layer of subdirectory to distinguish outputs by 2 or more test methods
+=== Example11 More layers of directory under the output sub-directory
 
 The link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java[io.github.someone.somestuff.SampleTest] class has one more test method:
 
@@ -337,4 +337,6 @@ and
     Path p = too.resolveOutut("test_write_file_once_more/sample_20231103_124015.txt");
 ----
 
-I am sure you can find a small twist in the above code fragments. It is thus easy to insert layers of directories under the output directory using the `TestOutputOrganizer. This technique makes it easy to organize output files created by multiple methods in a single test class.
+Note that the parameter string to the `resolveOutput(String)` method can contain `/`, which represents one or more directories under the output sub-directory. For example, you can insert a directory of which name stands for the test method name. This technique makes it easy to organize output files created by multiple methods in a single test class.
+
+(FIN)
