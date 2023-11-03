@@ -176,6 +176,7 @@ So I do not like my unit-tests to depend on the current working directory. Any o
             Path projectDir = too.getProjectDir();
             System.out.println("[test_getProjectDir] projectDir = " +
                     TestOutputOrganizer.toHomeRelativeString(projectDir));
+        }
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
@@ -208,61 +209,67 @@ You can add more sublist patterns for your own needs by calling the `TestHelper.
 
 Quickly find the `test-output` directory by calling `getOutputDir()`.
 
-        }
-
         @Test
         public void test_getOutputDir_as_default() {
             TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
             Path outputDir = too.getOutputDirectory();
+            System.out.println("[test_getOutputDir_as_default] outputDir = " +
+                    TestOutputOrganizer.toHomeRelativeString(outputDir));
+        }
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 ### Example4 Creating a custom output directory
-
-                    TestOutputOrganizer.toHomeRelativeString(outputDir));
-        }
 
         @Test
         public void test_getOutputDir_custom() {
             TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
                     .outputDirPath("test-output-another")
                     .build();
+            Path outputDir = too.getOutputDirectory();
+            System.out.println("[test_getOutputDir_as_default] outputDir = " +
+                    TestOutputOrganizer.toHomeRelativeString(outputDir));
+        }
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 ### Example5 Writing a file into the default output directory
 
-        /*
-         * will create a file `<projectDir>/test-output/sample2.txt`
-         */
         @Test
         public void test_write_into_the_default_dir() throws Exception {
             TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
             Path p = too.resolveOutput("sample4.txt");
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            System.out.println("[test_write_into_the_default_dir] p = " +
+                    TestOutputOrganizer.toHomeRelativeString(p));
+        }
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 ### Example6 Writing a file into a subdirectory under the default output directory
 
-            System.out.println("[test_write_into_the_default_dir] p = " +
-                    TestOutputOrganizer.toHomeRelativeString(p));
-        }
-
         @Test
         public void test_write_into_subdir_under_the_default_dir() throws Exception {
             TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+            Path p = too.resolveOutput("sub/sample5.txt");
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            System.out.println("[test_write_into_subdir_under_the_default_dir] p = " + TestOutputOrganizer.toHomeRelativeString(p));
+        }
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 ### Example7 Writing a file into a custom output directory
 
-        /*
-         * will create a file `<projectDir>/build/tmp/testOutput/sample3.txt`
-         */
         @Test
         public void test_write_into_custom_dir() throws Exception {
             TestOutputOrganizer too =
                     new TestOutputOrganizer.Builder(this.getClass())
+                            .outputDirPath("build/tmp/testOutput")
+                            .build();
+            Path p = too.resolveOutput("sample6.txt");
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            System.out.println("[test_write_into_custom_dir] p = " + TestOutputOrganizer.toHomeRelativeString(p));
+        }
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
@@ -316,19 +323,6 @@ The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which
                     TestOutputOrganizer.toHomeRelativeString(p));
         }
 
-        @Test
-        public void test_write_file_once_more() throws IOException {
-            LocalDateTime ldt = LocalDateTime.now();
-            Path p = too.resolveOutput(
-                    String.format("test_write_file_once_more/sample_%s.txt", dtf.format(ldt)));
-            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            assertThat(p).isNotNull().exists();
-            assertThat(p.toFile().length()).isGreaterThan(0);
-            System.out.println("[test_write_file_once_more] output is found at " +
-                    TestOutputOrganizer.toHomeRelativeString(p));
-        }
-    }
-
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java)
 
 The `@BeforeClass`-annotated method is invoked once as soon as this test class started only once. By calling `too.cleanOutputDirectory()`, the `test-output` directory is removed. This method is useful when the test class writes files with timestamp in its name. If you do not clean the dir, you will accumulate a lot of files with different timestamps in the file name. For example:
@@ -372,6 +366,7 @@ The `TestOutputOrganizer` class implements a method `String toHomeRelativeString
             String homeRelative = TestOutputOrganizer.toHomeRelativeString(projectDir);
             System.out.println("[test_toHomeRelativeString_simple] " + homeRelative);
             assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
+        }
 
 This test prints the following output in the console:
 
@@ -454,6 +449,7 @@ The following test class uses the Factory.
             assertThat(p.toFile().length()).isGreaterThan(0);
             System.out.println("[test_write_file] output is found at " +
                     TestOutputOrganizer.toHomeRelativeString(p));
+        }
 
 When you ran the test, the output directory will look like this:
 

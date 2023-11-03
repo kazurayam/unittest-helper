@@ -127,7 +127,7 @@ So I do not like my unit-tests to depend on the current working directory. Any o
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=1..18]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=1..19]
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
@@ -160,7 +160,7 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=19..24]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=21..27]
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
@@ -168,7 +168,7 @@ link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=26..33]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=28..37]
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
@@ -177,7 +177,7 @@ link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=38..45]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=42..49]
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
@@ -186,7 +186,7 @@ link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=47..53]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=51..58]
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
@@ -195,7 +195,7 @@ link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=58..65]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=62..71]
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
 
@@ -205,7 +205,7 @@ The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which
 
 [source, java]
 ----
-include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[]
+include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[lines=1..45]
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java[source]
 
@@ -257,7 +257,7 @@ The `TestOutputOrganizer` class implements a method `String toHomeRelativeString
 
 [source, java]
 ----
-include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=95..102]
+include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=95..103]
 ----
 
 This test prints the following output in the console:
@@ -286,7 +286,7 @@ The following test class uses the Factory.
 
 [source]
 ----
-include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[lines=1..44]
+include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[lines=1..45]
 ----
 
 When you ran the test, the output directory will look like this:
