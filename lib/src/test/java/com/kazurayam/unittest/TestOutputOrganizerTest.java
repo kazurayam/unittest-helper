@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -127,14 +128,42 @@ public class TestOutputOrganizerTest {
     @Test
     public void test_cleanOutputDirectory() throws IOException {
         // given
-        TestOutputOrganizer th = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path p = th.resolveOutput("sub/foo.txt");
+        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+        Path p = too.resolveOutput("sub/foo.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p).exists();
         // when
-        th.cleanOutputDirectory();
+        too.cleanOutputDirectory();
         // then
-        Path od = th.getOutputDir();
-        assertThat(od).doesNotExist();
+        Path od = too.getOutputDir();
+        assertThat(od).exists();
+        assertThat(isEmpty(od)).isTrue();
     }
+
+
+    @Test
+    public void test_cleanOutputSubDirectory() throws IOException {
+        // given
+        TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(this.getClass())
+                        .subDirPath(Paths.get(this.getClass().getName()))
+                        .build();
+        Path p = too.resolveOutput("foo.txt");
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        assertThat(p).exists();
+        //
+        too.cleanOutputSubDirectory();
+        assertThat(too.getOutputSubDir()).exists();
+        assertThat(isEmpty(too.getOutputSubDir())).isTrue();
+    }
+
+    boolean isEmpty(Path path) throws IOException {
+        if (Files.isDirectory(path)) {
+            try (DirectoryStream<Path> directory = Files.newDirectoryStream(path)) {
+                return !directory.iterator().hasNext();
+            }
+        }
+        return false;
+    }
+
 }

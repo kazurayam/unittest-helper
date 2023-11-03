@@ -56,27 +56,68 @@ public final class TestOutputOrganizer {
 
     /**
      *
-     * @return subDirPath
+     * @return subDirPath may be null if not set
      */
     public Path getSubDirPath() {
         return subDirPath;
     }
 
     /**
-     * removed the output directory recursively if it is already present
+     * if the subDirPath is set by setSubDir(Path d), then will return
+     *     getOutputDir().resolve(subDirPath)
+     * if the subDirpath is not set, then will return the same as getOutputDir()
+     * @return Path of output sub directory
+     */
+    public Path getOutputSubDir() {
+        if (subDirPath != null) {
+            return this.getOutputDir().resolve(subDirPath);
+        } else {
+            return this.getOutputDir();
+        }
+    }
+
+    /**
+     * remove the output directory recursively if it is already present.
+     * will re-create the output directory, which will be empty
      *
      * @return the reference to this TestOutputOrganizer instance
      * @throws IOException during removing files/directories
      */
     public TestOutputOrganizer cleanOutputDirectory() throws IOException {
         Path outputDir = this.getOutputDir();
-        if (Files.exists(outputDir)) {
-            Files.walk(outputDir)
+        cleanDirectoryRecursively(outputDir);
+        Files.createDirectories(outputDir);
+        return this;
+    }
+
+    /**
+     * remove the directory, which is identifiable by outputDir.resolve(subDirPath), recursively
+     * if it is already present. Will re-create the dir which will be empty.
+     *
+     * @return the reference to this TestOutputOrganizer instance
+     * @throws IOException during removing files/directories
+     */
+    public TestOutputOrganizer cleanOutputSubDirectory() throws IOException {
+        Path outputSubDir = this.getOutputSubDir();
+        cleanDirectoryRecursively(outputSubDir);
+        Files.createDirectories(outputSubDir);
+        return this;
+    }
+
+    /**
+     * remove the directory recursively.
+     * If the dir is not present, does nothing.
+     *
+     * @param dir directory to remove
+     * @throws IOException when any failure occured while removing files/dirs
+     */
+    public static void cleanDirectoryRecursively(Path dir) throws IOException {
+        if (Files.exists(dir)) {
+            Files.walk(dir)
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         }
-        return this;
     }
 
     /**

@@ -136,11 +136,11 @@ public final class ProjectDirectoryResolver {
             int indexOfBuildDir = ss.indexOfSubsequence(sublistPattern);
             if (indexOfBuildDir > 0) {
                 boundary = indexOfBuildDir;
-                log.debug(String.format("sublistPattern %s is found in the code source path %s at the index %d",
+                log.trace(String.format("sublistPattern %s is found in the code source path %s at the index %d",
                         sublistPattern, ss, boundary));
                 break;
             } else {
-                log.debug(String.format("sublistPattern %s is NOT found in the code source path %s",
+                log.trace(String.format("sublistPattern %s is NOT found in the code source path %s",
                         sublistPattern, ss));
             }
         }
