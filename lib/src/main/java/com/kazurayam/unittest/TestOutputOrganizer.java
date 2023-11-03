@@ -22,16 +22,14 @@ public final class TestOutputOrganizer {
 
     private static final Logger log = LoggerFactory.getLogger(TestOutputOrganizer.class);
 
-    private Class clazz;
-    private Path projectDir;
-    private Path outputDirPath;
-    private Path subDirPath;
+    private final Path projectDir;
+    private final String outputDirPath;
+    private final String subDirPath;
 
     /**
      * @param builder TestOutputOrganizer.Builder instance
      */
     private TestOutputOrganizer(Builder builder) {
-        this.clazz = builder.clazz;
         this.projectDir = builder.projectDir;
         this.outputDirPath = builder.outputDirPath;
         this.subDirPath = builder.subDirPath;
@@ -45,12 +43,20 @@ public final class TestOutputOrganizer {
     }
 
     /**
+     *
+     * @return a String like "build/tmp/testOutput" which was given to the Builder.
+     */
+    public String getOutputDirPath() {
+        return outputDirPath;
+    }
+
+    /**
      * @return returns the java.nio.file.Path object of the output directory.
      * The default is "(projectDir)/test-output".
      * You can customize the name of the output directory by calling setOutputDir(Path.get("dirName")),
      * which is relative to the project directory.
      */
-    public Path getOutputDir() {
+    public Path getOutputDirectory() {
         return projectDir.resolve(outputDirPath);
     }
 
@@ -58,7 +64,7 @@ public final class TestOutputOrganizer {
      *
      * @return subDirPath may be null if not set
      */
-    public Path getSubDirPath() {
+    public String getSubDirPath() {
         return subDirPath;
     }
 
@@ -68,11 +74,11 @@ public final class TestOutputOrganizer {
      * if the subDirpath is not set, then will return the same as getOutputDir()
      * @return Path of output sub directory
      */
-    public Path getOutputSubDir() {
+    public Path getOutputSubDirectory() {
         if (subDirPath != null) {
-            return this.getOutputDir().resolve(subDirPath);
+            return this.getOutputDirectory().resolve(subDirPath);
         } else {
-            return this.getOutputDir();
+            return this.getOutputDirectory();
         }
     }
 
@@ -84,7 +90,7 @@ public final class TestOutputOrganizer {
      * @throws IOException during removing files/directories
      */
     public TestOutputOrganizer cleanOutputDirectory() throws IOException {
-        Path outputDir = this.getOutputDir();
+        Path outputDir = this.getOutputDirectory();
         cleanDirectoryRecursively(outputDir);
         Files.createDirectories(outputDir);
         return this;
@@ -98,7 +104,7 @@ public final class TestOutputOrganizer {
      * @throws IOException during removing files/directories
      */
     public TestOutputOrganizer cleanOutputSubDirectory() throws IOException {
-        Path outputSubDir = this.getOutputSubDir();
+        Path outputSubDir = this.getOutputSubDirectory();
         cleanDirectoryRecursively(outputSubDir);
         Files.createDirectories(outputSubDir);
         return this;
@@ -122,7 +128,6 @@ public final class TestOutputOrganizer {
 
     /**
      * Create the output directory if it is not yet there.
-     *
      * Returns the Path of a file that a test class write its output into.
      * As default, the output file will be located under the "test-output" directory.
      * You can change the directory location by calling setOutputDirPath(Path).
@@ -133,8 +138,8 @@ public final class TestOutputOrganizer {
     public Path resolveOutput(String fileName) {
         Path outFile =
                 (subDirPath != null) ?
-                        getOutputDir().resolve(subDirPath).resolve(fileName) :
-                        getOutputDir().resolve(fileName);
+                        getOutputDirectory().resolve(subDirPath).resolve(fileName) :
+                        getOutputDirectory().resolve(fileName);
         // make sure the parent directory to be present
         Path parentDir = outFile.getParent();
         if (!Files.exists(parentDir)) {
@@ -157,7 +162,6 @@ public final class TestOutputOrganizer {
      * This method is meant to be used in messages and documentations.
      * You do not want to show your own personal name in the console messages, right?
      * So you want to hide the username part of paths.
-     *
      * Translate a Path of "/User/kazurayam/github/unittest-helper/app/foo.txt"
      * to "~/github/unittest-helper/app/foo.txt" which is relative to the $HOME
      * of the user if the path is located under the $HOME. If the path is NOT
@@ -192,16 +196,15 @@ public final class TestOutputOrganizer {
      * Joshua Bloch's "Builder" for the TestOutputOrganizer class
      */
     public static class Builder {
-        private Class clazz;
-        private Path projectDir;
-        private Path outputDirPath;
-        private Path subDirPath;
+        private final Path projectDir;
+        private String outputDirPath;
+        private String subDirPath;
 
         /**
          * The name of the directory created by TestOutputOrganizer as default
          * when you do not call setOutputDirPath(Path)
          */
-        private static final Path DEFAULT_OUTPUT_DIR_PATH = Paths.get("test-output");
+        private static final String DEFAULT_OUTPUT_DIR_PATH = "test-output";
 
         /**
          * Sole constructor
@@ -209,7 +212,6 @@ public final class TestOutputOrganizer {
          * @param clazz the Class object of a test class
          */
         public Builder(Class clazz) {
-            this.clazz = clazz;
             this.projectDir =
                     new ProjectDirectoryResolver()
                             .getProjectDirViaClasspath(clazz);
@@ -226,9 +228,10 @@ public final class TestOutputOrganizer {
          *
          * @return the reference to this TestOutputOrganizer.Builder instance
          */
-        public Builder outputDirPath(Path outputDirPath) {
+        public Builder outputDirPath(String outputDirPath) {
             Objects.requireNonNull(outputDirPath);
-            if (outputDirPath.isAbsolute()) {
+            Path odp = Paths.get(outputDirPath);
+            if (odp.isAbsolute()) {
                 throw new IllegalArgumentException(
                         "outputDirPath should not be absolute: " + outputDirPath);
             }
@@ -244,9 +247,10 @@ public final class TestOutputOrganizer {
          *               Paths.get("com.kazurayam.unittesthelperdemo.WithHelperTest")
          * @return the reference to this Builder.Builder instance
          */
-        public Builder subDirPath(Path subDirPath) {
+        public Builder subDirPath(String subDirPath) {
             Objects.requireNonNull(subDirPath);
-            if (subDirPath.isAbsolute()) {
+            Path sdp = Paths.get(subDirPath);
+            if (sdp.isAbsolute()) {
                 throw new IllegalArgumentException(
                         "subDirPath must not be absolute: " + subDirPath);
             }

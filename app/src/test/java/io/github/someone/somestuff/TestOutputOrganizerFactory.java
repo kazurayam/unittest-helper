@@ -12,8 +12,8 @@ public class TestOutputOrganizerFactory {
 
     public static TestOutputOrganizer create(Class clazz) {
         return new TestOutputOrganizer.Builder(clazz)
-                .outputDirPath(Paths.get("build/tmp/testOutput"))
-                .subDirPath(Paths.get(clazz.getName()))
+                .outputDirPath("build/tmp/testOutput")
+                .subDirPath(clazz.getName())
                     // e.g, "io.github.somebody.somestuff.SampleTest"
                 .build();
     }

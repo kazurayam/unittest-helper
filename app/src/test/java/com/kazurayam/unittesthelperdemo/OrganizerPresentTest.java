@@ -21,7 +21,7 @@ public class OrganizerPresentTest {
     @Test
     public void test_getOutputDir_as_default() {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path outputDir = too.getOutputDir();
+        Path outputDir = too.getOutputDirectory();
         System.out.println("[test_getOutputDir_as_default] outputDir = " +
                 TestOutputOrganizer.toHomeRelativeString(outputDir));
     }
@@ -29,9 +29,9 @@ public class OrganizerPresentTest {
     @Test
     public void test_getOutputDir_custom() {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-                .outputDirPath(Paths.get("test-output-another"))
+                .outputDirPath("test-output-another")
                 .build();
-        Path outputDir = too.getOutputDir();
+        Path outputDir = too.getOutputDirectory();
         System.out.println("[test_getOutputDir_as_default] outputDir = " +
                 TestOutputOrganizer.toHomeRelativeString(outputDir));
     }
@@ -63,7 +63,7 @@ public class OrganizerPresentTest {
     public void test_write_into_custom_dir() throws Exception {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirPath(Paths.get("build/tmp/testOutput"))
+                        .outputDirPath("build/tmp/testOutput")
                         .build();
         Path p = too.resolveOutput("sample6.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
@@ -74,9 +74,9 @@ public class OrganizerPresentTest {
     public void test_write_into_another_custom_dir() throws Exception {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirPath(Paths.get("test-output-another"))
+                        .outputDirPath("test-output-another")
                         .build();
-        Path outdir = too.getOutputDir();
+        Path outdir = too.getOutputDirectory();
         Files.createDirectories(outdir);
         Path p = outdir.resolve("sample7.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
