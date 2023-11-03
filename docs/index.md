@@ -291,7 +291,8 @@ The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which
         @BeforeAll
         public static void beforeAll() throws IOException {
             too = TestOutputOrganizerFactory.create(SampleTest.class);
-            too.cleanOutputDirectory();   // remove the test-output dir recursively
+            // remove the "test-output/io.github.someone.somestuff.SampleTest" directory recursively
+            too.cleanOutputSubDirectory();
         }
 
         @BeforeEach
@@ -430,7 +431,8 @@ The following test class uses the Factory.
         @BeforeAll
         public static void beforeAll() throws IOException {
             too = TestOutputOrganizerFactory.create(SampleTest.class);
-            too.cleanOutputDirectory();   // remove the test-output dir recursively
+            // remove the "test-output/io.github.someone.somestuff.SampleTest" directory recursively
+            too.cleanOutputSubDirectory();
         }
 
         @BeforeEach
@@ -448,7 +450,6 @@ The following test class uses the Factory.
             assertThat(p.toFile().length()).isGreaterThan(0);
             System.out.println("[test_write_file] output is found at " +
                     TestOutputOrganizer.toHomeRelativeString(p));
-        }
 
 When you ran the test, the output directory will look like this:
 
@@ -476,7 +477,6 @@ The [io.github.someone.somestuff.SampleTest](https://github.com/kazurayam/unitte
             System.out.println("[test_write_file_once_more] output is found at " +
                     TestOutputOrganizer.toHomeRelativeString(p));
         }
-    }
 
 When you ran this test, you would get the following output:
 
