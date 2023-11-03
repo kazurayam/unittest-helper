@@ -12,6 +12,7 @@
         -   [Example 4 : write a file into the default output directory](#example-4-write-a-file-into-the-default-output-directory)
         -   [Example 5 : write a file into a subdirectory under the test-output](#example-5-write-a-file-into-a-subdirectory-under-the-test-output)
         -   [Example 6 : write a file into a custom output directory](#example-6-write-a-file-into-a-custom-output-directory)
+        -   [Removing the output directory recursively](#removing-the-output-directory-recursively)
         -   [Translating a Path to a Home Relative string](#translating-a-path-to-a-home-relative-string)
 
 # Unit Test Helper
@@ -258,6 +259,78 @@ Quickly find the `test-output` directory by calling `getOutputDir()`.
                     new TestOutputOrganizer.Builder(this.getClass())
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
+
+### Removing the output directory recursively
+
+The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which removes the output directory recursively. See the following sample test class.
+
+    package io.github.someone.somestuff;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.BeforeAll;
+    import org.junit.jupiter.api.BeforeEach;
+    import org.junit.jupiter.api.Test;
+
+    import java.io.IOException;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.time.LocalDateTime;
+    import java.time.format.DateTimeFormatter;
+
+    import static org.assertj.core.api.Assertions.assertThat;
+
+    public class SampleTest {
+
+        private static TestOutputOrganizer too;
+
+        private DateTimeFormatter dtf;
+
+        @BeforeAll
+        public static void beforeAll() throws IOException {
+            too = TestOutputOrganizerFactory.create(SampleTest.class);
+            too.cleanOutputDirectory();   // remove the test-output dir recursively
+        }
+
+        @BeforeEach
+        public void setup() {
+            dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        }
+
+        @Test
+        public void test_write_file() throws IOException {
+            LocalDateTime ldt = LocalDateTime.now();
+            Path p = too.resolveOutput(
+                    String.format("test_write_file/sample_%s.txt", dtf.format(ldt)));
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            assertThat(p).isNotNull().exists();
+            assertThat(p.toFile().length()).isGreaterThan(0);
+            System.out.println("[test_write_file] output is found at " +
+                    TestOutputOrganizer.toHomeRelativeString(p));
+        }
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java)
+
+The `@BeforeClass`-annotated method is invoked once as soon as this test class started only once. By calling `too.cleanOutputDirectory()`, the `test-output` directory is removed. This method is useful when the test class writes files with timestamp in its name. If you do not clean the dir, you will obtain a lot of files with different timestamps in the file name. For example:
+
+    app/build/tmp/testOutput
+    └── io.github.someone.somestuff.SampleTest
+        └── test_write_file
+            ├── sample_20231103_090143.txt
+            ├── sample_20231103_094723.txt
+            ├── sample_20231103_094759.txt
+            ├── sample_20231103_094810.txt
+            └── sample_20231103_094817.txt
+
+By `cleanOutputDirectory`, you would have a cleaner result, like:
+
+    app/build/tmp/testOutput
+    └── io.github.someone.somestuff.SampleTest
+        └── test_write_file
+            └── sample_20231103_094817.txt
+
+This looks much better.
 
 ### Translating a Path to a Home Relative string
 

@@ -54,29 +54,38 @@ You should note that the value of the system property `user.dir` is dependent on
 #### Ex2: Write a file under the default test-output directory
 
 ```
+package my:
+
 import com.kazurayam.unittest.TestOutputOrganizer;
-...
+
+import org.junit.jupiter.api.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class SampleTest {
 
     @Test
     public void test_write_into_the_default_dir() throws Exception {
-        TestOutputOrganizer too = new TestHelper(this.getClass()); 
+        TestOutputOrganizer too = new TestOutputOrganizer(this.getClass()); 
         Path p = too.resolveOutput("sample2.txt");
         Files.writeString(p, "Hello, world!");
     }
+}
 ```
 
 This will create a file at `<projectDir>/test-output/sample2.txt`
 
 The `<projectDir>/test-output` directory will be silently created if it is not yet there.
 
-#### Project directory is resolved via classpath
+#### TestOutputOrganizer resolves the project directory via classpath
 
-The `com.kazurayam.unittest.TestOutputOrganizer` class resolves the project directory via classpath. Here I said "the class resolves a path via classpath"? What do I mean here?
+Here I wrote "TestOutputOrganizer resolves a path via classpath"? What do I mean here?
 
-If you use Gradle to build the project, then most probably you have the class file under the `build/classes/java/test/` directory with sub-path `my/SampleTest.class`. This case, the parent of the `build` directory is presumed to be the project directory. 
+If you use Gradle to build the project, then most probably you have the class file under the `build/classes/java/test/` directory with sub-path `my/SampleTest.class`. This case, the parent directory of the `build` is presumed to be the project directory. 
 
-If you use Maven to build the project, then most probably you have the class file under the `target/test-classes/` directory with sub-path `my/SampleTest.class`. This case, the parent of the `target` directory is presumed to be the project directory.
+If you use Maven to build the project, then most probably you have the class file under the `target/test-classes/` directory with sub-path `my/SampleTest.class`. This case, the parent directory of the `target` is presumed to be the project directory.
 
 Are you using other build tools so that the project file tree is different from Maven & Gradle? --- This case you can tell your own tree structure to the `TestOutputOrganizer` instance. See the long explanation for detail.
 

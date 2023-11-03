@@ -23,7 +23,7 @@ public class SampleTest {
     @BeforeAll
     public static void beforeAll() throws IOException {
         too = TestOutputOrganizerFactory.create(SampleTest.class);
-        too.cleanOutputDirectory();
+        too.cleanOutputDirectory();   // remove the test-output dir recursively
     }
 
     @BeforeEach
