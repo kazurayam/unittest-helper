@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation("com.kazurayam:unittest-helper:0.2.0")
+    testImplementation("com.kazurayam:unittest-helper:0.2.2")
 }
 ```
 
