@@ -1,8 +1,24 @@
+-   [Unit Test Helper](#unit-test-helper)
+    -   [Problems to solve](#problems-to-solve)
+        -   [Is "Current Working Directory" reliable for unit-tests? --- Not always](#is-current-working-directory-reliable-for-unit-tests-not-always)
+        -   [A single dedicated output directory, not under the current working directory](#a-single-dedicated-output-directory-not-under-the-current-working-directory)
+    -   [Solution](#solution)
+        -   [Background](#background)
+    -   [Description by examples](#description-by-examples)
+        -   [Example 1: Resolving a file path by Current Working Directory](#example-1-resolving-a-file-path-by-current-working-directory)
+        -   [Example 2 : resolve the project dir via classpath](#example-2-resolve-the-project-dir-via-classpath)
+        -   [Example 3 : locate the default output directory `test-output`](#example-3-locate-the-default-output-directory-test-output)
+        -   [Example 3 : create a custom output directory](#example-3-create-a-custom-output-directory)
+        -   [Example 4 : write a file into the default output directory](#example-4-write-a-file-into-the-default-output-directory)
+        -   [Example 5 : write a file into a subdirectory under the test-output](#example-5-write-a-file-into-a-subdirectory-under-the-test-output)
+        -   [Example 6 : write a file into a custom output directory](#example-6-write-a-file-into-a-custom-output-directory)
+        -   [Translating a Path to a Home Relative string](#translating-a-path-to-a-home-relative-string)
+
 # Unit Test Helper
 
 -   author: kazurayam
 
--   date: Nov, 2034
+-   date: Nov, 2023
 
 -   source project: <https://github.com/kazurayam/unittest-helper>
 
@@ -12,7 +28,7 @@
 
 ### Is "Current Working Directory" reliable for unit-tests? --- Not always
 
-I encountered some difficulties in a TestNG test case in a Gradle Multi-project. I expected that a call to `System.getProperty("user.dir")` would return the Path of sub-project’s directory. In most cases, yes. It works fine. But sometimes it failed. See the following post for detail:
+I encountered some difficulties in a TestNG test case in a Gradle Multi-project. I expected that a call to `System.getProperty("user.dir")` would return the Path of subproject’s directory. In most cases, yes. It works fine. But sometimes it failed. See the following post for detail:
 
 -   <https://github.com/kazurayam/selenium-webdriver-java/issues/22>
 
@@ -20,27 +36,68 @@ I couldn’t find out the reason why the current working directory got different
 
 ### A single dedicated output directory, not under the current working directory
 
-In the book ["Selenium WebDriver in Java" by Boni Garcia](https://github.com/bonigarcia/selenium-webdriver-java), which is very good book, the sample test classes write a lot of files into the subproject’s root directory.
+The easiest way to locate an output file from a unit-test is to call `java.io.File("some-file.txt")` or `java.nio.Paths("some-file.txt")`. Then the `some-file.txt` will be located under the current working directory = `System.getProperty("user.dir")`. Using Maven and Gradle, the current working directory will usually be equal to the project’s directory. By calling `java.io.File(relative path)` often, you will get a lot of temporary files located in the project directory, like this.
 
--   <https://github.com/kazurayam/selenium-webdriver-java/issues/8>
+    .
+    ├── 2023.10.24_22.07.27.742-7440524241d0dbd63ca5eec377b6455c.png    --- x
+    ├── 2023.10.24_22.07.29.333-7440524241d0dbd63ca5eec377b6455c.png    --- x
+    ├── build
+    │   ├── allure-results
+    │   ├── classes
+    │   ├── downloads
+    │   ├── generated
+    │   ├── reports
+    │   ├── resources
+    │   ├── test-results
+    │   └── tmp
+    ├── build.gradle
+    ├── extentReport.html    --- x
+    ├── fullpage-screenshot-chrome.png    --- x
+    ├── gradle
+    │   └── wrapper
+    ├── gradlew
+    ├── gradlew.bat
+    ├── login.har    --- x
+    ├── my-pdf.pdf    --- x
+    ├── pom.xml
+    ├── screenshot.png    --- x
+    ├── src
+    │   ├── main
+    │   └── test
+    ├── target
+    │   ├── classes
+    │   ├── generated-sources
+    │   ├── generated-test-sources
+    │   ├── maven-status
+    │   └── test-classes
+    ├── testAccessibility.json    --- x
+    ├── webdrivermanager.pdf    --- x
+    ├── webdrivermanager.png    --- x
+    └── webelement-screenshot.png    --- x
 
-Temporary files located in the project directory make the project dirty and difficult to manage. I want to create a dedicated directory where all test classes write their output into.
+    20 directories, 15 files
+
+Here the files labeled with "--- x" are the temporary output files created by the unit-tests.
+
+Temporary files located in the project directory make the project dirty. The files scattered in the project directory are difficult to manage. If you want to remove them, you have to choose each files and delete them one by one.
+
+I want to create a dedicated directory where all test classes should write their output into.
 
 ## Solution
 
-This project provides a Java class `com.kazurayam.unittest.TestHelper`.
+This project provides a Java class `com.kazurayam.unittest.TestOutputOrganizer`.
 
-The `TestHelper` helps your unit tests to save files into a dedicated directory in the Maven/Gradle project. Using this class, you can easily prepare a directory into which your unit tests can write files. The location of the output directory is resolved via the classpath of the unit-test class. The `TestHelper` does ot depend on the value returned by `System.getProperty("user.dir")`.
+The `TestOutputOrganizer` helps your unit tests to save files into a dedicated directory in the Maven/Gradle project. Using this class, you can easily prepare a directory into which your unit tests can write files. The location of the output directory is resolved via the classpath of the unit-test class. The `TestOutputOrganizer` does ot depend on the value returned by `System.getProperty("user.dir")`.
 
-The `TestHelper` class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG.
+The `TestOutputOrgainzer` class is independent on the type of unit-testing frameworks you choose: JUnit4, JUnit5 and TestNG.
 
-The `TestHelper` class is compiled by Java8.
+The `TestOutputOrgainzer` class is compiled by Java8.
 
 ### Background
 
 The following post in the Gradle forum gave me a clue:
 
--   <https://discuss.gradle.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379>
+-   <https://discuss.gradlecd.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379>
 
 > luke\_daley
 > Gradle Employee
@@ -56,14 +113,15 @@ The following post in the Gradle forum gave me a clue:
 
     package com.kazurayam.unittesthelperdemo;
 
-    import com.kazurayam.unittest.TestHelper;
+    import com.kazurayam.unittest.TestOutputOrganizer;
     import org.junit.jupiter.api.Test;
 
+    import java.nio.charset.StandardCharsets;
     import java.nio.file.Files;
     import java.nio.file.Path;
     import java.nio.file.Paths;
 
-    public class HelperlessTest {
+    public class OrganizerAbsentTest {
 
         /*
          * will create a file `<projectDir>/sample1.txt`
@@ -71,21 +129,23 @@ The following post in the Gradle forum gave me a clue:
         @Test
         public void test_write_under_current_working_directory() throws Exception {
             Path p = Paths.get("sample1.txt");
-            Files.writeString(p, "Hello, world!");
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
             System.out.println("[test_write_under_current_working_directory] p = " +
-                    TestHelper.toHomeRelativeString(p));
+                    TestOutputOrganizer.toHomeRelativeString(p));
         }
 
     }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerAbsentTest.java)
 
 This code calls `Paths.get("sample1_txt")` to resolve the path of output file. Many developers would do the same in their own codes. This code prints the following message:
 
     > Task :app:testClasses
     [test_write_under_current_working_directory] p = ~/github/unittest-helper/app/sample1.txt
 
-The call to `Paths.get(p)` interpretes a relative path to the runtime **Current Working Directory** of the process. In the above case, the current working directory WILL be set `~/github/unittest-helper/app/`. And the path is equal to the project directory.
+The call to `Paths.get("sample1.txt")` regards the parameter `sample1.txt` as relative to the runtime **Current Working Directory**. In the above case, the current working directory WILL be set `~/github/unittest-helper/app/`. And the path is equal to the project directory. So the `Paths.get("sample1.txt")` will return a Path object of `~/github.unittest-helper/app/sample1.txt`.
 
-Is the current working directory equal to the project directory always? --- Usually yes. But sometimes not. When the current working directory is different from the project directory, we will be really confused.
+Is the **current working directory** equal to the **project directory** ? --- Usually yes. But sometimes not. It depends on the runtime environment. When the current working directory is different from the project directory, we will be really confused.
 
 So I do not like my unit-tests to depend on the current working directory. Any other way?
 
@@ -93,21 +153,24 @@ So I do not like my unit-tests to depend on the current working directory. Any o
 
     package com.kazurayam.unittesthelperdemo;
 
-    import com.kazurayam.unittest.TestHelper;
+    import com.kazurayam.unittest.TestOutputOrganizer;
     import org.junit.jupiter.api.Test;
 
+    import java.nio.charset.StandardCharsets;
     import java.nio.file.Files;
     import java.nio.file.Path;
     import java.nio.file.Paths;
 
-    public class WithHelperTest {
+    public class OrganizerPresentTest {
 
         @Test
         public void test_getProjectDir() {
-            Path projectDir = new TestHelper(this.getClass()).getProjectDir();
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+            Path projectDir = too.getProjectDir();
             System.out.println("[test_getProjectDir] projectDir = " +
-                    TestHelper.toHomeRelativeString(projectDir));
-        }
+                    TestOutputOrganizer.toHomeRelativeString(projectDir));
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 `new TestHelper(this.getClass()).getProjectDir()` returns the `java.nio.file.Path` of the project directory.
 
@@ -138,59 +201,67 @@ You can add more sublist patterns for your own needs by calling the `TestHelper.
 
 Quickly find the `test-output` directory by calling `getOutputDir()`.
 
+        }
+
         @Test
         public void test_getOutputDir_as_default() {
-            Path outputDir = new TestHelper(this.getClass()).getOutputDir();
-            System.out.println("[test_getOutputDir_as_default] outputDir = " +
-                    TestHelper.toHomeRelativeString(outputDir));
-        }
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+            Path outputDir = too.getOutputDir();
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 ### Example 3 : create a custom output directory
 
+                    TestOutputOrganizer.toHomeRelativeString(outputDir));
+        }
+
         @Test
         public void test_getOutputDir_custom() {
-            Path outputDir = new TestHelper(this.getClass())
-                    .setOutputDirPath(Paths.get("test-output-another"))
-                    .getOutputDir();
-            System.out.println("[test_getOutputDir_as_default] outputDir = " +
-                    TestHelper.toHomeRelativeString(outputDir));
-        }
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
+                    .outputDirPath(Paths.get("test-output-another"))
+                    .build();
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 ### Example 4 : write a file into the default output directory
 
+        /*
+         * will create a file `<projectDir>/test-output/sample2.txt`
+         */
         @Test
         public void test_write_into_the_default_dir() throws Exception {
-            Path p = new TestHelper(this.getClass())
-                    .resolveOutput("sample4.txt");
-            Files.writeString(p, "Hello, world!");
-            System.out.println("[test_write_into_the_default_dir] p = " +
-                    TestHelper.toHomeRelativeString(p));
-        }
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+            Path p = too.resolveOutput("sample4.txt");
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 ### Example 5 : write a file into a subdirectory under the test-output
 
+            System.out.println("[test_write_into_the_default_dir] p = " +
+                    TestOutputOrganizer.toHomeRelativeString(p));
+        }
+
         @Test
         public void test_write_into_subdir_under_the_default_dir() throws Exception {
-            Path p = new TestHelper(this.getClass())
-                    .resolveOutput("sub/sample5.txt");
-            Files.writeString(p, "Hello, world!");
-            System.out.println("[test_write_into_subdir_under_the_default_dir] p = " + TestHelper.toHomeRelativeString(p));
-        }
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 ### Example 6 : write a file into a custom output directory
 
+        /*
+         * will create a file `<projectDir>/build/tmp/testOutput/sample3.txt`
+         */
         @Test
         public void test_write_into_custom_dir() throws Exception {
-            Path p = new TestHelper(this.getClass())
-                    .setOutputDirPath(Paths.get("build/tmp/testOutput"))
-                    .resolveOutput("sample6.txt");
-            Files.writeString(p, "Hello, world!");
-            System.out.println("[test_write_into_custom_dir] p = " + TestHelper.toHomeRelativeString(p));
-        }
+            TestOutputOrganizer too =
+                    new TestOutputOrganizer.Builder(this.getClass())
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
 
 ### Translating a Path to a Home Relative string
 
-A Path object can be stringified to an absolute path string like
+A Path object can be turned into a string, which is an absolute path string like:
 
     /Users/kazurayam/github/unittest-helper/lib/
 
@@ -200,13 +271,13 @@ In this string you can find my personal name `kazurayam`. I do not like exposing
 
 The `TestHelper` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
 
-        @Test
-        public void test_toHomeRelativeString_simple() {
-            Path p = new TestHelper(this.getClass()).getProjectDir();
-            String s = TestHelper.toHomeRelativeString(p);
-            System.out.println("[test_toHomeRelativeString_simple] s = " + s);
-            assertThat(s).isEqualTo("~/github/unittest-helper/lib");
-        }
+                    new TestOutputOrganizer.Builder(this.getClass())
+                            .outputDirPath(Paths.get("build/tmp/testOutput"))
+                            .build();
+            Path p = too.resolveOutput("hello.txt");
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            assertThat(p.getParent()                   // expecting testOutput
+                    .getFileName().toString())
 
 This test prints the following output in the console:
 

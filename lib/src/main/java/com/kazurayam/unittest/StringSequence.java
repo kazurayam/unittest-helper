@@ -8,7 +8,7 @@ import java.util.Objects;
  * StringSequence.indexOfSubsequence() will return the index value at which the subsequence is
  * found in the sequence.
  *
- * Given the sequence is ["Users", "me", "tmp", "selenium-webdriver-java", "selenium-webdriver-junit4", "build", "classes", "java", "test", "com", "kazurayam", "webdriver", "TestHelper.class"],
+ * Given the sequence is ["Users", "me", "tmp", "selenium-webdriver-java", "selenium-webdriver-junit4", "build", "classes", "java", "test", "com", "kazurayam", "webdriver", "TestOutputOrganizer.class"],
  * and the subsequence is ["build", "classes", "java", "test"].
  * Then StringSequence.indexOfSubsequence(sequence, subsequence) should return 5.
  * The value 5 is the index value of the string "build" in the given sequence.

@@ -1,6 +1,6 @@
 # unittest-helper
 
-Using the `com.kazurayam.unittest.TestHelper` class, you can easily prepare a directory into which your unit-test can write files. The helper class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG.
+Using the `com.kazurayam.unittest.TestOutputOrganizer` class, you can easily prepare a directory into which your unit-test can write files. The helper class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG.
 
 ## Short explanation
 
@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation("com.kazurayam:unittest-helper:0.1.2")
+    testImplementation("com.kazurayam:unittest-helper:0.2.0")
 }
 ```
 
@@ -54,14 +54,14 @@ You should note that the value of the system property `user.dir` is dependent on
 #### Ex2: Write a file under the default test-output directory
 
 ```
-import com.kazurayam.unittest.TestHelper;
+import com.kazurayam.unittest.TestOutputOrganizer;
 ...
 public class SampleTest {
 
     @Test
     public void test_write_into_the_default_dir() throws Exception {
-        Path p = new TestHelper(this.getClass())
-                .resolveOutput("sample2.txt");
+        TestOutputOrganizer too = new TestHelper(this.getClass()); 
+        Path p = too.resolveOutput("sample2.txt");
         Files.writeString(p, "Hello, world!");
     }
 ```
@@ -72,15 +72,15 @@ The `<projectDir>/test-output` directory will be silently created if it is not y
 
 #### Project directory is resolved via classpath
 
-The `com.kazurayam.unittest.TestHelper` class resolves the project directory via classpath. Here I said "the class resolves a path via classpath"? What do I mean here?
+The `com.kazurayam.unittest.TestOutputOrganizer` class resolves the project directory via classpath. Here I said "the class resolves a path via classpath"? What do I mean here?
 
 If you use Gradle to build the project, then most probably you have the class file under the `build/classes/java/test/` directory with sub-path `my/SampleTest.class`. This case, the parent of the `build` directory is presumed to be the project directory. 
 
 If you use Maven to build the project, then most probably you have the class file under the `target/test-classes/` directory with sub-path `my/SampleTest.class`. This case, the parent of the `target` directory is presumed to be the project directory.
 
-Are you using other build tools so that the project file tree is different from Maven & Gradle? --- This case you can tell your own tree structure to the `TestHelper` instance. See the long explanation for detail.
+Are you using other build tools so that the project file tree is different from Maven & Gradle? --- This case you can tell your own tree structure to the `TestOutputOrganizer` instance. See the long explanation for detail.
 
-Resolving the project directory via classpath means that `TestHelper` object does not depend on the current working directory (= `System.getProperty('user.dir')`) of the process.
+Resolving the project directory via classpath means that `TestOutputOrgainzer` object does not depend on the current working directory (= `System.getProperty('user.dir')`) of the process.
 
 ## Long explanation
 

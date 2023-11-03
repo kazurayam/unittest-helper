@@ -15,12 +15,12 @@ import java.util.Objects;
 /**
  * Provides utility methods that helps JUnit4/JUnit5/TestNG tests with
  * the getProjectDirViaClasspath() method and the resolveOutput().
- * These methods are useful for Gradle Multiprojects where
+ * These methods are useful for Gradle Multi-projects where
  * the Current Working Directory is NOT equal to the sub-projects' root directory.
  */
-public final class TestHelper {
+public final class TestOutputOrganizer {
 
-    private static final Logger log = LoggerFactory.getLogger(TestHelper.class);
+    private static final Logger log = LoggerFactory.getLogger(TestOutputOrganizer.class);
 
     private Class clazz;
     private Path projectDir;
@@ -28,9 +28,9 @@ public final class TestHelper {
     private Path subDirPath;
 
     /**
-     * @param builder TestHelper.Builder instance
+     * @param builder TestOutputOrganizer.Builder instance
      */
-    private TestHelper(Builder builder) {
+    private TestOutputOrganizer(Builder builder) {
         this.clazz = builder.clazz;
         this.projectDir = builder.projectDir;
         this.outputDirPath = builder.outputDirPath;
@@ -65,10 +65,10 @@ public final class TestHelper {
     /**
      * removed the output directory recursively if it is already present
      *
-     * @return the reference to this TestHelper instance
+     * @return the reference to this TestOutputOrganizer instance
      * @throws IOException during removing files/directories
      */
-    public TestHelper cleanOutputDirectory() throws IOException {
+    public TestOutputOrganizer cleanOutputDirectory() throws IOException {
         Path outputDir = this.getOutputDir();
         if (Files.exists(outputDir)) {
             Files.walk(outputDir)
@@ -148,7 +148,7 @@ public final class TestHelper {
     }
 
     /**
-     * Joshua Bloch's "Builder" for the TestHelper class
+     * Joshua Bloch's "Builder" for the TestOutputOrganizer class
      */
     public static class Builder {
         private Class clazz;
@@ -157,7 +157,7 @@ public final class TestHelper {
         private Path subDirPath;
 
         /**
-         * The name of the directory created by TestHelper as default
+         * The name of the directory created by TestOutputOrganizer as default
          * when you do not call setOutputDirPath(Path)
          */
         private static final Path DEFAULT_OUTPUT_DIR_PATH = Paths.get("test-output");
@@ -183,7 +183,7 @@ public final class TestHelper {
          * @param outputDirPath e.g, Paths.get("build/tmp/testOutput").
          *                      This could be relative to the project directory.
          *
-         * @return the reference to this TestHelper.Builder instance
+         * @return the reference to this TestOutputOrganizer.Builder instance
          */
         public Builder outputDirPath(Path outputDirPath) {
             Objects.requireNonNull(outputDirPath);
@@ -214,10 +214,10 @@ public final class TestHelper {
         }
 
         /**
-         * @return TestHelper object
+         * @return TestOutputOrganizer object
          */
-        public TestHelper build() {
-            return new TestHelper(this);
+        public TestOutputOrganizer build() {
+            return new TestOutputOrganizer(this);
         }
 
     }

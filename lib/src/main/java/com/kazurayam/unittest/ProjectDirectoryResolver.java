@@ -102,7 +102,7 @@ public final class ProjectDirectoryResolver {
 
     /**
      * returns the project directory in which the class binary of
-     * `com.kazurayam.webdriver.TestHelper` is found on disk.
+     * `com.kazurayam.webdriver.TestOutputOrganizer` is found on disk.
      * The same value will be returned in either case where the class
      * was built by Gradle and Maven.
      *
@@ -113,12 +113,12 @@ public final class ProjectDirectoryResolver {
      * This does not include the subproject directory
      * "selenium-webdriver-junit4", therefore it is not what we want.
      *
-     * When the TestHelper class is built using Gradle, the class will be stored
+     * When the TestOutputOrganizer class is built using Gradle, the class will be stored
      * in the directory "selenium-webdriver-java/selenium-webdriver-junit4/build".
-     * When the TestHelper class is built using Maven, the class will be stored
+     * When the TestOutputOrganizer class is built using Maven, the class will be stored
      * in the directory "selenium-webdriver-java/selenium-webdriver-junit5/target".
      * So this method look up the file name "build" or "target" in the code source
-     * of the TestHelper class.
+     * of the TestOutputOrganizer class.
      * Then we can get the Path value of the project directory properly.
      *
      * @param clazz the Class object based on which the project dir is resolved
@@ -128,7 +128,7 @@ public final class ProjectDirectoryResolver {
      */
     public Path getProjectDirViaClasspath(Class clazz) {
         Path codeSourcePath = ProjectDirectoryResolver.getCodeSourceAsPath(clazz);
-        // e.g. "/Users/myname/oreilly/selenium-webdriver-java/selenium-webdriver-junit4/build/classes/java/test/com/kazurayam/webdriver/TestHelper.class"
+        // e.g. "/Users/myname/oreilly/selenium-webdriver-java/selenium-webdriver-junit4/build/classes/java/test/com/kazurayam/webdriver/TestOutputOrganizer.class"
         List<String> nameElements = toNameElements(codeSourcePath);
         StringSequence ss = new StringSequence(nameElements);
         int boundary = -1;

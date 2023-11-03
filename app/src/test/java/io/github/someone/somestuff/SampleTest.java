@@ -1,6 +1,6 @@
 package io.github.someone.somestuff;
 
-import com.kazurayam.unittest.TestHelper;
+import com.kazurayam.unittest.TestOutputOrganizer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,14 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SampleTest {
 
-    private static TestHelper th;
+    private static TestOutputOrganizer too;
 
     private DateTimeFormatter dtf;
 
     @BeforeAll
     public static void beforeAll() throws IOException {
-        th = TestHelperFactory.create(SampleTest.class);
-        th.cleanOutputDirectory();
+        too = TestOutputOrganizerFactory.create(SampleTest.class);
+        too.cleanOutputDirectory();
     }
 
     @BeforeEach
@@ -34,12 +34,12 @@ public class SampleTest {
     @Test
     public void test_write_file() throws IOException {
         LocalDateTime ldt = LocalDateTime.now();
-        Path p = th.resolveOutput(
+        Path p = too.resolveOutput(
                 String.format("test_write_file/sample_%s.txt", dtf.format(ldt)));
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p).isNotNull().exists();
         assertThat(p.toFile().length()).isGreaterThan(0);
         System.out.println("[test_write_file] output is found at " +
-                TestHelper.toHomeRelativeString(p));
+                TestOutputOrganizer.toHomeRelativeString(p));
     }
 }
