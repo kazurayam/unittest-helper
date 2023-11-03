@@ -203,7 +203,7 @@ include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[]
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java[source]
 
-The `@BeforeClass`-annotated method is invoked once as soon as this test class started only once. By calling `too.cleanOutputDirectory()`, the `test-output` directory is removed. This method is useful when the test class writes files with timestamp in its name. If you do not clean the dir, you will obtain a lot of files with different timestamps in the file name. For example:
+The `@BeforeClass`-annotated method is invoked once as soon as this test class started only once. By calling `too.cleanOutputDirectory()`, the `test-output` directory is removed. This method is useful when the test class writes files with timestamp in its name. If you do not clean the dir, you will accumulate a lot of files with different timestamps in the file name. For example:
 
 [source]
 ----
@@ -227,7 +227,6 @@ app/build/tmp/testOutput
         └── sample_20231103_094817.txt
 ----
 
-This looks much better.
 
 === Translating a Path to a Home Relative string
 
@@ -238,30 +237,32 @@ A Path object can be turned into a string, which is an absolute path string like
 /Users/kazurayam/github/unittest-helper/lib/
 ----
 
-In this string you can find my personal name `kazurayam`. I do not like exposing my name in the blog posts and the documentations. I would prefer Home Relative path expression starting with tilde character, like:
+In this string you can find my personal name `kazurayam`.
+
+However, quite often, I do not like exposing my personal name in the forum posts and in the documentations. I would prefer Home Relative path expression starting with tilde character, like:
 
 [source]
 ----
 ~/github/unittest-helper/lib/
 ----
 
-The `TestHelper` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
+The `TestOutputOrganizer` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
 
 [source, java]
 ----
-include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=76..82]
+include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=95..102]
 ----
 
 This test prints the following output in the console:
 
 [source]
 ----
-[test_toHomeRelativeString_simple] s = ~/github/unittest-helper/lib
+[test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
 ----
 
-=== Factory class for your customized TestOutputOrganizer
+=== You should create a Factory class for your customized TestOutputOrganizer
 
-It is a good practice for you to create a factory class that creates TestOutputOrganizer instance with customized parameter values. See the following example.
+It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` with customized parameter values. See the following example.
 
 [source]
 ----
@@ -272,7 +273,7 @@ include::../app/src/test/java/io/github/someone/somestuff/TestOutputOrganizerFac
 The `create(Class)` method will instanciate a `com.kazurayam.unittest.TestOutputOrganizer` class with customized parameter values:
 
 1. the output directory will be located at `<projectDir>/build/tmp/testOutput`
-2. in the output directory, will will create subdirectory of which name is equal to the Fully Qualified Class Name of the test class.
+2. in the output directory, it will create subdirectory of which name is equal to the Fully Qualified Class Name of the test class.
 
 The following test class uses the Factory.
 
@@ -293,4 +294,4 @@ app/build/tmp/testOutput
 
 Which test class, which method created this file? --- It's obvious to see in this file tree.
 
-Please note that here 2 layers of directories are inserted amongst the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`. The first layer is the FQCN of the test class, the second layer is the method name which actually wrote the file. This tree helps you organize the output files created by your test cases.
+Please note that here 2 layers of directories are inserted amongst the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`. The first layer is the FQCN of the test class, the second layer is the method name which actually wrote the file. This tree helps you well organize the output files created by your test cases.

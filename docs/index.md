@@ -14,7 +14,7 @@
         -   [Example 6 : write a file into a custom output directory](#example-6-write-a-file-into-a-custom-output-directory)
         -   [Removing the output directory recursively](#removing-the-output-directory-recursively)
         -   [Translating a Path to a Home Relative string](#translating-a-path-to-a-home-relative-string)
-        -   [Factory class for your customized TestOutputOrganizer](#factory-class-for-your-customized-testoutputorganizer)
+        -   [You should create a Factory class for your customized TestOutputOrganizer](#you-should-create-a-factory-class-for-your-customized-testoutputorganizer)
 
 # Unit Test Helper
 
@@ -313,7 +313,7 @@ The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java)
 
-The `@BeforeClass`-annotated method is invoked once as soon as this test class started only once. By calling `too.cleanOutputDirectory()`, the `test-output` directory is removed. This method is useful when the test class writes files with timestamp in its name. If you do not clean the dir, you will obtain a lot of files with different timestamps in the file name. For example:
+The `@BeforeClass`-annotated method is invoked once as soon as this test class started only once. By calling `too.cleanOutputDirectory()`, the `test-output` directory is removed. This method is useful when the test class writes files with timestamp in its name. If you do not clean the dir, you will accumulate a lot of files with different timestamps in the file name. For example:
 
     app/build/tmp/testOutput
     └── io.github.someone.somestuff.SampleTest
@@ -331,35 +331,36 @@ By `cleanOutputDirectory`, you would have a cleaner result, like:
         └── test_write_file
             └── sample_20231103_094817.txt
 
-This looks much better.
-
 ### Translating a Path to a Home Relative string
 
 A Path object can be turned into a string, which is an absolute path string like:
 
     /Users/kazurayam/github/unittest-helper/lib/
 
-In this string you can find my personal name `kazurayam`. I do not like exposing my name in the blog posts and the documentations. I would prefer Home Relative path expression starting with tilde character, like:
+In this string you can find my personal name `kazurayam`.
+
+However, quite often, I do not like exposing my personal name in the forum posts and in the documentations. I would prefer Home Relative path expression starting with tilde character, like:
 
     ~/github/unittest-helper/lib/
 
-The `TestHelper` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
+The `TestOutputOrganizer` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
 
-                    new TestOutputOrganizer.Builder(this.getClass())
-                            .outputDirPath(Paths.get("build/tmp/testOutput"))
-                            .build();
-            Path p = too.resolveOutput("hello.txt");
-            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            assertThat(p.getParent()                   // expecting testOutput
-                    .getFileName().toString())
+        @Test
+        public void test_toHomeRelativeString_simple() {
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+            Path projectDir = too.getProjectDir();
+            String homeRelative = TestOutputOrganizer.toHomeRelativeString(projectDir);
+            System.out.println("[test_toHomeRelativeString_simple] " + homeRelative);
+            assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
+        }
 
 This test prints the following output in the console:
 
-    [test_toHomeRelativeString_simple] s = ~/github/unittest-helper/lib
+    [test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
 
-### Factory class for your customized TestOutputOrganizer
+### You should create a Factory class for your customized TestOutputOrganizer
 
-It is a good practice for you to create a factory class that creates TestOutputOrganizer instance with customized parameter values. See the following example.
+It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` with customized parameter values. See the following example.
 
     package io.github.someone.somestuff;
 
@@ -386,7 +387,7 @@ The `create(Class)` method will instanciate a `com.kazurayam.unittest.TestOutput
 
 1.  the output directory will be located at `<projectDir>/build/tmp/testOutput`
 
-2.  in the output directory, will will create subdirectory of which name is equal to the Fully Qualified Class Name of the test class.
+2.  in the output directory, it will create subdirectory of which name is equal to the Fully Qualified Class Name of the test class.
 
 The following test class uses the Factory.
 
@@ -445,4 +446,4 @@ When you ran the test, the output directory will look like this:
 
 Which test class, which method created this file? --- It’s obvious to see in this file tree.
 
-Please note that here 2 layers of directories are inserted amongst the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`. The first layer is the FQCN of the test class, the second layer is the method name which actually wrote the file. This tree helps you organize the output files created by your test cases.
+Please note that here 2 layers of directories are inserted amongst the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`. The first layer is the FQCN of the test class, the second layer is the method name which actually wrote the file. This tree helps you well organize the output files created by your test cases.
