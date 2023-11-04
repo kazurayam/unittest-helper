@@ -7,7 +7,7 @@
 
 == Problems to solve
 
-=== Is "Current Working Directory" reliable for unit-tests? --- Not always
+=== Is Current Working Directory reliable for unit-tests? --- Not always
 
 I encountered some difficulties in a TestNG test case in a Gradle Multi-project. I expected that a call to `System.getProperty("user.dir")` would return the Path of subproject's directory. In most cases, yes. It works fine. But sometimes it failed. See the following post for detail:
 
@@ -15,6 +15,21 @@ I encountered some difficulties in a TestNG test case in a Gradle Multi-project.
 
 I couldn't find out the reason why the "current working directory" became the parent project's directory, not the subproject directory.
 
+The following post in the Gradle forum gave me a clue:
+
+- link:https://discuss.gradle.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379/7[Gradle Forums, How do I set the working dreictory for TestNG in a multi-project Gradle build?]
+
+____
+luke_daley
+Gradle Employee
+Nov '13
+
+Loading from the filesystem using relative paths during unit tests is problematic because different environments will set a different working directory for the test process. For example, Gradle uses the projects directory while IntelliJ uses the directory of the root project.
+
+The only really safe way to solve this problem is to load via the classpath. Is this a possibility for your scenario?
+____
+
+I realized that I should not write unit tests which depend on the "current working directory".
 
 === Temporary output files shouldn't be located into the project's directory
 
@@ -83,21 +98,6 @@ image::https://kazurayam.github.io/unittest-helper/images/well-organized-test-ou
 
 
 
-=== Background
-
-The following post in the Gradle forum gave me a clue:
-
-- link:https://discuss.gradle.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379/7[Gradle Forums, How do I set the working dreictory for TestNG in a multi-project Gradle build?]
-
-____
-luke_daley
-Gradle Employee
-Nov '13
-
-Loading from the filesystem using relative paths during unit tests is problematic because different environments will set a different working directory for the test process. For example, Gradle uses the projects directory while IntelliJ uses the directory of the root project.
-
-The only really safe way to solve this problem is to load via the classpath. Is this a possibility for your scenario?
-____
 
 
 == Description by examples
