@@ -137,7 +137,7 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/testOutput/my.SampleTest/sample4.txt`
 
-By this path structure, you can easily see that the `sample2.txt` file was written by the `my.SamplTest` class.
+By this path structure, you can easily see that the `sample4.txt` file was written by the `my.SamplTest` class.
 
 
 #### TestOutputOrganizer resolves the project directory via classpath
