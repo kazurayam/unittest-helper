@@ -2,6 +2,10 @@
 
 Using the `com.kazurayam.unittest.TestOutputOrganizer` class, you can easily prepare a directory into which your unit-test can write files. The helper class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG.
 
+## Download from
+
+- https://mvnrepository.com/artifact/com.kazurayam/unittest-helper
+
 ## Short explanation
 
 You want to write the build.gradle file as follows:
