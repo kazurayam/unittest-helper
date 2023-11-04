@@ -18,10 +18,10 @@ dependencies {
 
 ### Test code examples
 
-Here I assume you have a Gradle project with a JUnit5 test class. The test wants to write a file into a local directory. You want to choose the directory amongst the following 3:
+Here I assume you have a Gradle project with a JUnit5 test class. The test wants to write a file into a local directory. You have a few options into which directory the test to write a file:
 
 1. immediately under the project directory
-2. under a directory named `test-output` by minimum coding effort
+2. under a directory `<projectDir>/test-output`. This is the default location which you can use with minimum effort.
 3. under a custom directory: `<projectDir>/build/tmp/testOutput`
 
 #### Ex1: Write a file immediately under the project dir
