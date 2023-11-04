@@ -26,6 +26,8 @@ Here I assume you have a Gradle project with a JUnit5 test class. The test wants
 
 #### Ex1: Write a file immediately under the project dir
 
+Let me start with a problematic code:
+
 ```
 package my;
 
