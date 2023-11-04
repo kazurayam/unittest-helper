@@ -97,7 +97,7 @@ public class SampleTest {
     @Test
     public void test_write_into_the_default_dir() throws Exception {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-            .outputDirectory("build/tmp/testOutput")
+            .outputDirPath("build/tmp/testOutput")
             .build(); 
         Path p = too.resolveOutput("sample3.txt");
         Files.writeString(p, "Hello, world!");
@@ -108,6 +108,37 @@ public class SampleTest {
 This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`
 
 The `<projectDir>/build/tmp/testOutput` directory will be silently created if it is not yet there.
+
+#### Ex4: Insert a subdirectory which has the Fully Qualified Class Name of the test class
+
+```
+package my:
+
+import com.kazurayam.unittest.TestOutputOrganizer;
+
+import org.junit.jupiter.api.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class SampleTest {
+
+    @Test
+    public void test_write_into_the_default_dir() throws Exception {
+        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
+            .subdirPath(this.getClass.getName())
+            .sub
+            .build(); 
+        Path p = too.resolveOutput("sample4.txt");
+        Files.writeString(p, "Hello, world!");
+    }
+}
+```
+
+This will create a file at `<projectDir>/testOutput/my.SampleTest/sample4.txt`
+
+By this path structure, you can easily see that the `sample2.txt` file was written by the `my.SamplTest` class.
 
 
 #### TestOutputOrganizer resolves the project directory via classpath
