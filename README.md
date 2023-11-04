@@ -128,7 +128,6 @@ public class SampleTest {
     public void test_write_into_the_default_dir() throws Exception {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
             .subdirPath(this.getClass.getName())
-            .sub
             .build(); 
         Path p = too.resolveOutput("sample4.txt");
         Files.writeString(p, "Hello, world!");
