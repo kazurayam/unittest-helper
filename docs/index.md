@@ -503,7 +503,7 @@ Note that the parameter string to the `resolveOutput(String)` method can contain
 
 The `getProject()` method of `TestOutputOrganizer` class internally works as follows.
 
-1.  The constructor call `new TestOutputOrganizer(this.getClass())` tells it should look at the code source of `this` object, which is `/Users/kazurayam/github/unittest-helper/app/build/classes/java/test/com/kazurayam/unittestshelperdemo/OrganizerPresentTest.class`.
+1.  The constructor call `new TestOutputOrganizer.Builder(this.getClass())` tells it should look at the code source of `this` object, which is `/Users/kazurayam/github/unittest-helper/app/build/classes/java/test/com/kazurayam/unittestshelperdemo/OrganizerPresentTest.class`.
 
 2.  The `TestOutputOrganizer` internally tries to find out which build tool you used: Maven or Gradle?
     If you used Maven, it expects that the project directory to have a subdirectory `target/test-classes`. If the `TestOutputOrganizer` found `target/test-classes` in the code source path, then the parent directory of the `target` directory is presumed to be the project directory.
