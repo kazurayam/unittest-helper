@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -196,7 +197,9 @@ public final class TestOutputOrganizer {
      * Joshua Bloch's "Builder" for the TestOutputOrganizer class
      */
     public static class Builder {
-        private final Path projectDir;
+        private final Class<?> clazz;
+        private Path projectDir;
+        private List<String> sublistPattern;
         private String outputDirPath;
         private String subDirPath;
 
@@ -211,12 +214,26 @@ public final class TestOutputOrganizer {
          *
          * @param clazz the Class object of a test class
          */
-        public Builder(Class clazz) {
-            this.projectDir =
-                    new ProjectDirectoryResolver()
-                            .getProjectDirViaClasspath(clazz);
+        public Builder(Class<?> clazz) {
+            this.clazz = clazz;
+            this.projectDir = null;
+            this.sublistPattern = null;
             this.outputDirPath = DEFAULT_OUTPUT_DIR_PATH;
             this.subDirPath = null;
+        }
+
+        /**
+         * add a sublistPattern
+         * @param sublistPattern like ["bin", "classes"]
+         * @return the reference to this Builder instance
+         */
+        public Builder sublistPattern(List<String> sublistPattern) {
+            Objects.requireNonNull(sublistPattern);
+            if (sublistPattern.isEmpty()) {
+                throw new IllegalArgumentException("sublistPattern is empty");
+            }
+            this.sublistPattern = sublistPattern;
+            return this;
         }
 
         /**
@@ -262,6 +279,11 @@ public final class TestOutputOrganizer {
          * @return TestOutputOrganizer object
          */
         public TestOutputOrganizer build() {
+            ProjectDirectoryResolver pdr = new ProjectDirectoryResolver();
+            if (sublistPattern != null) {
+                pdr.addSublistPattern(sublistPattern);
+            }
+            this.projectDir = pdr.getProjectDirViaClasspath(clazz);
             return new TestOutputOrganizer(this);
         }
 

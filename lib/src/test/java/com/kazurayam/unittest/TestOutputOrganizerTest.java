@@ -10,6 +10,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -166,4 +167,21 @@ public class TestOutputOrganizerTest {
         return false;
     }
 
+    @Test
+    public void test_sublistPattern() throws IOException {
+        // given
+        TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(this.getClass())
+
+                        .sublistPattern(Arrays.asList("bin", "classes"))
+                        // should compile
+                        .build();
+        Path p = too.resolveOutput("foo.txt");
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        assertThat(p).exists();
+        //
+        too.cleanOutputSubDirectory();
+        assertThat(too.getOutputSubDirectory()).exists();
+        assertThat(isEmpty(too.getOutputSubDirectory())).isTrue();
+    }
 }
