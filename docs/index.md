@@ -1,21 +1,5 @@
--   [Unit Test Helper](#unit-test-helper)
-    -   [Problems to solve](#problems-to-solve)
-        -   [Is Current Working Directory reliable for unit-tests? --- Not always](#is-current-working-directory-reliable-for-unit-tests-not-always)
-        -   [Temporary output files shouldn’t be located into the project’s directory](#temporary-output-files-shouldnt-be-located-into-the-projects-directory)
-    -   [Solution](#solution)
-    -   [Description by examples](#description-by-examples)
-        -   [Example1 Locating a file path via Current Working Directory](#example1-locating-a-file-path-via-current-working-directory)
-        -   [Example2 Resolving the project directory resolved via classpath](#example2-resolving-the-project-directory-resolved-via-classpath)
-        -   [Example3 Locating the default output directory](#example3-locating-the-default-output-directory)
-        -   [Example4 Creating a custom output directory](#example4-creating-a-custom-output-directory)
-        -   [Example5 Writing a file into the default output directory](#example5-writing-a-file-into-the-default-output-directory)
-        -   [Example6 Writing a file into a subdirectory under the default output directory](#example6-writing-a-file-into-a-subdirectory-under-the-default-output-directory)
-        -   [Example7 Writing a file into a custom output directory](#example7-writing-a-file-into-a-custom-output-directory)
-        -   [Example8 Removing the output directory recursively](#example8-removing-the-output-directory-recursively)
-        -   [Example9 A helper method that translates a Path to a Home Relative string](#example9-a-helper-method-that-translates-a-path-to-a-home-relative-string)
-        -   [Example10 You should make a Factory class that creates your customized TestOutputOrganizer](#example10-you-should-make-a-factory-class-that-creates-your-customized-testoutputorganizer)
-        -   [Example11 More layers of directory under the output sub-directory](#example11-more-layers-of-directory-under-the-output-sub-directory)
-    -   [How does the `TestOutputOrganizer` resolves the project root directory ?](#how-does-the-testoutputorganizer-resolves-the-project-root-directory)
+- Table of Content
+{:toc}  
 
 # Unit Test Helper
 

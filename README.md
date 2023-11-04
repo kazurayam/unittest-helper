@@ -51,7 +51,7 @@ This will create a file at `<projectDir>/sample1.txt`
 
 In this case we used `Paths.get("sample1.txt")`. This expression will locate the file `sample1.txt` in the directory which `System.getProperty("user.dir")` expression stands for.
 
-You should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools' settings. Though rarely, the `user.dir` is not very much reliable. See [this isseue](https://github.com/kazurayam/selenium-webdriver-java/issues/21) for example. 
+You should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools' settings. Though rarely, the `user.dir` is not very much reliable. See [this issue](https://github.com/kazurayam/selenium-webdriver-java/issues/21) for example. 
 
 #### Ex2: Write a file under the default test-output directory
 
@@ -139,7 +139,7 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/testOutput/my.SampleTest/sample4.txt`
 
-By this path structure, you can easily see that the `sample4.txt` file was written by the `my.SamplTest` class.
+By this path structure, you can easily see that the `sample4.txt` file was written by the `my.SampleTest` class.
 
 
 #### TestOutputOrganizer resolves the project directory via classpath
