@@ -68,7 +68,7 @@ public class SampleTest {
 
     @Test
     public void test_write_into_the_default_dir() throws Exception {
-        TestOutputOrganizer too = new TestOutputOrganizer(this.getClass()); 
+        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build(); 
         Path p = too.resolveOutput("sample2.txt");
         Files.writeString(p, "Hello, world!");
     }
@@ -78,6 +78,37 @@ public class SampleTest {
 This will create a file at `<projectDir>/test-output/sample2.txt`
 
 The `<projectDir>/test-output` directory will be silently created if it is not yet there.
+
+#### Ex3: Write a file under a custom directory
+
+```
+package my:
+
+import com.kazurayam.unittest.TestOutputOrganizer;
+
+import org.junit.jupiter.api.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class SampleTest {
+
+    @Test
+    public void test_write_into_the_default_dir() throws Exception {
+        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
+            .outputDirectory("build/tmp/testOutput")
+            .build(); 
+        Path p = too.resolveOutput("sample3.txt");
+        Files.writeString(p, "Hello, world!");
+    }
+}
+```
+
+This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`
+
+The `<projectDir>/build/tmp/testOutput` directory will be silently created if it is not yet there.
+
 
 #### TestOutputOrganizer resolves the project directory via classpath
 
@@ -90,6 +121,7 @@ If you use Maven to build the project, then most probably you have the class fil
 Are you using other build tools so that the project file tree is different from Maven & Gradle? --- This case you can tell your own tree structure to the `TestOutputOrganizer` instance. See the long explanation for detail.
 
 Resolving the project directory via classpath means that the `TestOutputOrgainzer` class works independent on the current working directory (= `System.getProperty('user.dir')`) of the runtime process.
+
 
 ## Long explanation
 
