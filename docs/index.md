@@ -1,5 +1,4 @@
-- Table of Content
-{:toc}  
+{:toc}
 
 # Unit Test Helper
 
@@ -96,7 +95,9 @@ The `TestOutputOrgainzer` class is compiled by Java8.
 
 Using the `TestOutputOrganizer` class, you can well-organize the files created by test classes, as follows:
 
-![well organized test outputs](https://kazurayam.github.io/unittest-helper/images/well-organized-test-outputs.png)
+<figure>
+<img src="https://kazurayam.github.io/unittest-helper/images/well-organized-test-outputs.png" alt="well organized test outputs" />
+</figure>
 
 ## Description by examples
 
