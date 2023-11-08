@@ -27,3 +27,4 @@ This test prints the following output in the console:
 ----
 [test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
 ----
+

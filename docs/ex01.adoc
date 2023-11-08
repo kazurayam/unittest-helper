@@ -18,3 +18,4 @@ The call to `Paths.get("sample1.txt")` regards the parameter `sample1.txt` as re
 Is the *current working directory* equal to the *project directory* ? --- Usually yes. But sometimes not. It depends on the runtime environment. When the current working directory is different from the project directory, we will be really confused.
 
 So I do not like my unit-tests to depend on the current working directory. Any other way?
+

@@ -37,3 +37,4 @@ The 1st layer is the FQCN of the test class.
 The 2nd layer is the method name which actually wrote the file.
 
 I find this tree format is useful for organizing a lot of output files created by multiple test cases.
+

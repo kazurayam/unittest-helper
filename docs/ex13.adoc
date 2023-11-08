@@ -4,3 +4,4 @@
 ----
 include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=189..208]
 ----
+

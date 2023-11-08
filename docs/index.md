@@ -188,7 +188,8 @@ The call to `Paths.get("sample1.txt")` regards the parameter `sample1.txt` as re
 Is the **current working directory** equal to the **project directory** ? --- Usually yes. But sometimes not. It depends on the runtime environment. When the current working directory is different from the project directory, we will be really confused.
 
 So I do not like my unit-tests to depend on the current working directory. Any other way?
-=== Example2 Resolving the project directory resolved via classpath
+
+### Example2 Resolving the project directory resolved via classpath
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -217,7 +218,8 @@ This will print the following in the console:
     [test_getProjectDir] projectDir = ~/github/unittest-helper/app
 
 How the `TestOutputOrganizer` find the path of project directory via classpath? --- I will describe it later.
-=== Example3 Locating the default output directory
+
+### Example3 Locating the default output directory
 
 Quickly find the `test-output` directory by calling `getOutputDir()`.
 
@@ -477,7 +479,8 @@ The 1st layer is the FQCN of the test class.
 The 2nd layer is the method name which actually wrote the file.
 
 I find this tree format is useful for organizing a lot of output files created by multiple test cases.
-=== Example10 More layers of directory under the output sub-directory
+
+### Example10 More layers of directory under the output sub-directory
 
 The [io.github.someone.somestuff.SampleTest](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java) class has one more test method:
 
@@ -518,7 +521,8 @@ and
         Path p = too.resolveOutut("test_write_file_once_more/sample_20231103_124015.txt");
 
 Note that the parameter string to the `resolveOutput(String)` method can contain `/`, which represents one or more directories under the output sub-directory. For example, you can insert a directory of which name stands for the test method name. This technique makes it easy to organize output files created by multiple methods in a single test class.
-=== Example11 A helper method that translates a Path to a Home Relative string
+
+### Example11 A helper method that translates a Path to a Home Relative string
 
 A Path object can be turned into an absolute path string like:
 
