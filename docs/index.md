@@ -379,7 +379,7 @@ It is a good practice for you to create a factory class that creates an instance
      */
     public class TestOutputOrganizerFactory {
 
-        public static TestOutputOrganizer create(Class clazz) {
+        public static TestOutputOrganizer create(Class<?> clazz) {
             return new TestOutputOrganizer.Builder(clazz)
                     .outputDirPath("build/tmp/testOutput")
                     .subDirPath(clazz.getName())
