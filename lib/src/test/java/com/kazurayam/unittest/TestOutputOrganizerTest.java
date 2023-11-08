@@ -168,6 +168,46 @@ public class TestOutputOrganizerTest {
     }
 
     @Test
+    void test_copyDir() throws IOException {
+        TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(this.getClass())
+                        .subDirPath(this.getClass().getName())
+                        .build();
+        String methodName = "test_copyDir";
+        // given
+        Path sourceDir = too.resolveOutput(methodName + "/source");
+        Path sourceFile = too.resolveOutput(methodName + "/source/foo/hello.txt");
+        Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        Path targetDir = too.resolveOutput(methodName + "/target");
+        Path targetFile = too.resolveOutput(methodName + "/target/foo/hello.txt");
+        // when
+        too.copyDir(sourceDir, targetDir);
+        // then
+        assertThat(targetFile).exists();
+    }
+
+    @Test
+    void test_deleteDir() throws IOException {
+        TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(this.getClass())
+                        .subDirPath(this.getClass().getName())
+                        .build();
+        String methodName = "test_deleteDir";
+        // given
+        Path sourceDir = too.resolveOutput(methodName + "/source");
+        Path sourceFile = too.resolveOutput(methodName + "/source/foo/hello.txt");
+        Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        Path targetDir = too.resolveOutput(methodName + "/target");
+        Path targetFile = too.resolveOutput(methodName + "/target/foo/hello.txt");
+        too.copyDir(sourceDir, targetDir);
+        assertThat(targetFile).exists();
+        // when
+        too.deleteDir(targetDir);
+        // then
+        assertThat(targetFile).doesNotExist();
+    }
+
+    @Test
     public void test_sublistPattern() throws IOException {
         // given
         TestOutputOrganizer too =

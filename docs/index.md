@@ -96,9 +96,56 @@ The `TestOutputOrgainzer` class is compiled by Java8.
 
 Using the `TestOutputOrganizer` class, you can well-organize the files created by test classes, as follows:
 
-<figure>
-<img src="https://kazurayam.github.io/unittest-helper/images/well-organized-test-outputs.png" alt="well organized test outputs" />
-</figure>
+![well organized test outputs](https://kazurayam.github.io/unittest-helper/images/well-organized-test-outputs.png)
+
+## How does the `TestOutputOrganizer` resolves the project root directory ?
+
+The `getProject()` method of `TestOutputOrganizer` class internally works as follows.
+
+1.  The constructor call `new TestOutputOrganizer.Builder(this.getClass())` tells it should look at the code source of `this` object, which is `/Users/kazurayam/github/unittest-helper/app/build/classes/java/test/com/kazurayam/unittestshelperdemo/OrganizerPresentTest.class`.
+
+2.  The `TestOutputOrganizer` internally tries to find out which build tool you used: Maven or Gradle?
+    If you used Maven, it expects that the project directory to have a subdirectory `target/test-classes`. If the `TestOutputOrganizer` found `target/test-classes` in the code source path, then the parent directory of the `target` directory is presumed to be the project directory.
+    If you use Gradle, the `TestOutputOrganizer` expects that the project directory would have a subdirectory `build/classes/java/test`. So `TestOutputOrganizer` tries to find `build/classes/java/test` in the code source path. When the subdirectory pattern is found in the code source path, then the parent directory of the `build` directory is presumed to be the project dir.
+
+The `com.kazurayam.unittest.ProjectDirectoryResovler` class has a list of the patterns to match against the code source given. You can che check the content of the list. Let me assume you have the following test code:
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.ProjectDirectoryResolver;
+    import org.junit.jupiter.api.Test;
+
+    import java.util.List;
+
+    import static org.assertj.core.api.Assertions.assertThat;
+
+    public final class ProjectDirectoryResolverTest {
+
+        @Test
+        public void test_getSublistPatterns() {
+            List<List<String>> sublistPatterns =
+                    new ProjectDirectoryResolver().getSublistPatterns();
+            assertThat(sublistPatterns).isNotNull();
+            assertThat(sublistPatterns.size()).isGreaterThanOrEqualTo(2);
+            for (List<String> p : sublistPatterns) {
+                System.out.println("sublistPattern : " + p);
+            }
+        }
+
+    }
+
+This test prints the following result in the console:
+
+    sublistPattern : [target, test-classes]
+    sublistPattern : [build, classes, java, test]
+    sublistPattern : [build, classes, groovy, test]
+    sublistPattern : [build, classes, kotlin, test]
+
+The 1st sublistPattern is for Maven. the 2nd, sublistPattern is for Java codes built in Gradle. The 3rd is for Groovy codes built in Gradle. The 4th is for Kotlin codes built in Gradle.
+
+Do you need a unique sublistPattern other than those built-in ones?
+
+OK. You can add more sublistPatterns for your own needs by calling the `TestOutputOrganizer.Builder.sublistPattern(List<String>)` method.
 
 ## Description by examples
 
@@ -141,8 +188,7 @@ The call to `Paths.get("sample1.txt")` regards the parameter `sample1.txt` as re
 Is the **current working directory** equal to the **project directory** ? --- Usually yes. But sometimes not. It depends on the runtime environment. When the current working directory is different from the project directory, we will be really confused.
 
 So I do not like my unit-tests to depend on the current working directory. Any other way?
-
-### Example2 Resolving the project directory resolved via classpath
+=== Example2 Resolving the project directory resolved via classpath
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -171,8 +217,7 @@ This will print the following in the console:
     [test_getProjectDir] projectDir = ~/github/unittest-helper/app
 
 How the `TestOutputOrganizer` find the path of project directory via classpath? --- I will describe it later.
-
-### Example3 Locating the default output directory
+=== Example3 Locating the default output directory
 
 Quickly find the `test-output` directory by calling `getOutputDir()`.
 
@@ -339,33 +384,7 @@ By `cleanOutputDirectory`, you would have a cleaner result, like:
 
 There is `cleanOutputSubDirectory()` method as well. This will choose a specific sub directory specified by `setSubDir(Path subDir)` method of the `TestOutputOrganizer.Builder` class. The `cleanOutputSubDirectory()` will leave other subdirectories in the output directory untouched.
 
-### Example9 A helper method that translates a Path to a Home Relative string
-
-A Path object can be turned into an absolute path string like:
-
-    /Users/kazurayam/github/unittest-helper/lib/
-
-In this string you can find my personal name "kazurayam". When I write some document, I feel like to copy the output message and paste it into page. However, I do not like exposing my personal name public. I would prefer "Home Relative Path" which starts with a tilde character, like:
-
-    ~/github/unittest-helper/lib/
-
-The `TestOutputOrganizer` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
-
-        }
-
-        @Test
-        public void test_toHomeRelativeString_simple() {
-            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-            Path projectDir = too.getProjectDir();
-            String homeRelative = TestOutputOrganizer.toHomeRelativeString(projectDir);
-            System.out.println("[test_toHomeRelativeString_simple] " + homeRelative);
-            assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
-
-This test prints the following output in the console:
-
-    [test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
-
-### Example10 You should make a Factory class that creates your customized TestOutputOrganizer
+### Example9 You should make a Factory class that creates your customized TestOutputOrganizer
 
 It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` for your own unit tests instantiated with custom parameters. See the following example.
 
@@ -458,8 +477,7 @@ The 1st layer is the FQCN of the test class.
 The 2nd layer is the method name which actually wrote the file.
 
 I find this tree format is useful for organizing a lot of output files created by multiple test cases.
-
-### Example11 More layers of directory under the output sub-directory
+=== Example10 More layers of directory under the output sub-directory
 
 The [io.github.someone.somestuff.SampleTest](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java) class has one more test method:
 
@@ -500,54 +518,73 @@ and
         Path p = too.resolveOutut("test_write_file_once_more/sample_20231103_124015.txt");
 
 Note that the parameter string to the `resolveOutput(String)` method can contain `/`, which represents one or more directories under the output sub-directory. For example, you can insert a directory of which name stands for the test method name. This technique makes it easy to organize output files created by multiple methods in a single test class.
+=== Example11 A helper method that translates a Path to a Home Relative string
 
-## How does the `TestOutputOrganizer` resolves the project root directory ?
+A Path object can be turned into an absolute path string like:
 
-The `getProject()` method of `TestOutputOrganizer` class internally works as follows.
+    /Users/kazurayam/github/unittest-helper/lib/
 
-1.  The constructor call `new TestOutputOrganizer.Builder(this.getClass())` tells it should look at the code source of `this` object, which is `/Users/kazurayam/github/unittest-helper/app/build/classes/java/test/com/kazurayam/unittestshelperdemo/OrganizerPresentTest.class`.
+In this string you can find my personal name "kazurayam". When I write some document, I feel like to copy the output message and paste it into page. However, I do not like exposing my personal name public. I would prefer "Home Relative Path" which starts with a tilde character, like:
 
-2.  The `TestOutputOrganizer` internally tries to find out which build tool you used: Maven or Gradle?
-    If you used Maven, it expects that the project directory to have a subdirectory `target/test-classes`. If the `TestOutputOrganizer` found `target/test-classes` in the code source path, then the parent directory of the `target` directory is presumed to be the project directory.
-    If you use Gradle, the `TestOutputOrganizer` expects that the project directory would have a subdirectory `build/classes/java/test`. So `TestOutputOrganizer` tries to find `build/classes/java/test` in the code source path. When the subdirectory pattern is found in the code source path, then the parent directory of the `build` directory is presumed to be the project dir.
+    ~/github/unittest-helper/lib/
 
-The `com.kazurayam.unittest.ProjectDirectoryResovler` class has a list of the patterns to match against the code source given. You can che check the content of the list. Let me assume you have the following test code:
-
-    package com.kazurayam.unittesthelperdemo;
-
-    import com.kazurayam.unittest.ProjectDirectoryResolver;
-    import org.junit.jupiter.api.Test;
-
-    import java.util.List;
-
-    import static org.assertj.core.api.Assertions.assertThat;
-
-    public final class ProjectDirectoryResolverTest {
+The `TestOutputOrganizer` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
 
         @Test
-        public void test_getSublistPatterns() {
-            List<List<String>> sublistPatterns =
-                    new ProjectDirectoryResolver().getSublistPatterns();
-            assertThat(sublistPatterns).isNotNull();
-            assertThat(sublistPatterns.size()).isGreaterThanOrEqualTo(2);
-            for (List<String> p : sublistPatterns) {
-                System.out.println("sublistPattern : " + p);
-            }
+        public void test_toHomeRelativeString_simple() {
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+            Path projectDir = too.getProjectDir();
+            String homeRelative = TestOutputOrganizer.toHomeRelativeString(projectDir);
+            System.out.println("[test_toHomeRelativeString_simple] " + homeRelative);
+            assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
         }
 
-    }
+This test prints the following output in the console:
 
-This test prints the following result in the console:
+    [test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
 
-    sublistPattern : [target, test-classes]
-    sublistPattern : [build, classes, java, test]
-    sublistPattern : [build, classes, groovy, test]
-    sublistPattern : [build, classes, kotlin, test]
+### Example12 Copying a source directory to a target directory recursively
 
-The 1st sublistPattern is for Maven. the 2nd, sublistPattern is for Java codes built in Gradle. The 3rd is for Groovy codes built in Gradle. The 4th is for Kotlin codes built in Gradle.
+        @Test
+        void test_copyDir() throws IOException {
+            TestOutputOrganizer too =
+                    new TestOutputOrganizer.Builder(this.getClass())
+                            .subDirPath(this.getClass().getName())
+                            .build();
+            String methodName = "test_copyDir";
+            // given
+            Path sourceDir = too.resolveOutput(methodName + "/source");
+            Path sourceFile = too.resolveOutput(methodName + "/source/foo/hello.txt");
+            Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            Path targetDir = too.resolveOutput(methodName + "/target");
+            Path targetFile = too.resolveOutput(methodName + "/target/foo/hello.txt");
+            // when
+            too.copyDir(sourceDir, targetDir);
+            // then
+            assertThat(targetFile).exists();
+        }
 
-Do you need a unique sublistPattern other than those built-in ones?
+### Example13 Deleting a directory recursively
 
-OK. You can add more sublistPatterns for your own needs by calling the `TestOutputOrganizer.Builder.sublistPattern(List<String>)` method.
+        @Test
+        void test_deleteDir() throws IOException {
+            TestOutputOrganizer too =
+                    new TestOutputOrganizer.Builder(this.getClass())
+                            .subDirPath(this.getClass().getName())
+                            .build();
+            String methodName = "test_deleteDir";
+            // given
+            Path sourceDir = too.resolveOutput(methodName + "/source");
+            Path sourceFile = too.resolveOutput(methodName + "/source/foo/hello.txt");
+            Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            Path targetDir = too.resolveOutput(methodName + "/target");
+            Path targetFile = too.resolveOutput(methodName + "/target/foo/hello.txt");
+            too.copyDir(sourceDir, targetDir);
+            assertThat(targetFile).exists();
+            // when
+            too.deleteDir(targetDir);
+            // then
+            assertThat(targetFile).doesNotExist();
+        }
 
 (FIN)

@@ -194,6 +194,30 @@ public final class TestOutputOrganizer {
     }
 
     /**
+     * copy the source directory and its content files/directories to the target directory
+     * recursively.
+     * If the targetDir is not existing, will create it.
+     *
+     * @param sourceDir directory to copy from
+     * @param targetDir directory to copy into
+     * @throws IOException any error while i/o
+     */
+    public void copyDir(Path sourceDir, Path targetDir) throws IOException {
+        CopyDir.copyDir(sourceDir, targetDir);
+    }
+
+
+    /**
+     * delete the target directory and its content files/directories recursively.
+     *
+     * @param targetDir directory to delete
+     * @throws IOException any error while deletion
+     */
+    public void deleteDir(Path targetDir) throws IOException {
+        DeleteDir.deleteDirectoryRecursively(targetDir);
+    }
+
+    /**
      * Joshua Bloch's "Builder" for the TestOutputOrganizer class
      */
     public static class Builder {
@@ -286,6 +310,5 @@ public final class TestOutputOrganizer {
             this.projectDir = pdr.getProjectDirViaClasspath(clazz);
             return new TestOutputOrganizer(this);
         }
-
     }
 }

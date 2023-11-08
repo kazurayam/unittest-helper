@@ -1,0 +1,15 @@
+
+=== Example6 Writing a file into a subdirectory under the default output directory
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=51..58]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+[test_write_into_subdir_under_the_default_output_directory] p = ~/github/unittest-helper/app/test-output/sub/sample.txt
+----

@@ -10,7 +10,7 @@ import java.nio.file.Paths;
  */
 public class TestOutputOrganizerFactory {
 
-    public static TestOutputOrganizer create(Class clazz) {
+    public static TestOutputOrganizer create(Class<?> clazz) {
         return new TestOutputOrganizer.Builder(clazz)
                 .outputDirPath("build/tmp/testOutput")
                 .subDirPath(clazz.getName())

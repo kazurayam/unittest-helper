@@ -1,0 +1,16 @@
+=== Example3 Locating the default output directory
+
+Quickly find the `test-output` directory by calling `getOutputDir()`.
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=21..27]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+[test_getOutputDir_as_default] outputDir = ~/github/unittest-helper/app/test-output
+----
