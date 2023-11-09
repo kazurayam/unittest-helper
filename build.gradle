@@ -1,3 +1,6 @@
+group 'com.kazurayam'
+version '0.2.4'
+
 /**
  * translate docs/index_.adoc to docs/index.md
  * with instruction to Jekyll Blog to generate TOC
@@ -6,7 +9,7 @@ task indextoc {
     doLast {
         exec {
             workingDir './docs'
-            commandLine './adoc2md.sh', '-t'
+            commandLine './adoc2md.sh', '-t', '-v', project.version
         }
     }
 }

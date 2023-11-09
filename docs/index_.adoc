@@ -1,7 +1,10 @@
+:projectVersion: 0.0.0
+
 = Unit Test Helper
 
 - author: kazurayam
 - date: Nov, 2023
+- version: {projectVersion}
 - source project: link:https://github.com/kazurayam/unittest-helper[]
 - javadoc: link:https://kazurayam.github.io/unittest-helper/api[]
 

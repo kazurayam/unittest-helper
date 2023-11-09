@@ -1,4 +1,3 @@
-- Table of contents
 {:toc}
 
 # Unit Test Helper
@@ -6,6 +5,8 @@
 -   author: kazurayam
 
 -   date: Nov, 2023
+
+-   version: 0.2.4
 
 -   source project: <https://github.com/kazurayam/unittest-helper>
 
