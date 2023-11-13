@@ -1,0 +1,142 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'com.kazurayam'
+version = '0.2.4'
+
+ext {
+    isReleaseVersion = !version.endsWith("SNAPSHOT")
+}
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+test {
+    useJUnitPlatform() {
+        if (project.hasProperty("groups")) {
+            includeTags "$groups"
+        }
+        if (project.hasProperty("excludedGroups")) {
+            excludeTags "$excludedGroups"
+        }
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.github.com/kazurayam/unittest-helper")
+        credentials {
+            username = project.findProperty("gpr.user")
+            password = project.findProperty("gpr.key")
+        }
+    }
+    mavenLocal()
+}
+
+ext {
+    slf4jVersion  = "2.0.9"
+    logbackVersion  = "1.4.11"
+
+    junit5Version = "5.10.0"
+    assertjVersion = "3.24.2"
+}
+
+dependencies {
+    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
+    implementation("ch.qos.logback:logback-classic:${logbackVersion}")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:${junit5Version}")
+    testImplementation("org.assertj:assertj-core:${assertjVersion}")
+}
+
+javadoc {
+    options.showFromProtected()
+    failOnError = false
+    options.locale = "en_US"
+}
+task copyJavadocToDocsDir(type: Copy) {
+    from "build/docs/javadoc"
+    into "../docs/api"
+}
+javadoc.finalizedBy copyJavadocToDocsDir
+
+jar {
+    archiveBaseName = 'unittest-helper'
+}
+
+publishing {
+    publications {
+        unittesthelper(MavenPublication) {
+            from components.java
+            artifactId = 'unittest-helper'
+            pom {
+                groupId = project.group
+                name = project.rootProject.name
+                description = "Utility classes for unit testing, e.g, resolve the project dir via classpath"
+                url = "https://kazurayam.github.io/unittest-helper/"
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "https://www.apache.org.licenses/LICENSE-2.0.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "kazurayam"
+                        name = "URAYAMA,kazuaki"
+                        email = "kazuaki.urayama@gmail.com"
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/kazurayam/${project.rootProject.name}.git"
+                    developerConnection = "scm:git:git@github.com:kazurayam/${project.rootProject.name}.git"
+                    url = "https://github.com/kazurayam/${project.rootProject.name}"
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releaseRepo = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotRepo = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = isReleaseVersion ? releaseRepo: snapshotRepo
+            credentials {
+                username = project.hasProperty("ossrhUsername") ? ossrhUsername : "Unknown user"
+                password = project.hasProperty("ossrhPassword") ? ossrhPassword : "Unknown password"
+            }
+        }
+        maven {
+            name = "gpr"
+            url = uri("https://maven.pkg.github.com/kazurayam/unittest-helper")
+            credentials {
+                username = project.findProperty("gpr.user")
+                password = project.findProperty("gpr.key")
+            }
+        }
+    }
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+signing {
+    sign publishing.publications.unittesthelper
+}
+
+// I do not want to sign the SNAPSHOT
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
+}

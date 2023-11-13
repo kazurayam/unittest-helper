@@ -1,0 +1,17 @@
+=== Example2 Resolving the project directory resolved via classpath
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=1..19]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+[test_getProjectDir] projectDir = ~/github/unittest-helper/app
+----
+
+How the `TestOutputOrganizer` find the path of project directory via classpath? --- I will describe it later.
+

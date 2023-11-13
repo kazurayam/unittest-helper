@@ -19,3 +19,15 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Ignore Gradle build output directory
+build
+
+# test classes write the temporary files into the projectDir/test-output directory
+test-output*
+
+pageSource*.html
+
+sample*txt
+
+.DS_Store

@@ -1,0 +1,15 @@
+
+=== Example4 Creating a custom output directory
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=28..37]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+[test_getOutputDir_custom] outputDir = ~/github/unittest-helper/app/test-output-another
+----

@@ -1,0 +1,14 @@
+=== Example7 Writing a file into a custom output directory
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=62..71]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+[test_write_into_custom_directory] p = ~/github/unittest-helper/app/build/tmp/testOutput/sample.txt
+----

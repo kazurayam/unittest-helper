@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JupyterPersistentConnectionParameters">
+    <option name="knownRemoteServers">
+      <list>
+        <JupyterConnectionParameters>
+          <option name="authType" value="notebook" />
+          <option name="token" value="187e8e24c968631f54d583251f9273806c06dcbc88eb7f9b" />
+          <option name="urlString" value="http://127.0.0.1:8888/" />
+          <authParams2>
+            <map>
+              <entry key="token" value="187e8e24c968631f54d583251f9273806c06dcbc88eb7f9b" />
+            </map>
+          </authParams2>
+        </JupyterConnectionParameters>
+        <JupyterConnectionParameters>
+          <option name="authType" value="notebook" />
+          <option name="token" value="d3cc78c6d15e3d7fb4784667428092c8aac0ab732e1f89a5" />
+          <option name="urlString" value="http://localhost:8888/" />
+          <authParams2>
+            <map>
+              <entry key="token" value="d3cc78c6d15e3d7fb4784667428092c8aac0ab732e1f89a5" />
+            </map>
+          </authParams2>
+        </JupyterConnectionParameters>
+        <JupyterConnectionParameters>
+          <option name="authType" value="notebook" />
+          <option name="token" value="0e6a488883950ca6c634e9fa28b01a02de4ebf3a5946a8e1" />
+          <option name="urlString" value="http://localhost:8889/lab" />
+          <authParams2>
+            <map>
+              <entry key="token" value="0e6a488883950ca6c634e9fa28b01a02de4ebf3a5946a8e1" />
+            </map>
+          </authParams2>
+        </JupyterConnectionParameters>
+      </list>
+    </option>
+    <option name="moduleParameters">
+      <map>
+        <entry key="$PROJECT_DIR$/../deep-learning-from-zero/ch01/ch01.iml">
+          <value>
+            <JupyterConnectionParameters>
+              <option name="managed" value="true" />
+            </JupyterConnectionParameters>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
