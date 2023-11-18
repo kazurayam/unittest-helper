@@ -73,7 +73,7 @@ function processFile() {
   # {:toc}
   # ```
   if [ $requireTOC = true ]; then
-    echo "Table of contents" > temp.md
+    echo "- Table of contents" > temp.md
     echo "{:toc}" >> temp.md
     echo "" >> temp.md
     cat $newmd >> temp.md
