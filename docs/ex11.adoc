@@ -1,4 +1,4 @@
-=== Example10 More layers of directory under the output sub-directory
+=== Example11 More layers of directory under the output sub-directory
 
 The link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java[io.github.someone.somestuff.SampleTest] class has one more test method:
 

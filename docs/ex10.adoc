@@ -1,4 +1,4 @@
-=== Example9 You should make a Factory class that creates your customized TestOutputOrganizer
+=== Example10 You should make a Factory class that creates your customized TestOutputOrganizer
 
 It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` for your own unit tests instantiated with custom parameters. See the following example.
 

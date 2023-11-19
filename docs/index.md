@@ -408,7 +408,7 @@ The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecurs
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/lib/src/test/java/com/kazurayam/unittes/TestOutputOrganizerTest.java)
 
-### Example9 You should make a Factory class that creates your customized TestOutputOrganizer
+### Example10 You should make a Factory class that creates your customized TestOutputOrganizer
 
 It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` for your own unit tests instantiated with custom parameters. See the following example.
 
@@ -502,7 +502,7 @@ The 2nd layer is the method name which actually wrote the file.
 
 I find this tree format is useful for organizing a lot of output files created by multiple test cases.
 
-### Example10 More layers of directory under the output sub-directory
+### Example11 More layers of directory under the output sub-directory
 
 The [io.github.someone.somestuff.SampleTest](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java) class has one more test method:
 
