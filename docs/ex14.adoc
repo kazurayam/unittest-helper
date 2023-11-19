@@ -1,0 +1,7 @@
+=== Example14 Deleting a directory recursively
+
+[source,java]
+----
+include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=189..208]
+----
+

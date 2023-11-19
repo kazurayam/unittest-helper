@@ -224,4 +224,22 @@ public class TestOutputOrganizerTest {
         assertThat(too.getOutputSubDirectory()).exists();
         assertThat(isEmpty(too.getOutputSubDirectory())).isTrue();
     }
+
+    /**
+     * call the static method cleanDirectoryRecursively(Path) of
+     * TestOutputOrganizer class to remove a directory recursively
+     */
+    @Test
+    public void test_cleanDirectoryRecursively() throws IOException {
+        // given
+        Path dir = Paths.get("build/work");
+        Files.createDirectories(dir);
+        Path file = dir.resolve("foo.txt");
+        Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        // when
+        TestOutputOrganizer.cleanDirectoryRecursively(dir);
+        // then
+        assertThat(file).doesNotExist();
+        assertThat(dir).doesNotExist();
+    }
 }

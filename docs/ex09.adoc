@@ -1,40 +1,10 @@
-=== Example9 You should make a Factory class that creates your customized TestOutputOrganizer
+=== Example9 Removing anonymous directory  recursively
 
-It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` for your own unit tests instantiated with custom parameters. See the following example.
+The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecursively()` method which removes any directory recursively. See the following sample test class.
 
-[source]
+[source, java]
 ----
-include::../app/src/test/java/io/github/someone/somestuff/TestOutputOrganizerFactory.java[]
+include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=232..244]
 ----
-
-
-This `TestOutputFactory` class implements `create(Class)` method, which will instantiate a `com.kazurayam.unittest.TestOutputOrganizer` class with customized parameter values:
-
-1. the output directory will be located at `<projectDir>/build/tmp/testOutput`
-2. in the output directory, it will create subdirectory of which name is equal to the "Fully Qualified Class Name" of the given test class.
-
-The following code is using the Factory.
-
-[source]
-----
-include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[lines=1..45]
-----
-
-When you ran the test, the output directory will look like this:
-
-[source]
-----
-app/build/tmp/testOutput
-└── io.github.someone.somestuff.SampleTest
-    └── test_write_file
-        └── sample_20231103_094817.txt
-----
-
-Please note that the file tree has 2 layers of directories in between the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`.
-
-The 1st layer is the FQCN of the test class.
-
-The 2nd layer is the method name which actually wrote the file.
-
-I find this tree format is useful for organizing a lot of output files created by multiple test cases.
+link:https://github.com/kazurayam/unittest-helper/blob/develop/lib/src/test/java/com/kazurayam/unittes/TestOutputOrganizerTest.java[source]
 

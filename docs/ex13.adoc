@@ -1,7 +1,7 @@
-=== Example13 Deleting a directory recursively
+=== Example13 Copying a source directory to a target directory recursively
 
 [source,java]
 ----
-include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=189..208]
+include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=170..187]
 ----
 

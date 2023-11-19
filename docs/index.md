@@ -388,6 +388,26 @@ By `cleanOutputDirectory`, you would have a cleaner result, like:
 
 There is `cleanOutputSubDirectory()` method as well. This will choose a specific sub directory specified by `setSubDir(Path subDir)` method of the `TestOutputOrganizer.Builder` class. The `cleanOutputSubDirectory()` will leave other subdirectories in the output directory untouched.
 
+### Example9 Removing anonymous directory recursively
+
+The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecursively()` method which removes any directory recursively. See the following sample test class.
+
+        @Test
+        public void test_cleanDirectoryRecursively() throws IOException {
+            // given
+            Path dir = Paths.get("build/work");
+            Files.createDirectories(dir);
+            Path file = dir.resolve("foo.txt");
+            Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            // when
+            TestOutputOrganizer.cleanDirectoryRecursively(dir);
+            // then
+            assertThat(file).doesNotExist();
+            assertThat(dir).doesNotExist();
+        }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/lib/src/test/java/com/kazurayam/unittes/TestOutputOrganizerTest.java)
+
 ### Example9 You should make a Factory class that creates your customized TestOutputOrganizer
 
 It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` for your own unit tests instantiated with custom parameters. See the following example.
@@ -524,7 +544,7 @@ and
 
 Note that the parameter string to the `resolveOutput(String)` method can contain `/`, which represents one or more directories under the output sub-directory. For example, you can insert a directory of which name stands for the test method name. This technique makes it easy to organize output files created by multiple methods in a single test class.
 
-### Example11 A helper method that translates a Path to a Home Relative string
+### Example12 A helper method that translates a Path to a Home Relative string
 
 A Path object can be turned into an absolute path string like:
 
@@ -549,7 +569,7 @@ This test prints the following output in the console:
 
     [test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
 
-### Example12 Copying a source directory to a target directory recursively
+### Example13 Copying a source directory to a target directory recursively
 
         @Test
         void test_copyDir() throws IOException {
@@ -570,7 +590,7 @@ This test prints the following output in the console:
             assertThat(targetFile).exists();
         }
 
-### Example13 Deleting a directory recursively
+### Example14 Deleting a directory recursively
 
         @Test
         void test_deleteDir() throws IOException {

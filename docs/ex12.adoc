@@ -1,7 +1,30 @@
-=== Example12 Copying a source directory to a target directory recursively
+=== Example12 A helper method that translates a Path to a Home Relative string
 
-[source,java]
+A Path object can be turned into an absolute path string like:
+
+[source]
 ----
-include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=170..187]
+/Users/kazurayam/github/unittest-helper/lib/
+----
+
+In this string you can find my personal name "kazurayam". When I write some document, I feel like to copy the output message and paste it into page. However, I do not like exposing my personal name public. I would prefer "Home Relative Path" which starts with a tilde character, like:
+
+[source]
+----
+~/github/unittest-helper/lib/
+----
+
+The `TestOutputOrganizer` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
+
+[source, java]
+----
+include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=96..104]
+----
+
+This test prints the following output in the console:
+
+[source]
+----
+[test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
 ----
 
