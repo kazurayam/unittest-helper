@@ -392,10 +392,12 @@ There is `cleanOutputSubDirectory()` method as well. This will choose a specific
 
 The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecursively()` method which removes any directory recursively. See the following sample test class.
 
+         * TestOutputOrganizer class to remove a directory recursively
+         */
         @Test
         public void test_cleanDirectoryRecursively() throws IOException {
             // given
-            Path dir = Paths.get("build/work");
+            Path dir = FileSystems.getDefault().getPath("build/work");
             Files.createDirectories(dir);
             Path file = dir.resolve("foo.txt");
             Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
@@ -403,8 +405,6 @@ The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecurs
             TestOutputOrganizer.cleanDirectoryRecursively(dir);
             // then
             assertThat(file).doesNotExist();
-            assertThat(dir).doesNotExist();
-        }
 
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/lib/src/test/java/com/kazurayam/unittes/TestOutputOrganizerTest.java)
 
@@ -560,7 +560,7 @@ The `TestOutputOrganizer` class implements a method `String toHomeRelativeString
         public void test_toHomeRelativeString_simple() {
             TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
             Path projectDir = too.getProjectDir();
-            String homeRelative = TestOutputOrganizer.toHomeRelativeString(projectDir);
+            String homeRelative = too.toHomeRelativeString(projectDir);
             System.out.println("[test_toHomeRelativeString_simple] " + homeRelative);
             assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
         }
@@ -570,6 +570,8 @@ This test prints the following output in the console:
     [test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
 
 ### Example13 Copying a source directory to a target directory recursively
+
+        }
 
         @Test
         void test_copyDir() throws IOException {
@@ -587,10 +589,10 @@ This test prints the following output in the console:
             // when
             too.copyDir(sourceDir, targetDir);
             // then
-            assertThat(targetFile).exists();
-        }
 
 ### Example14 Deleting a directory recursively
+
+        }
 
         @Test
         void test_deleteDir() throws IOException {
@@ -610,7 +612,5 @@ This test prints the following output in the console:
             // when
             too.deleteDir(targetDir);
             // then
-            assertThat(targetFile).doesNotExist();
-        }
 
 (FIN)

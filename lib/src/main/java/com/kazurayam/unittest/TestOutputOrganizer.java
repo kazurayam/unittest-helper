@@ -6,9 +6,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +23,7 @@ import java.util.Objects;
 public final class TestOutputOrganizer {
 
     private static final Logger log = LoggerFactory.getLogger(TestOutputOrganizer.class);
-
+    private final FileSystem fileSystem;
     private final Path projectDir;
     private final String outputDirPath;
     private final String subDirPath;
@@ -31,6 +32,7 @@ public final class TestOutputOrganizer {
      * @param builder TestOutputOrganizer.Builder instance
      */
     private TestOutputOrganizer(Builder builder) {
+        this.fileSystem = builder.fileSystem;
         this.projectDir = builder.projectDir;
         this.outputDirPath = builder.outputDirPath;
         this.subDirPath = builder.subDirPath;
@@ -58,7 +60,7 @@ public final class TestOutputOrganizer {
      * which is relative to the project directory.
      */
     public Path getOutputDirectory() {
-        return projectDir.resolve(outputDirPath);
+        return getProjectDir().resolve(outputDirPath);
     }
 
     /**
@@ -154,9 +156,6 @@ public final class TestOutputOrganizer {
     }
 
 
-
-    //---------- static section -----------------------------------------------
-
     static final String TILDE = "~";
 
     /**
@@ -171,14 +170,14 @@ public final class TestOutputOrganizer {
      * @param path a Path object to be translated into a Home Relative path string
      * @return a path string prepended by tilde `~` if the path starts with "user.home"
      */
-    public static String toHomeRelativeString(Path path) {
+    public String toHomeRelativeString(Path path) {
         Objects.requireNonNull(path);
         Path p = path.toAbsolutePath();
         String userHomeString = System.getProperty("user.home");
         if (userHomeString == null) {
             throw new IllegalStateException("System property user.home is null");
         }
-        Path userHome = Paths.get(userHomeString);
+        Path userHome = fileSystem.getPath(userHomeString);
         try {
             if (p.toUri().toURL().toString().startsWith(
                     userHome.toAbsolutePath().toUri().toURL().toString())) {
@@ -221,6 +220,7 @@ public final class TestOutputOrganizer {
      * Joshua Bloch's "Builder" for the TestOutputOrganizer class
      */
     public static class Builder {
+        private final FileSystem fileSystem;
         private final Class<?> clazz;
         private Path projectDir;
         private List<String> sublistPattern;
@@ -233,12 +233,17 @@ public final class TestOutputOrganizer {
          */
         private static final String DEFAULT_OUTPUT_DIR_PATH = "test-output";
 
+        public Builder(Class<?> clazz) {
+            this(FileSystems.getDefault(), clazz);
+        }
+
         /**
-         * Sole constructor
-         *
+         * Constructor
+         * @param fileSystem the instance of java.nio.file.FileSystem
          * @param clazz the Class object of a test class
          */
-        public Builder(Class<?> clazz) {
+        public Builder(FileSystem fileSystem, Class<?> clazz) {
+            this.fileSystem = fileSystem;
             this.clazz = clazz;
             this.projectDir = null;
             this.sublistPattern = null;
@@ -271,7 +276,7 @@ public final class TestOutputOrganizer {
          */
         public Builder outputDirPath(String outputDirPath) {
             Objects.requireNonNull(outputDirPath);
-            Path odp = Paths.get(outputDirPath);
+            Path odp = fileSystem.getPath(outputDirPath);
             if (odp.isAbsolute()) {
                 throw new IllegalArgumentException(
                         "outputDirPath should not be absolute: " + outputDirPath);
@@ -288,9 +293,9 @@ public final class TestOutputOrganizer {
          *               Paths.get("com.kazurayam.unittesthelperdemo.WithHelperTest")
          * @return the reference to this Builder.Builder instance
          */
-        public Builder subDirPath(String subDirPath) {
+        public Builder subDirPath(String subDirPath, String ... more) {
             Objects.requireNonNull(subDirPath);
-            Path sdp = Paths.get(subDirPath);
+            Path sdp = fileSystem.getPath(subDirPath, more);
             if (sdp.isAbsolute()) {
                 throw new IllegalArgumentException(
                         "subDirPath must not be absolute: " + subDirPath);
@@ -303,7 +308,7 @@ public final class TestOutputOrganizer {
          * @return TestOutputOrganizer object
          */
         public TestOutputOrganizer build() {
-            ProjectDirectoryResolver pdr = new ProjectDirectoryResolver();
+            ProjectDirectoryResolver pdr = new ProjectDirectoryResolver(fileSystem);
             if (sublistPattern != null) {
                 pdr.addSublistPattern(sublistPattern);
             }
