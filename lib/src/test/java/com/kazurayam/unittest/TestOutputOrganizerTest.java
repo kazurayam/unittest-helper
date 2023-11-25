@@ -1,5 +1,6 @@
 package com.kazurayam.unittest;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,26 @@ public class TestOutputOrganizerTest {
         Path p = too.getOutputDirectory();
         log.info("[test_getOutputDir_custom] output dir : " + p);
         assertThat(p.getFileName().toString()).isEqualTo(dirName);
+    }
+
+    @Test
+    public void test_getClassOutputDirectory() {
+        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
+                .subDirPath(this.getClass()).build();
+        Path p = too.getClassOutputDirectory();
+        log.info("[test_getClassOutputDirectory] " + p);
+        assertThat(p.getFileName().toString()).isEqualTo(this.getClass().getName());
+    }
+
+    @Test
+    public void test_getMethodOutputDirectory() {
+        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
+                .subDirPath(this.getClass()).build();
+        Path p = too.getMethodOutputDirectory("test_getMethodOutputDirectory");
+        log.info("[test_getMethodOutputDirectory]" + p);
+        assertThat(p.getFileName().toString()).isEqualTo("test_getMethodOutputDirectory");
+        assertThat(p.getParent().getFileName().toString()).isEqualTo(this.getClass().getName());
+
     }
 
     @Test
@@ -146,6 +167,22 @@ public class TestOutputOrganizerTest {
 
     @Test
     public void test_cleanOutputSubDirectory() throws IOException {
+        // given
+        TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(this.getClass())
+                        .subDirPath(FileSystems.getDefault().getPath(this.getClass().getName()).toString())
+                        .build();
+        Path p = too.resolveOutput("foo.txt");
+        Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        assertThat(p).exists();
+        //
+        too.cleanOutputSubDirectory();
+        assertThat(too.getOutputSubDirectory()).exists();
+        assertThat(isEmpty(too.getOutputSubDirectory())).isTrue();
+    }
+
+    @Test
+    public void test_cleanClassOutputDirectory() throws IOException {
         // given
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())

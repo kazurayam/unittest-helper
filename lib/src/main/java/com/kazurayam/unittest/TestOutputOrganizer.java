@@ -24,18 +24,22 @@ public final class TestOutputOrganizer {
 
     private static final Logger log = LoggerFactory.getLogger(TestOutputOrganizer.class);
     private final FileSystem fileSystem;
+    private final Class<?> clazz;
     private final Path projectDir;
     private final String outputDirPath;
     private final String subDirPath;
+    private final Boolean isFQCN;
 
     /**
      * @param builder TestOutputOrganizer.Builder instance
      */
     private TestOutputOrganizer(Builder builder) {
         this.fileSystem = builder.fileSystem;
+        this.clazz = builder.clazz;
         this.projectDir = builder.projectDir;
         this.outputDirPath = builder.outputDirPath;
         this.subDirPath = builder.subDirPath;
+        this.isFQCN = builder.isFQCN;
     }
 
     /**
@@ -78,11 +82,26 @@ public final class TestOutputOrganizer {
      * @return Path of output sub directory
      */
     public Path getOutputSubDirectory() {
-        if (subDirPath != null) {
-            return this.getOutputDirectory().resolve(subDirPath);
+        if (this.subDirPath != null) {
+            return this.getOutputDirectory().resolve(this.subDirPath);
         } else {
             return this.getOutputDirectory();
         }
+    }
+
+    public Path getClassOutputDirectory() {
+        if (this.subDirPath != null && this.isFQCN) {
+            return this.getOutputSubDirectory();
+        } else {
+            throw new IllegalStateException("getClassOutputDirectory is not operational when you specify the subDirPath to the Builder");
+        }
+    }
+
+    public Path getMethodOutputDirectory(String testMethodName) {
+        Objects.requireNonNull(testMethodName);
+        assert !testMethodName.isEmpty();
+        Path classOutputDir = getClassOutputDirectory();
+        return classOutputDir.resolve(testMethodName);
     }
 
     /**
@@ -92,11 +111,10 @@ public final class TestOutputOrganizer {
      * @return the reference to this TestOutputOrganizer instance
      * @throws IOException during removing files/directories
      */
-    public TestOutputOrganizer cleanOutputDirectory() throws IOException {
+    public void cleanOutputDirectory() throws IOException {
         Path outputDir = this.getOutputDirectory();
         cleanDirectoryRecursively(outputDir);
         Files.createDirectories(outputDir);
-        return this;
     }
 
     /**
@@ -106,11 +124,22 @@ public final class TestOutputOrganizer {
      * @return the reference to this TestOutputOrganizer instance
      * @throws IOException during removing files/directories
      */
-    public TestOutputOrganizer cleanOutputSubDirectory() throws IOException {
+    public void cleanOutputSubDirectory() throws IOException {
         Path outputSubDir = this.getOutputSubDirectory();
         cleanDirectoryRecursively(outputSubDir);
         Files.createDirectories(outputSubDir);
-        return this;
+    }
+
+    public void cleanClassOutputDirectory() throws IOException {
+        Path classOutputDir = this.getClassOutputDirectory();
+        cleanDirectoryRecursively(classOutputDir);
+        Files.createDirectories(classOutputDir);
+    }
+
+    public void cleanMethodOutputDirectory(String testMethodName) throws IOException {
+        Path methodOutputDir = this.getMethodOutputDirectory(testMethodName);
+        cleanDirectoryRecursively(methodOutputDir);
+        Files.createDirectories(methodOutputDir);
     }
 
     /**
@@ -226,6 +255,7 @@ public final class TestOutputOrganizer {
         private List<String> sublistPattern;
         private String outputDirPath;
         private String subDirPath;
+        private Boolean isFQCN;
 
         /**
          * The name of the directory created by TestOutputOrganizer as default
@@ -249,6 +279,7 @@ public final class TestOutputOrganizer {
             this.sublistPattern = null;
             this.outputDirPath = DEFAULT_OUTPUT_DIR_PATH;
             this.subDirPath = null;
+            this.isFQCN = false;
         }
 
         /**
@@ -301,6 +332,13 @@ public final class TestOutputOrganizer {
                         "subDirPath must not be absolute: " + subDirPath);
             }
             this.subDirPath = subDirPath;
+            return this;
+        }
+
+        public Builder subDirPath(Class<?> clazz) {
+            Objects.requireNonNull(clazz);
+            this.subDirPath = clazz.getName();
+            this.isFQCN = true;
             return this;
         }
 
