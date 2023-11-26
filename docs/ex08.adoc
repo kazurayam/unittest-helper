@@ -4,7 +4,7 @@ The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which
 
 [source, java]
 ----
-include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[lines=1..45]
+include::../app/src/test/java/io/github/someone/examples/SampleTest.java[lines=1..45]
 ----
 link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java[source]
 
@@ -12,8 +12,8 @@ This will print the following in the console:
 
 [source]
 ----
-[test_write_file] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.somestuff.SampleTest/test_write_file/sample_20231104_081132.txt
-[test_write_file_once_more] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.somestuff.SampleTest/test_write_file_once_more/sample_20231104_081132.txt
+[test_write_file] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.examples.SampleTest/test_write_file/sample_20231104_081132.txt
+[test_write_file_once_more] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.examples.SampleTest/test_write_file_once_more/sample_20231104_081132.txt
 ----
 
 The `@BeforeClass`-annotated method is invoked once as soon as this test class started only once. By calling `too.cleanOutputDirectory()`, the `test-output` directory will be removed.
@@ -23,7 +23,7 @@ This method is useful when the test class writes files with timestamp in its nam
 [source]
 ----
 app/build/tmp/testOutput
-└── io.github.someone.somestuff.SampleTest
+└── io.github.someone.examples.SampleTest
     └── test_write_file
         ├── sample_20231103_090143.txt
         ├── sample_20231103_094723.txt
@@ -37,7 +37,7 @@ By `cleanOutputDirectory`, you would have a cleaner result, like:
 [source]
 ----
 app/build/tmp/testOutput
-└── io.github.someone.somestuff.SampleTest
+└── io.github.someone.examples.SampleTest
     └── test_write_file
         └── sample_20231103_094817.txt
 ----

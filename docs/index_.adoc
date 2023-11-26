@@ -1,6 +1,6 @@
 :projectVersion: 0.0.0
 
-= Unit Test Helper
+= Unittest Helper
 
 - author: kazurayam
 - date: Nov, 2023
@@ -11,6 +11,11 @@
 == Problems to solve
 
 === Is Current Working Directory reliable for unit-tests? --- Not always
+
+Sometimes, I want my JUnit-based tests in Java to write a file. Where to locate the file? The simplest idea would be to write the file immediately under the project directory. Let me show you an example.
+
+
+
 
 I encountered some difficulties in a TestNG test case in a Gradle Multi-project. I expected that a call to `System.getProperty("user.dir")` would return the Path of subproject's directory. In most cases, yes. It works fine. But sometimes it failed. See the following post for detail:
 

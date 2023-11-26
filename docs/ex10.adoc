@@ -4,7 +4,7 @@ It is a good practice for you to create a factory class that creates an instance
 
 [source]
 ----
-include::../app/src/test/java/io/github/someone/somestuff/TestOutputOrganizerFactory.java[]
+include::../app/src/test/java/io/github/someone/examples/TestOutputOrganizerFactory.java[]
 ----
 
 
@@ -17,7 +17,7 @@ The following code is using the Factory.
 
 [source]
 ----
-include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[lines=1..45]
+include::../app/src/test/java/io/github/someone/examples/SampleTest.java[lines=1..45]
 ----
 
 When you ran the test, the output directory will look like this:
@@ -25,7 +25,7 @@ When you ran the test, the output directory will look like this:
 [source]
 ----
 app/build/tmp/testOutput
-└── io.github.someone.somestuff.SampleTest
+└── io.github.someone.examples.SampleTest
     └── test_write_file
         └── sample_20231103_094817.txt
 ----

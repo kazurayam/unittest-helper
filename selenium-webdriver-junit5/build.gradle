@@ -1,36 +1,18 @@
 plugins {
-    id "java"
-}
-
-test {
-    useJUnitPlatform() {
-        if (project.hasProperty("groups")) {
-            includeTags "$groups"
-        }
-        if (project.hasProperty("excludedGroups")) {
-            excludeTags "$excludedGroups"
-        }
-    }
-
-    testLogging {
-        events "passed", "skipped", "failed"
-        showStandardStreams = true
-    }
+    id 'java'
 }
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 ext {
     slf4jVersion  = "2.0.9"
-    logbackVersion = "1.3.5"
+    logbackVersion  = "1.3.5"
 
-    seleniumVersion = "3.141.59"
-
-    junit5Version = "5.10.0"
-    assertjVersion = "3.24.2"
+    seleniumVersion  = "3.141.59"
+    junit5Version = "5.10.1"
+    assertjVersion  = "3.24.2"
     wdmVersion = "5.6.2"
 }
 
@@ -42,6 +24,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:${junit5Version}")
     testImplementation("org.assertj:assertj-core:${assertjVersion}")
     testImplementation("io.github.bonigarcia:webdrivermanager:${wdmVersion}")
+}
 
-    testImplementation project(":lib")
+test {
+    useJUnitPlatform()
+
+    // systemProperties System.properties
 }

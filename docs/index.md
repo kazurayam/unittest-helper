@@ -313,7 +313,7 @@ This will print the following in the console:
 
 The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which removes the output directory recursively. See the following sample test class.
 
-    package io.github.someone.somestuff;
+    package io.github.someone.examples;
 
     import com.kazurayam.unittest.TestOutputOrganizer;
     import org.junit.jupiter.api.BeforeAll;
@@ -339,7 +339,7 @@ The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which
         public static void beforeAll() throws IOException {
             too = TestOutputOrganizerFactory.create(SampleTest.class);
 
-            // remove the "test-output/io.github.someone.somestuff.SampleTest" directory recursively
+            // remove the "test-output/io.github.someone.examples.SampleTest" directory recursively
             too.cleanOutputSubDirectory();
 
             // or too.cleanOutputDirectory() to remove the "test-output" directory
@@ -363,15 +363,15 @@ The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which
 
 This will print the following in the console:
 
-    [test_write_file] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.somestuff.SampleTest/test_write_file/sample_20231104_081132.txt
-    [test_write_file_once_more] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.somestuff.SampleTest/test_write_file_once_more/sample_20231104_081132.txt
+    [test_write_file] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.examples.SampleTest/test_write_file/sample_20231104_081132.txt
+    [test_write_file_once_more] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.examples.SampleTest/test_write_file_once_more/sample_20231104_081132.txt
 
 The `@BeforeClass`-annotated method is invoked once as soon as this test class started only once. By calling `too.cleanOutputDirectory()`, the `test-output` directory will be removed.
 
 This method is useful when the test class writes files with timestamp in its name. If you do NOT clean the dir, you will accumulate a lot of files with different timestamps in the file name. For example:
 
     app/build/tmp/testOutput
-    └── io.github.someone.somestuff.SampleTest
+    └── io.github.someone.examples.SampleTest
         └── test_write_file
             ├── sample_20231103_090143.txt
             ├── sample_20231103_094723.txt
@@ -382,7 +382,7 @@ This method is useful when the test class writes files with timestamp in its nam
 By `cleanOutputDirectory`, you would have a cleaner result, like:
 
     app/build/tmp/testOutput
-    └── io.github.someone.somestuff.SampleTest
+    └── io.github.someone.examples.SampleTest
         └── test_write_file
             └── sample_20231103_094817.txt
 
@@ -412,7 +412,7 @@ The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecurs
 
 It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` for your own unit tests instantiated with custom parameters. See the following example.
 
-    package io.github.someone.somestuff;
+    package io.github.someone.examples;
 
     import com.kazurayam.unittest.TestOutputOrganizer;
 
@@ -441,7 +441,7 @@ This `TestOutputFactory` class implements `create(Class)` method, which will ins
 
 The following code is using the Factory.
 
-    package io.github.someone.somestuff;
+    package io.github.someone.examples;
 
     import com.kazurayam.unittest.TestOutputOrganizer;
     import org.junit.jupiter.api.BeforeAll;
@@ -467,7 +467,7 @@ The following code is using the Factory.
         public static void beforeAll() throws IOException {
             too = TestOutputOrganizerFactory.create(SampleTest.class);
 
-            // remove the "test-output/io.github.someone.somestuff.SampleTest" directory recursively
+            // remove the "test-output/io.github.someone.examples.SampleTest" directory recursively
             too.cleanOutputSubDirectory();
 
             // or too.cleanOutputDirectory() to remove the "test-output" directory
@@ -490,7 +490,7 @@ The following code is using the Factory.
 When you ran the test, the output directory will look like this:
 
     app/build/tmp/testOutput
-    └── io.github.someone.somestuff.SampleTest
+    └── io.github.someone.examples.SampleTest
         └── test_write_file
             └── sample_20231103_094817.txt
 
@@ -504,7 +504,7 @@ I find this tree format is useful for organizing a lot of output files created b
 
 ### Example11 More layers of directory under the output sub-directory
 
-The [io.github.someone.somestuff.SampleTest](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java) class has one more test method:
+The [io.github.someone.examples.SampleTest](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java) class has one more test method:
 
         @Test
         public void test_write_file_once_more() throws IOException {
@@ -522,7 +522,7 @@ When you ran this test, you would get the output directory as follows:
 
     $ tree app/build/tmp/testOutput
     app/build/tmp/testOutput
-    └── io.github.someone.somestuff.SampleTest
+    └── io.github.someone.examples.SampleTest
         ├── test_write_file
         │   └── sample_20231103_124015.txt
         └── test_write_file_once_more

@@ -19,5 +19,4 @@ public final class ProjectDirectoryResolverTest {
             System.out.println("sublistPattern : " + p);
         }
     }
-
 }

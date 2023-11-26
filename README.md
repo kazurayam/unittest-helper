@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation("com.kazurayam:unittest-helper:0.2.2")
+    testImplementation("com.kazurayam:unittest-helper:0.3.0")
 }
 ```
 
@@ -64,6 +64,7 @@ package my:
 
 import com.kazurayam.unittest.TestOutputOrganizer;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -72,10 +73,16 @@ import java.nio.file.Paths;
 
 public class SampleTest {
 
+    private static final TestOutputOrganizer too = new TestOutputOrganizer.Builder(SampleTest.class).build();
+
+    @BeforeAll
+    public static void beforeAll() {
+        too.cleanOutputDirectory();
+    }
+    
     @Test
     public void test_write_into_the_default_dir() throws Exception {
-        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build(); 
-        Path p = too.resolveOutput("sample2.txt");
+        Path p = too.getOutputDirectory().resolve("sample2.txt");
         Files.writeString(p, "Hello, world!");
     }
 }
@@ -83,15 +90,18 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/test-output/sample2.txt`
 
-The `<projectDir>/test-output` directory will be silently created if it is not yet there.
+If the `<projectDir>/test-output` directory is not there, it will be silently created.
 
-#### Ex3: Write a file under a custom directory
+If the ``<projectDir>/test-output` directory will be silently` is already there, it will be removed recursively and will be recreated.
+
+#### Ex3: Write a file under a directory dedicated for the test class
 
 ```
 package my:
 
 import com.kazurayam.unittest.TestOutputOrganizer;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -100,12 +110,18 @@ import java.nio.file.Paths;
 
 public class SampleTest {
 
+    private static final TestOutputOrganizer too = 
+        new TestOutputOrganizer.Builder(SampleTest.class)
+            .subDirPath("build/tmp/testOutput").build();
+
+    @BeforeAll
+    public static void beforeAll() {
+        too.cleanOutputDirectory();
+    }
+    
     @Test
-    public void test_write_into_the_default_dir() throws Exception {
-        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-            .outputDirPath("build/tmp/testOutput")
-            .build(); 
-        Path p = too.resolveOutput("sample3.txt");
+    public void test_write_into_the_custom_dir() throws Exception {
+        Path p = too.getClassOutputDirectory().resolve("sample3.txt");
         Files.writeString(p, "Hello, world!");
     }
 }
@@ -113,7 +129,9 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`
 
-The `<projectDir>/build/tmp/testOutput` directory will be silently created if it is not yet there.
+If the `<projectDir>/build/tmp/testOutput` directory is not yet there, it will be silently created.
+
+If the `<projectDir>/build/tmp/testOutput` directory is already there, it will be once removed recursively and recreated.
 
 #### Ex4: Insert a subdirectory which has the Fully Qualified Class Name of the test class
 
@@ -122,6 +140,7 @@ package my:
 
 import com.kazurayam.unittest.TestOutputOrganizer;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -130,12 +149,18 @@ import java.nio.file.Paths;
 
 public class SampleTest {
 
+    private static final TestOutputOrganizer too = 
+        new TestOutputOrganizer.Builder(SampleTest.class)
+            .subDirPath(SampleTest.class).build();
+
+    @BeforeAll
+    public static void beforeAll() {
+        too.cleanOutputDirectory();
+    }
+    
     @Test
-    public void test_write_into_the_default_dir() throws Exception {
-        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-            .subdirPath(this.getClass.getName())
-            .build(); 
-        Path p = too.resolveOutput("sample4.txt");
+    public void test_write_into_the_classOutputDirectory() throws Exception {
+        Path p = too.getClassOutputDirectory().resolve("sample4.txt");
         Files.writeString(p, "Hello, world!");
     }
 }
@@ -143,12 +168,56 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/testOutput/my.SampleTest/sample4.txt`
 
-By this path structure, you can easily see that the `sample4.txt` file was written by the `my.SampleTest` class.
+This path structure clearly tells you that the `sample4.txt` file was written by the `my.SampleTest` class.
 
+If the `<projectDir>/testOutput/my.SampleTest` directory is not there, it will be silently created.
+
+If the `<projectDir>/testOutput/my.SampleTest` directory is already there, it will be once removed recursively and recreated.
+
+#### Ex:5 Insert a subdirectory which has the test method name
+
+```
+package my:
+
+import com.kazurayam.unittest.TestOutputOrganizer;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class SampleTest {
+
+    private static final TestOutputOrganizer too = 
+        new TestOutputOrganizer.Builder(SampleTest.class)
+            .subDirPath(SampleTest.class).build();
+
+    @BeforeAll
+    public static void beforeAll() {
+        too.cleanOutputDirectory();
+    }
+    
+    @Test
+    public void test_write_into_the_methodOutputDirectory() throws Exception {
+        Path p = too.getMethodOutputDirectory("test_write_into_the_methodOutputDirectory").resolve("sample5.txt");
+        Files.writeString(p, "Hello, world!");
+    }
+}
+```
+
+This will create a file at `<projectDir>/testOutput/my.SampleTest/test_write_into_the_methodOutputDirectory/sample5.txt`
+
+This path structure clearly tells you that the `sample5.txt` file was written by the `my.SampleTest` class, the `test_write_into_the_methodOutputDirectory` method.
+
+If the "method" directory is not there, it will be silently created.
+
+If the "method" directory is already there, it will be once removed recursively and recreated.
 
 #### TestOutputOrganizer resolves the project directory via classpath
 
-Here I wrote "TestOutputOrganizer resolves a path via classpath"? What do I mean here?
+Here I wrote "TestOutputOrganizer resolves a path via classpath"? What do I mean?
 
 If you use Gradle to build the project, then most probably you have the class file under the `build/classes/java/test/` directory with sub-path `my/SampleTest.class`. This case, the parent directory of the `build` is presumed to be the project directory. 
 

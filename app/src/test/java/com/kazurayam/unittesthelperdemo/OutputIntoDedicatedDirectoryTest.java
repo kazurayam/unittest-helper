@@ -6,16 +6,18 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
-public class OrganizerPresentTest {
+public class OutputIntoDedicatedDirectoryTest {
+
+    private static final TestOutputOrganizer too =
+            new TestOutputOrganizer.Builder(OutputIntoDedicatedDirectoryTest.class).build();
 
     @Test
     public void test_getProjectDir() {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
         Path projectDir = too.getProjectDir();
         System.out.println("[test_getProjectDir] projectDir = " +
-                TestOutputOrganizer.toHomeRelativeString(projectDir));
+                too.toHomeRelativeString(projectDir));
     }
 
     @Test
@@ -23,7 +25,7 @@ public class OrganizerPresentTest {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
         Path outputDir = too.getOutputDirectory();
         System.out.println("[test_getOutputDir_as_default] outputDir = " +
-                TestOutputOrganizer.toHomeRelativeString(outputDir));
+                too.toHomeRelativeString(outputDir));
     }
 
     @Test
@@ -33,7 +35,7 @@ public class OrganizerPresentTest {
                 .build();
         Path outputDir = too.getOutputDirectory();
         System.out.println("[test_getOutputDir_custom] outputDir = " +
-                TestOutputOrganizer.toHomeRelativeString(outputDir));
+                too.toHomeRelativeString(outputDir));
     }
 
     /*
@@ -45,7 +47,7 @@ public class OrganizerPresentTest {
         Path p = too.resolveOutput("sample.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         System.out.println("[test_write_into_the_default_output_directory] p = " +
-                TestOutputOrganizer.toHomeRelativeString(p));
+                too.toHomeRelativeString(p));
     }
 
     @Test
@@ -53,7 +55,8 @@ public class OrganizerPresentTest {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
         Path p = too.resolveOutput("sub/sample.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-        System.out.println("[test_write_into_subdir_under_the_default_output_directory] p = " + TestOutputOrganizer.toHomeRelativeString(p));
+        System.out.println("[test_write_into_subdir_under_the_default_output_directory] p = " +
+                too.toHomeRelativeString(p));
     }
 
     /*
@@ -67,7 +70,7 @@ public class OrganizerPresentTest {
                         .build();
         Path p = too.resolveOutput("sample.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-        System.out.println("[test_write_into_custom_directory] p = " + TestOutputOrganizer.toHomeRelativeString(p));
+        System.out.println("[test_write_into_custom_directory] p = " + too.toHomeRelativeString(p));
     }
 
     @Test
@@ -81,6 +84,6 @@ public class OrganizerPresentTest {
         Path p = outdir.resolve("sample.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         System.out.println("[test_write_into_another_custom_dir] p = " +
-                TestOutputOrganizer.toHomeRelativeString(p));
+                too.toHomeRelativeString(p));
     }
 }
