@@ -1,40 +1,31 @@
-=== Example10 You should make a Factory class that creates your customized TestOutputOrganizer
+=== Example10 A helper method that translates a absolute Path to a Home Relative string
 
-It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` for your own unit tests instantiated with custom parameters. See the following example.
-
-[source]
-----
-include::../app/src/test/java/io/github/someone/examples/TestOutputOrganizerFactory.java[]
-----
-
-
-This `TestOutputFactory` class implements `create(Class)` method, which will instantiate a `com.kazurayam.unittest.TestOutputOrganizer` class with customized parameter values:
-
-1. the output directory will be located at `<projectDir>/build/tmp/testOutput`
-2. in the output directory, it will create subdirectory of which name is equal to the "Fully Qualified Class Name" of the given test class.
-
-The following code is using the Factory.
+A Path object can be turned into an absolute path string like:
 
 [source]
 ----
-include::../app/src/test/java/io/github/someone/examples/SampleTest.java[lines=1..45]
+/Users/kazurayam/github/unittest-helper/lib/
 ----
 
-When you ran the test, the output directory will look like this:
+In this string you can find my personal name "kazurayam". When I write some document, often I need to copy the output message and paste it into documents. However, I hesitate exposing my personal name public. I would prefer present a path in *Home Relative string* which starts with a tilde character, like:
 
 [source]
 ----
-app/build/tmp/testOutput
-└── io.github.someone.examples.SampleTest
-    └── test_write_file
-        └── sample_20231103_094817.txt
+~/github/unittest-helper/lib/
 ----
 
-Please note that the file tree has 2 layers of directories in between the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`.
+The `TestOutputOrganizer` class provides a helper method that translte a Path object into a Home Relative string. See the following example:
 
-The 1st layer is the FQCN of the test class.
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex10Test.java[]
+----
 
-The 2nd layer is the method name which actually wrote the file.
+This test prints the following output in the console:
 
-I find this tree format is useful for organizing a lot of output files created by multiple test cases.
+[source]
+----
+file absolute: /Users/kazurayam/github/unittest-helper/app/test-output/sample1.txt
+file relative: ~/github/unittest-helper/app/test-output/sample1.txt
+----
 

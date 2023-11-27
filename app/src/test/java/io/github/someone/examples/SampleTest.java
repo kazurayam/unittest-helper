@@ -17,13 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SampleTest {
 
-    private static final Logger log = LoggerFactory.getLogger(SampleTest.class);
-    private static TestOutputOrganizer too;
+    private static TestOutputOrganizer too = TestOutputOrganizerFactory.create(SampleTest.class);
+
     private static DateTimeFormatter dtf;
+    private static final Logger log = LoggerFactory.getLogger(SampleTest.class);
 
     @BeforeAll
     public static void beforeAll() throws IOException {
-        too = TestOutputOrganizerFactory.create(SampleTest.class);
         log.info("project directory: " + too.toHomeRelativeString(too.getProjectDir()));
         // remove the "test-output/io.github.someone.somestuff.SampleTest" directory recursively
         too.cleanClassOutputDirectory();

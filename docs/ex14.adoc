@@ -1,7 +1,29 @@
-=== Example14 Deleting a directory recursively
+=== Example14 Factory class that creates customized TestOutputOrganizer
 
-[source,java]
+It is a good practice for you to define a factory class that creates an instance of `TestOutputOrganizer` with your custom parameters for your own project. Use the factory throughout your project. Then you can standardize the organization of test outputs.
+
+See the following example "factory".
+
+[source]
 ----
-include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=189..208]
+include::../app/src/test/java/io/github/someone/examples/TestOutputOrganizerFactory.java[]
 ----
 
+This `TestOutputOrganizerFactory` class implements only a single static method `create(Class)` method which will instantiate a `com.kazurayam.unittest.TestOutputOrganizer` class with customized parameter values.
+
+The following code is using the Factory.
+
+[source]
+----
+include::../app/src/test/java/io/github/someone/examples/SampleTest.java[lines=1..42]
+----
+
+When you ran the test, the output directory will look like this:
+
+[source]
+----
+app/build/tmp/testOutput
+└── io.github.someone.examples.SampleTest
+    └── test_write_file
+        └── sample_20231103_094817.txt
+----

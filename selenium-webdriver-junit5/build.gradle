@@ -29,5 +29,5 @@ dependencies {
 test {
     useJUnitPlatform()
 
-    // systemProperties System.properties
+    systemProperties System.properties
 }

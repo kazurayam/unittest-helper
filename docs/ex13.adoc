@@ -2,6 +2,7 @@
 
 [source,java]
 ----
-include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=170..187]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex13Test.java[]
 ----
 
+I know I can do the same dir-to-dir copy by link:https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FileUtils.html#copyDirectory(java.io.File,java.io.File)[FileUtils of Apache Commons IO]. If I use the `TestOutputOrganizer.copyDir(Path source, Path target)`, I can simplify the `dependencies` of my project. That's a small but good thing.

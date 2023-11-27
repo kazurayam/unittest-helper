@@ -29,7 +29,7 @@ public class TestOutputOrganizerTest {
     }
 
     @Test
-    public void test_getOutputDir_default() {
+    public void test_getOutputDir_default() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
         Path p = too.getOutputDirectory();
         log.info("[test_getOutputDir_default] output dir : " + p);
@@ -37,7 +37,7 @@ public class TestOutputOrganizerTest {
     }
 
     @Test
-    public void test_getOutputDir_custom() {
+    public void test_getOutputDir_custom() throws IOException {
         String dirName = "customDir";
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
@@ -49,7 +49,7 @@ public class TestOutputOrganizerTest {
     }
 
     @Test
-    public void test_getClassOutputDirectory() {
+    public void test_getClassOutputDirectory() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
                 .subDirPath(this.getClass()).build();
         Path p = too.getClassOutputDirectory();
@@ -58,7 +58,7 @@ public class TestOutputOrganizerTest {
     }
 
     @Test
-    public void test_getMethodOutputDirectory() {
+    public void test_getMethodOutputDirectory() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
                 .subDirPath(this.getClass()).build();
         Path p = too.getMethodOutputDirectory("test_getMethodOutputDirectory");
@@ -125,9 +125,9 @@ public class TestOutputOrganizerTest {
     }
 
     @Test
-    public void test_toHomeRelativeString_simple_more() {
+    public void test_toHomeRelativeString_simple_more() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path p = too.resolveOutput("foo.txt");
+        Path p = too.getOutputDirectory().resolve("foo.txt");
         String homeRelative = too.toHomeRelativeString(p);
         assertThat(homeRelative).isEqualTo(
                 "~/github/unittest-helper/lib/test-output/foo.txt");

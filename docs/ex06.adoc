@@ -1,11 +1,11 @@
-
 === Example6 Writing a file into a subdirectory under the default output directory
+
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=51..58]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex06Test.java[]
 ----
-link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex06Test.java[source]
 
 This will print the following in the console:
 
@@ -13,3 +13,13 @@ This will print the following in the console:
 ----
 [test_write_into_subdir_under_the_default_output_directory] p = ~/github/unittest-helper/app/test-output/sub/sample.txt
 ----
+
+You can create layers of sub-directories under the output directory managed by the `TestOutputOrganizer`. But you are responsible to make sure the parent directory of a file is present. So the following statement was necessary:
+
+[source]
+----
+        Path file = too.getOutputDirectory().resolve("sub/sample.txt");
+        // you need to make sure that the parent directory exists
+        Files.createDirectories(file.getParent());
+----
+

@@ -63,8 +63,10 @@ public final class TestOutputOrganizer {
      * You can customize the name of the output directory by calling setOutputDir(Path.get("dirName")),
      * which is relative to the project directory.
      */
-    public Path getOutputDirectory() {
-        return getProjectDir().resolve(outputDirPath);
+    public Path getOutputDirectory() throws IOException {
+        Path d = getProjectDir().resolve(outputDirPath);
+        Files.createDirectories(d);
+        return d;
     }
 
     /**
@@ -81,15 +83,17 @@ public final class TestOutputOrganizer {
      * if the subDirpath is not set, then will return the same as getOutputDir()
      * @return Path of output sub directory
      */
-    public Path getOutputSubDirectory() {
+    public Path getOutputSubDirectory() throws IOException {
         if (this.subDirPath != null) {
-            return this.getOutputDirectory().resolve(this.subDirPath);
+            Path d = getOutputDirectory().resolve(this.subDirPath);
+            Files.createDirectories(d);
+            return d;
         } else {
             return this.getOutputDirectory();
         }
     }
 
-    public Path getClassOutputDirectory() {
+    public Path getClassOutputDirectory() throws IOException {
         if (this.subDirPath != null && this.isFQCN) {
             return this.getOutputSubDirectory();
         } else {
@@ -97,11 +101,13 @@ public final class TestOutputOrganizer {
         }
     }
 
-    public Path getMethodOutputDirectory(String testMethodName) {
+    public Path getMethodOutputDirectory(String testMethodName) throws IOException {
         Objects.requireNonNull(testMethodName);
         assert !testMethodName.isEmpty();
         Path classOutputDir = getClassOutputDirectory();
-        return classOutputDir.resolve(testMethodName);
+        Path d = classOutputDir.resolve(testMethodName);
+        Files.createDirectories(d);
+        return d;
     }
 
     /**
@@ -166,8 +172,10 @@ public final class TestOutputOrganizer {
      *
      * @param fileName the file name
      * @return Path of a file as the output written by a test class
+     * @deprecated since 0.3.0
      */
-    public Path resolveOutput(String fileName) {
+    @Deprecated
+    public Path resolveOutput(String fileName) throws IOException {
         Path outFile =
                 (subDirPath != null) ?
                         getOutputDirectory().resolve(subDirPath).resolve(fileName) :

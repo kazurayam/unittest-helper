@@ -2,13 +2,14 @@
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[lines=42..49]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex05Test.java[]
 ----
-link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java[source]
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex05.java[source]
 
 This will print the following in the console:
 
 [source]
 ----
-[test_write_into_the_default_output_directory] p = ~/github/unittest-helper/app/test-output/sample.txt
+[test_write_into_the_default_output_directory] ~/github/unittest-helper/app/test-output/sample.txt
+[Hello, world!]
 ----

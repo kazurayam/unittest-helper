@@ -1,13 +1,13 @@
 - Table of contents
 {:toc}
 
-# Unit Test Helper
+# Unittest Helper
 
 -   author: kazurayam
 
 -   date: Nov, 2023
 
--   version: 0.2.4
+-   version: 0.3.0
 
 -   source project: <https://github.com/kazurayam/unittest-helper>
 
@@ -17,13 +17,95 @@
 
 ### Is Current Working Directory reliable for unit-tests? --- Not always
 
-I encountered some difficulties in a TestNG test case in a Gradle Multi-project. I expected that a call to `System.getProperty("user.dir")` would return the Path of subproject’s directory. In most cases, yes. It works fine. But sometimes it failed. See the following post for detail:
+Sometimes, I want my JUnit-based tests in Java to write a file. Where to locate the file? The simplest idea would be to write the file immediately under the project directory. Let me show you an example.
 
--   <https://github.com/kazurayam/selenium-webdriver-java/issues/22>
+-   I have a Gradle Multi-project <https://github.com/kazurayam/unittest-helper>
 
-I couldn’t find out the reason why the "current working directory" became the parent project’s directory, not the subproject directory.
+-   In this parent project, I have a Gradle sub-project [`:app`](https://github.com/kazurayam/unittest-helper/tree/develop/app).
 
-The following post in the Gradle forum gave me a clue:
+-   In this sub-project, I have a JUnit5-based test class [`com.kazurayam.unittesthelperdemo.OutputIntoCurrentWorkingDirectoryTest`](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OutputIntoCurrentWorkingDirectoryTest.java)
+
+-   If you have a look at the source, you would find that this test calls `java.nio.file.Paths.get(String fileName)`, will locate a file `sample1.txt` in the **current working directory** runtime, as follows:
+
+<!-- -->
+
+        @Test
+        public void test_write_under_current_working_directory() throws Exception {
+            Path p = Paths.get("sample1.txt");
+            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            System.out.println("[test_write_under_current_working_directory] p = " + p.toAbsolutePath());
+        }
+
+-   When I run this test, I will get the file in the sub-project’s directory, as follows
+
+<!-- -->
+
+    $ pwd
+    ~/github/unittest-helper
+    :~/github/unittest-helper (develop *)
+    $ tree -L 1 app
+    app
+    ├── build
+    ├── build.gradle
+    ├── sample1.txt
+    └── src
+
+    3 directories, 2 files
+
+The `sample1.txt` file was written into the **current working directory**, which is the sub-project’s directory. OK. This is what I expected.
+
+Now, I would show you another sample code. It will show you a call to `Paths.get(String fileName)` does not necessarily write a file into the project directory. Have a look at a sub-project [`selenium-webdriver-junit5`](https://github.com/kazurayam/unittest-helper/tree/develop/selenium-webdriver-junit5).
+
+> The `selenium-webdriver-junit` project is quoted from the sample code of the book [
+> Boni García, "Hands-On Selenium WebDriver with Java"](https://github.com/bonigarcia/selenium-webdriver-java)
+
+It contains:
+
+-   [selenium-webdriver-junit5/build.gradle](https://github.com/kazurayam/unittest-helper/blob/develop/selenium-webdriver-junit5/build.gradle)
+
+-   [ScreenshotPngJupiterTest.java](https://github.com/kazurayam/unittest-helper/blob/develop/selenium-webdriver-junit5/src/test/java/io/github/bonigarcia/webdriver/jupiter/screenshots/ScreenshotPngJupiterTest.java)
+
+The test class has a line:
+
+            Path destination = Paths.get("screenshot.png");
+
+So I expect that the `ScreeshotPngJupiterTest.java` will write a file immediately under the sub-project directory. However, in fact when I ran the test, I was surprised to find the file `screenshot.png` was written into the parent project directory, not into the sub-project directory.
+
+    $ pwd
+    ~/github/unittest-helper
+
+    $ gradle :selenium-webdriver-junit5:test
+    ...(a few minutes passed)
+
+    $ tree -L 2 .
+    .
+    ...
+    ├── build.gradle
+    ...
+    ├── screenshot.png           <===
+    ├── selenium-webdriver-junit5
+    │   ├── README.md
+    │   ├── build
+    │   ├── build.gradle
+    │   └── src
+    └── settings.gradle
+
+    16 directories, 29 files
+
+Why the `screenshot.png` file was written into the parent project `unittest-helper` directory? Why not the file was written into the sub-project `selenium-webdriver-junit5` directory? This is the original problem I got.
+
+I studied the codes and found the cause of the issue. In the `selenium-webdriver-junit5/build.gradle` I found a line:
+
+    test {
+        ...
+        systemProperty System.properties
+    }
+
+With this single line, the problem occurred. When I ran a command `gradle :selenium-webdriver-junit5:test` in the command line, the `System.properites` contained the `System.getProperty("user.dir")` with the value equals to the parent project’s directory, which was passed to the test classes invoked. Consequently in the test class, a call to `java.nio.file.Paths.get(String fileName)` found the `System.getProperty("user.dir")` has the path of the parent project directory, not the sub-project directory.
+
+Consequently I learned that I should not use `java.nio.file.Paths.get(String fileName)` in the test classes at all because it does not necessarily return the path of project directory.
+
+But how to locate the output files from tests without `Paths.get(String)`? The following post in the Gradle forum gave me a clue:
 
 -   [Gradle Forums, How do I set the working dreictory for TestNG in a multi-project Gradle build?](https://discuss.gradle.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379/7)
 
@@ -35,11 +117,11 @@ The following post in the Gradle forum gave me a clue:
 >
 > The only really safe way to solve this problem is to load via the classpath. Is this a possibility for your scenario?
 
-I realized that I should not write unit tests which depend on the "current working directory".
+OK, I would try that.
 
-### Temporary output files shouldn’t be located into the project’s directory
+### Organizing output files from tests; it requires efforts
 
-The easiest way to locate an output file from a unit-test is to call `java.io.File("some-file.txt")` or `java.nio.Paths("some-file.txt")`. Then the `some-file.txt` will be located under the current working directory = `System.getProperty("user.dir")`. Using Maven and Gradle, the current working directory will usually be equal to the project’s directory. By calling `java.io.File(relative path)` often, you will get a lot of temporary files located in the project directory, like this.
+The easiest way to locate an output file from a unit-test is to call `java.io.File("some-file.txt")` or `java.nio.Paths("some-file.txt")`. Then the `some-file.txt` will be located under the current working directory = `System.getProperty("user.dir")`. Using Maven and Gradle, the current working directory will usually be equal to the project’s directory. However, you should be careful. If you are dependent on calling `java.io.File(relative path)` too often, you will get a lot of temporary files located in the project directory, like this.
 
     .
     ├── 2023.10.24_22.07.27.742-7440524241d0dbd63ca5eec377b6455c.png    --- x
@@ -116,12 +198,24 @@ The `com.kazurayam.unittest.ProjectDirectoryResovler` class has a list of the pa
 
     import com.kazurayam.unittest.ProjectDirectoryResolver;
     import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
 
+    import java.nio.file.Path;
     import java.util.List;
 
     import static org.assertj.core.api.Assertions.assertThat;
 
     public final class ProjectDirectoryResolverTest {
+
+        Logger log = LoggerFactory.getLogger(ProjectDirectoryResolverTest.class);
+
+        @Test
+        public void test_getProjectDirViaClasspath() {
+            ProjectDirectoryResolver resolver = new ProjectDirectoryResolver();
+            Path projectDir = resolver.getProjectDirViaClasspath(ProjectDirectoryResolverTest.class);
+            log.info("projectDir: " + projectDir);
+        }
 
         @Test
         public void test_getSublistPatterns() {
@@ -130,10 +224,9 @@ The `com.kazurayam.unittest.ProjectDirectoryResovler` class has a list of the pa
             assertThat(sublistPatterns).isNotNull();
             assertThat(sublistPatterns.size()).isGreaterThanOrEqualTo(2);
             for (List<String> p : sublistPatterns) {
-                System.out.println("sublistPattern : " + p);
+                log.info("sublistPattern : " + p);
             }
         }
-
     }
 
 This test prints the following result in the console:
@@ -149,21 +242,31 @@ Do you need a unique sublistPattern other than those built-in ones?
 
 OK. You can add more sublistPatterns for your own needs by calling the `TestOutputOrganizer.Builder.sublistPattern(List<String>)` method.
 
-## Description by examples
+## Examples
 
 ### Example1 Locating a file path via Current Working Directory
 
     package com.kazurayam.unittesthelperdemo;
 
-    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.Disabled;
     import org.junit.jupiter.api.Test;
 
     import java.nio.charset.StandardCharsets;
     import java.nio.file.Files;
     import java.nio.file.Path;
     import java.nio.file.Paths;
+    import org.slf4j.LoggerFactory;
+    import org.slf4j.Logger;
 
-    public class OrganizerAbsentTest {
+    public class OutputIntoCurrentWorkingDirectoryTest {
+
+        Logger log = LoggerFactory.getLogger(OutputIntoCurrentWorkingDirectoryTest.class);
+
+        @Test
+        public void test_show_CWD() {
+            Path p = Paths.get(".");
+            log.info("[test_show_CWD] " + p.toAbsolutePath().normalize());
+        }
 
         /*
          * will create a file `<projectDir>/sample1.txt`
@@ -172,13 +275,12 @@ OK. You can add more sublistPatterns for your own needs by calling the `TestOutp
         public void test_write_under_current_working_directory() throws Exception {
             Path p = Paths.get("sample1.txt");
             Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            System.out.println("[test_write_under_current_working_directory] p = " +
-                    TestOutputOrganizer.toHomeRelativeString(p));
+            System.out.println("[test_write_under_current_working_directory] p = " + p.toAbsolutePath());
         }
 
     }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerAbsentTest.java)
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OutputIntoCurrentWorkingDirectoryTest.java)
 
 This code calls `Paths.get("sample1_txt")` to resolve the path of output file. Many developers would do the same in their own codes. This code prints the following message:
 
@@ -189,136 +291,346 @@ The call to `Paths.get("sample1.txt")` regards the parameter `sample1.txt` as re
 
 Is the **current working directory** equal to the **project directory** ? --- Usually yes. But sometimes not. It depends on the runtime environment. When the current working directory is different from the project directory, we will be really confused.
 
-So I do not like my unit-tests to depend on the current working directory. Any other way?
+So I do not like my unit-tests to depend on the current working directory. But any other way?
 
 ### Example2 Resolving the project directory resolved via classpath
+
+I want my tests to be able to resolve the path of the project directory so that my tests can locate temporary output files surely under the project directory. And I want my tests to be independent from the **current working directory**. I want to find out the project directory’s path value based on the path value of the class file of the test itself. The following code shows it is possible.
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.ProjectDirectoryResolver;
+    import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+
+    import java.nio.file.Path;
+    import java.util.List;
+
+    import static org.assertj.core.api.Assertions.assertThat;
+
+    public final class ProjectDirectoryResolverTest {
+
+        Logger log = LoggerFactory.getLogger(ProjectDirectoryResolverTest.class);
+
+        @Test
+        public void test_getProjectDirViaClasspath() {
+            ProjectDirectoryResolver resolver = new ProjectDirectoryResolver();
+            Path projectDir = resolver.getProjectDirViaClasspath(ProjectDirectoryResolverTest.class);
+            log.info("projectDir: " + projectDir);
+        }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java)
+
+This will print the following in the console:
+
+    projectDir: /Users/kazurayam/github/unittest-helper/app
+
+How the `com.kazurayam.unittest.ProjectDirectoryResolver` class find the path of project directory via classpath? --- I will describe the detail later. For now, let me talk about how to utilize this library.
+
+### Example3 Locating the default output directory
+
+I want to create a directory named `test-output` under the project directory. I would let my test classes to write files into the directory. I want to for output files `test-output` directory by calling `getOutputDir()`.
 
     package com.kazurayam.unittesthelperdemo;
 
     import com.kazurayam.unittest.TestOutputOrganizer;
     import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+
+    import java.io.IOException;
+    import java.nio.file.Path;
+
+    public class Ex03Test {
+
+        Logger log = LoggerFactory.getLogger(Ex03Test.class);
+
+        @Test
+        public void test_getOutputDir_as_default() throws IOException {
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+            Path outputDir = too.getOutputDirectory();
+            log.info("[test_getOutputDir_as_default] " + outputDir);
+            log.info("[test_getOutputDir_as_default] " +
+                    too.toHomeRelativeString(outputDir));
+        }
+
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex03Test.java)
+
+This will print the following in the console:
+
+    [test_getOutputDir_as_default] /Users/kazurayam/github/unittest-helper/app/test-output
+    [test_getOutputDir_as_default] ~/github/unittest-helper/app/test-output
+
+The default name of the **output directory** is `test-output`. You can explicitly set the name of of the output directory. I will explain it later.
+
+With `toHomeRelativePath(Path p)` method, you can convert a full path string into a path string realtive to the Home directory of the OS user. This is useful for documentation purposes.
+
+### Example4 Creating a custom output directory
+
+The `com.kazurayam.unittest.TestOutputOrganizer` creates a directory with `getOutputDirectory()` and the default name is `test-output`. You may want some other name. Of course you can do it.
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+
+    import java.io.IOException;
+    import java.nio.file.Path;
+
+    public class Ex04Test {
+
+        Logger log = LoggerFactory.getLogger(Ex04Test.class);
+
+        @Test
+        public void test_getOutputDir_custom() throws IOException {
+            TestOutputOrganizer too =
+                    new TestOutputOrganizer.Builder(this.getClass())
+                            .outputDirPath("test-output-another")
+                            .build();
+            Path outputDir = too.getOutputDirectory();
+            log.info("[test_getOutputDir_custom] " +
+                    too.toHomeRelativeString(outputDir));
+        }
+
+        @Test
+        public void test_getOutputDir_custom_more() throws IOException {
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
+                    .outputDirPath("build/tmp/testOutput")
+                    .build();
+            Path outputDir = too.getOutputDirectory();
+            log.info("[test_getOutputDir_custom_more] " +
+                    too.toHomeRelativeString(outputDir));
+        }
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex04Test.java)
+
+This will print the following in the console:
+
+    [test_getOutputDir_custom] ~/github/unittest-helper/app/test-output-another
+    [test_getOutputDir_custom_more] ~/github/unittest-helper/app/build/tmp/testOutput
+
+### Example5 Writing a file into the default output directory
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+
+    import java.io.IOException;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.util.List;
+
+    public class Ex05Test {
+
+        Logger log = LoggerFactory.getLogger(Ex05Test.class);
+
+        @Test
+        public void test_write_a_file_into_the_default_output_directory() throws Exception {
+            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
+            Path file = too.getOutputDirectory().resolve("sample.txt");
+            Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            log.info("[test_write_a_file_into_the_default_output_directory] " +
+                    too.toHomeRelativeString(file));
+            List<String> content = Files.readAllLines(file);
+            log.info(content.toString());
+        }
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex05.java)
+
+This will print the following in the console:
+
+    [test_write_into_the_default_output_directory] ~/github/unittest-helper/app/test-output/sample.txt
+    [Hello, world!]
+
+### Example6 Writing a file into a subdirectory under the default output directory
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
 
     import java.nio.charset.StandardCharsets;
     import java.nio.file.Files;
     import java.nio.file.Path;
-    import java.nio.file.Paths;
+    import java.util.List;
 
-    public class OrganizerPresentTest {
+    public class Ex06Test {
 
-        @Test
-        public void test_getProjectDir() {
-            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-            Path projectDir = too.getProjectDir();
-            System.out.println("[test_getProjectDir] projectDir = " +
-                    TestOutputOrganizer.toHomeRelativeString(projectDir));
-        }
-
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
-
-This will print the following in the console:
-
-    [test_getProjectDir] projectDir = ~/github/unittest-helper/app
-
-How the `TestOutputOrganizer` find the path of project directory via classpath? --- I will describe it later.
-
-### Example3 Locating the default output directory
-
-Quickly find the `test-output` directory by calling `getOutputDir()`.
-
-        @Test
-        public void test_getOutputDir_as_default() {
-            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-            Path outputDir = too.getOutputDirectory();
-            System.out.println("[test_getOutputDir_as_default] outputDir = " +
-                    TestOutputOrganizer.toHomeRelativeString(outputDir));
-        }
-
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
-
-This will print the following in the console:
-
-    [test_getOutputDir_as_default] outputDir = ~/github/unittest-helper/app/test-output
-
-### Example4 Creating a custom output directory
-
-        @Test
-        public void test_getOutputDir_custom() {
-            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-                    .outputDirPath("test-output-another")
-                    .build();
-            Path outputDir = too.getOutputDirectory();
-            System.out.println("[test_getOutputDir_custom] outputDir = " +
-                    TestOutputOrganizer.toHomeRelativeString(outputDir));
-        }
-
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
-
-This will print the following in the console:
-
-    [test_getOutputDir_custom] outputDir = ~/github/unittest-helper/app/test-output-another
-
-### Example5 Writing a file into the default output directory
-
-        @Test
-        public void test_write_into_the_default_output_directory() throws Exception {
-            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-            Path p = too.resolveOutput("sample.txt");
-            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            System.out.println("[test_write_into_the_default_output_directory] p = " +
-                    TestOutputOrganizer.toHomeRelativeString(p));
-        }
-
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
-
-This will print the following in the console:
-
-    [test_write_into_the_default_output_directory] p = ~/github/unittest-helper/app/test-output/sample.txt
-
-### Example6 Writing a file into a subdirectory under the default output directory
+        Logger log = LoggerFactory.getLogger(Ex06Test.class);
 
         @Test
         public void test_write_into_subdir_under_the_default_output_directory() throws Exception {
             TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-            Path p = too.resolveOutput("sub/sample.txt");
-            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            System.out.println("[test_write_into_subdir_under_the_default_output_directory] p = " + TestOutputOrganizer.toHomeRelativeString(p));
+            Path file = too.getOutputDirectory().resolve("sub/sample.txt");
+            // you need to make sure that the parent directory exists
+            Files.createDirectories(file.getParent());
+
+            Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            log.info("[test_write_into_subdir_under_the_default_output_directory] " +
+                    too.toHomeRelativeString(file));
+            List<String> content = Files.readAllLines(file);
+            log.info(content.toString());
         }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex06Test.java)
 
 This will print the following in the console:
 
     [test_write_into_subdir_under_the_default_output_directory] p = ~/github/unittest-helper/app/test-output/sub/sample.txt
 
+You can create layers of sub-directories under the output directory managed by the `TestOutputOrganizer`. But you are responsible to make sure the parent directory of a file is present. So the following statement was necessary:
+
+            Path file = too.getOutputDirectory().resolve("sub/sample.txt");
+            // you need to make sure that the parent directory exists
+            Files.createDirectories(file.getParent());
+
 ### Example7 Writing a file into a custom output directory
 
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.util.List;
+
+    import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+    public class Ex07Test {
+
+        Logger log = LoggerFactory.getLogger(Ex07Test.class);
+
         @Test
-        public void test_write_into_custom_directory() throws Exception {
+        public void test_write_into_subdir_under_the_custom_output_directory() throws Exception {
             TestOutputOrganizer too =
                     new TestOutputOrganizer.Builder(this.getClass())
-                            .outputDirPath("build/tmp/testOutput")
-                            .build();
-            Path p = too.resolveOutput("sample.txt");
-            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            System.out.println("[test_write_into_custom_directory] p = " + TestOutputOrganizer.toHomeRelativeString(p));
+                            .outputDirPath("build/tmp/testOutput").build();
+            Path file = too.getOutputDirectory().resolve("sample.txt");
+            // you do not have to make sure that the parent directory exists
+            // Files.createDirectories(file.getParent());
+
+            Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            log.info("[test_write_into_subdir_under_the_custom_output_directory] " +
+                    too.toHomeRelativeString(file));
+            List<String> content = Files.readAllLines(file);
+            log.info(content.toString());
+
+            assertThat(too.getOutputDirectory().getFileName().toString()).isEqualTo("testOutput");
         }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OrganizerPresentTest.java)
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex07Test.java)
 
 This will print the following in the console:
 
-    [test_write_into_custom_directory] p = ~/github/unittest-helper/app/build/tmp/testOutput/sample.txt
+    [test_write_into_subdir_under_the_custom_output_directory] ~/github/unittest-helper/app/build/tmp/testOutput/sample.txt
+    [Hello, world!]
 
-### Example8 Removing the output directory recursively
+The `Path getOutputDirectory()` method makes sure that the directory is existing. If not present, the method will silently create it.
+=== Example8 Sub-directory which stands for the Fully Qualified Class Name of the test class
 
-The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which removes the output directory recursively. See the following sample test class.
+It is a good idea to create a layer of sub-directories, under the output directory, which stands for the Fully Qualified Class Name of the test classes. Please have a look at the following image.
 
-    package io.github.someone.examples;
+![well organized test outputs](images/well-organized-test-outputs.png)
+
+This directory organization is nice because we can easily see which test class created which file.
+
+Also this organization allows you to name files with duplicating names, for example `my-pdf.pdf`. In the above screenshot, you can find 3 files of that name in 3 different sub-directories.
+
+The following code shows how to use "ClassOutputDirectory" managed by `TestOutputOrganizer`.
+
+    package com.kazurayam.unittesthelperdemo;
 
     import com.kazurayam.unittest.TestOutputOrganizer;
     import org.junit.jupiter.api.BeforeAll;
-    import org.junit.jupiter.api.BeforeEach;
     import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+
+    import java.io.IOException;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.util.stream.Collectors;
+
+    import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+    public class Ex08Test {
+
+        private static final Logger log = LoggerFactory.getLogger(Ex08Test.class);
+        private static final TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(Ex08Test.class)
+                        .outputDirPath("build/tmp/testOutput")
+                        .subDirPath(Ex08Test.class)
+                        .build();
+
+        @BeforeAll
+        public static void beforeAll() throws IOException {
+            too.cleanClassOutputDirectory();
+        }
+
+        @Test
+        public void test_write_a_file() throws Exception {
+            // when
+            Path classOutputDir = too.getClassOutputDirectory();
+            log.info("[test_write_a_file] classOutputDir: " +
+                    too.toHomeRelativeString(classOutputDir));
+
+            Path file = classOutputDir.resolve("sample.txt");
+            Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            log.info("[test_write_a_file] created a file " +
+                    too.toHomeRelativeString(file));
+            // then
+            assertThat(numberOfChildren(classOutputDir)).isEqualTo(1);
+        }
+
+        int numberOfChildren(Path dir) throws IOException {
+            return Files.list(dir).collect(Collectors.toList()).size();
+        }
+
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex08Test.java)
+
+Please find that this test calls the `getClassOutputDirectory()` method and the `cleanClassOutputDirectory()` method of `TestOutputOrganizer` class. In order to make these methods operational, you MUST specify `.subDirPath(Clazz<?> testClass)` to the `TestOutputOrganizer.Builder`.
+
+This test prints the following:
+
+    [test_write_a_file] classOutputDir: ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.Ex08Test
+    [test_write_a_file] created a file ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.Ex08Test/sample.txt
+
+### Example9 One more sub-directory which stands for the method name of the test class
+
+The Example8 showed that you can create a sub-directory which stands for the FQCN of the test class. You can add one more sub-directory which stands for the method name. This helps organizing the outputs from a test class further.
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.AfterAll;
+    import org.junit.jupiter.api.BeforeAll;
+    import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
 
     import java.io.IOException;
     import java.nio.charset.StandardCharsets;
@@ -327,77 +639,202 @@ The `TestOutputOrganizer` class implements `cleanOutputDirectory()` method which
     import java.time.LocalDateTime;
     import java.time.format.DateTimeFormatter;
 
-    import static org.assertj.core.api.Assertions.assertThat;
+    public class Ex09Test {
 
-    public class SampleTest {
-
-        private static TestOutputOrganizer too;
-
-        private DateTimeFormatter dtf;
+        private static final Logger log = LoggerFactory.getLogger(Ex09Test.class);
+        private static final TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(Ex09Test.class)
+                        .subDirPath(Ex09Test.class)
+                        .build();
+        private static LocalDateTime timestamp;
 
         @BeforeAll
-        public static void beforeAll() throws IOException {
-            too = TestOutputOrganizerFactory.create(SampleTest.class);
-
-            // remove the "test-output/io.github.someone.examples.SampleTest" directory recursively
-            too.cleanOutputSubDirectory();
-
-            // or too.cleanOutputDirectory() to remove the "test-output" directory
-        }
-
-        @BeforeEach
-        public void setup() {
-            dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        public static void beforeAll() throws Exception {
+            timestamp = LocalDateTime.now();
         }
 
         @Test
-        public void test_write_file() throws IOException {
-            LocalDateTime ldt = LocalDateTime.now();
-            Path p = too.resolveOutput(
-                    String.format("test_write_file/sample_%s.txt", dtf.format(ldt)));
-            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            assertThat(p).isNotNull().exists();
-            assertThat(p.toFile().length()).isGreaterThan(0);
+        public void testMethod1() throws Exception {
+            too.cleanMethodOutputDirectory("testMethod1");
+            Path methodDir = too.getMethodOutputDirectory("testMethod1");
+            Path file = methodDir.resolve(DateTimeFormatter.ISO_DATE_TIME.format(timestamp) + ".txt");
+            Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java)
+        @Test
+        public void testMethod2() throws Exception {
+            too.cleanMethodOutputDirectory("testMethod2");
+            Path methodDir = too.getMethodOutputDirectory("testMethod2");
+            Path file = methodDir.resolve(DateTimeFormatter.ISO_DATE_TIME.format(timestamp) + ".txt");
+            Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        }
+
+        @Test
+        public void testMethod3() throws Exception {
+            too.cleanMethodOutputDirectory("testMethod3");
+            Path methodDir = too.getMethodOutputDirectory("testMethod3");
+            Path file = methodDir.resolve(DateTimeFormatter.ISO_DATE_TIME.format(timestamp) + ".txt");
+            Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+        }
+
+        @AfterAll
+        public static void afterAll() throws IOException {
+            Files.find(too.getClassOutputDirectory(), 999, (p, bfa) -> bfa.isRegularFile())
+                    .sorted()
+                    .forEach(p -> log.info(too.toHomeRelativeString(p)));
+        }
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex09Test.java)
+
+Please find that this test utilizes the `getMethodOutputDirectory(String methodName)` method and `cleanMethodOutputDirectory(String methodName)` method of `TestOutputOrganizer` class.
+
+When I ran this, I got the following output:
+
+    ~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex09Test/testMethod1/2023-11-27T15:33:28.362.txt
+    ~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex09Test/testMethod2/2023-11-27T15:33:28.362.txt
+    ~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex09Test/testMethod3/2023-11-27T15:33:28.362.txt
+
+Here you can see
+
+1.  The classOutputDirectory is `~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex09Test`
+
+2.  Under the classOutputDirectory, there is a layer of methodDirectory, that is:
+
+    -   `testMethod1`
+
+    -   `testMethod2`
+
+    -   `testMethod3`
+
+3.  Even if you repeat executing this test, you would see only single txt file named with timestamp in each method directory, because `too.cleanMethodOutputDirectory()` cleans up the directory everytime the methods are invoked.
+    === Example10 A helper method that translates a absolute Path to a Home Relative string
+
+A Path object can be turned into an absolute path string like:
+
+    /Users/kazurayam/github/unittest-helper/lib/
+
+In this string you can find my personal name "kazurayam". When I write some document, often I need to copy the output message and paste it into documents. However, I hesitate exposing my personal name public. I would prefer present a path in **Home Relative string** which starts with a tilde character, like:
+
+    ~/github/unittest-helper/lib/
+
+The `TestOutputOrganizer` class provides a helper method that translte a Path object into a Home Relative string. See the following example:
+
+    package com.kazurayam.unittesthelperdemo;
+
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.AfterAll;
+    import org.junit.jupiter.api.BeforeAll;
+    import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+
+    import java.io.IOException;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.time.LocalDateTime;
+    import java.time.format.DateTimeFormatter;
+
+    public class Ex10Test {
+
+        private static final Logger log = LoggerFactory.getLogger(Ex10Test.class);
+        private static final TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(Ex10Test.class)
+                        .build();
+        @Test
+        public void test_smoke() throws IOException {
+            Path outputDir = too.getOutputDirectory();
+            Path file = outputDir.resolve("sample1.txt");
+            log.info("file absolute: " + file);
+            log.info("file relative: " + too.toHomeRelativeString(file));
+        }
+    }
+
+This test prints the following output in the console:
+
+    file absolute: /Users/kazurayam/github/unittest-helper/app/test-output/sample1.txt
+    file relative: ~/github/unittest-helper/app/test-output/sample1.txt
+
+### Example11 Cleaning the output directory recursively
+
+The `TestOutputOrganizer` class implements
+
+-   `cleanOutputDirectory()`
+
+-   `cleanClassOutputDirectory()`
+
+-   `cleanMethodOutputDirectory(String methodName0`
+
+These methods remove the respective directories recursively and re-create them. See the following sample test class.
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.BeforeAll;
+    import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+
+    import java.nio.file.Path;
+
+    public class Ex11Test {
+
+        private static final Logger log = LoggerFactory.getLogger(Ex11Test.class);
+        private static final TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(Ex11Test.class)
+                        .subDirPath(Ex11Test.class)
+                        .build();
+        @BeforeAll
+        public static void beforeAll() throws Exception {
+            log.info("projectDir=" + too.toHomeRelativeString(too.getProjectDir()));
+            too.cleanOutputDirectory();
+            log.info("outputDirectory=" + too.toHomeRelativeString(too.getOutputDirectory()));
+            too.cleanClassOutputDirectory();
+            log.info("classOutputDirectory=" + too.toHomeRelativeString(too.getClassOutputDirectory()));
+        }
+
+        @Test
+        public void testMethod1() throws Exception {
+            too.cleanMethodOutputDirectory("testMethod1");
+            Path methodDir = too.getMethodOutputDirectory("testMethod1");
+            log.info("methodOutputDirectory=" + too.toHomeRelativeString(methodDir));
+        }
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex11Test.java)
 
 This will print the following in the console:
 
-    [test_write_file] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.examples.SampleTest/test_write_file/sample_20231104_081132.txt
-    [test_write_file_once_more] output is found at ~/github/unittest-helper/app/build/tmp/testOutput/io.github.someone.examples.SampleTest/test_write_file_once_more/sample_20231104_081132.txt
+    projectDir=~/github/unittest-helper/app
+    outputDirectory=~/github/unittest-helper/app/test-output
+    classOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex10Test
+    methodOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex10Test/testMethod1
 
-The `@BeforeClass`-annotated method is invoked once as soon as this test class started only once. By calling `too.cleanOutputDirectory()`, the `test-output` directory will be removed.
-
-This method is useful when the test class writes files with timestamp in its name. If you do NOT clean the dir, you will accumulate a lot of files with different timestamps in the file name. For example:
-
-    app/build/tmp/testOutput
-    └── io.github.someone.examples.SampleTest
-        └── test_write_file
-            ├── sample_20231103_090143.txt
-            ├── sample_20231103_094723.txt
-            ├── sample_20231103_094759.txt
-            ├── sample_20231103_094810.txt
-            └── sample_20231103_094817.txt
-
-By `cleanOutputDirectory`, you would have a cleaner result, like:
-
-    app/build/tmp/testOutput
-    └── io.github.someone.examples.SampleTest
-        └── test_write_file
-            └── sample_20231103_094817.txt
-
-There is `cleanOutputSubDirectory()` method as well. This will choose a specific sub directory specified by `setSubDir(Path subDir)` method of the `TestOutputOrganizer.Builder` class. The `cleanOutputSubDirectory()` will leave other subdirectories in the output directory untouched.
-
-### Example9 Removing anonymous directory recursively
+### Example12 Removing arbitrary directory recursively
 
 The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecursively()` method which removes any directory recursively. See the following sample test class.
 
-         * TestOutputOrganizer class to remove a directory recursively
-         */
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.Test;
+
+    import java.io.IOException;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.nio.file.Paths;
+
+    import static org.assertj.core.api.Assertions.assertThat;
+
+    public class Ex12Test {
+
         @Test
         public void test_cleanDirectoryRecursively() throws IOException {
             // given
-            Path dir = FileSystems.getDefault().getPath("build/work");
+            Path dir = Paths.get("build/work");
             Files.createDirectories(dir);
             Path file = dir.resolve("foo.txt");
             Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
@@ -405,18 +842,22 @@ The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecurs
             TestOutputOrganizer.cleanDirectoryRecursively(dir);
             // then
             assertThat(file).doesNotExist();
+            assertThat(dir).doesNotExist();
+        }
+    }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/lib/src/test/java/com/kazurayam/unittes/TestOutputOrganizerTest.java)
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex12Test.java)
 
-### Example10 You should make a Factory class that creates your customized TestOutputOrganizer
+The `cleanDirectoryRecursively(Path dir)` of `TestOutputOrganizer` class is a static method, that removes the specified directory recursively. The dir will become not present. The **dir** can be any arbitrary Path outside the project.
+=== Example14 Factory class that creates customized TestOutputOrganizer
 
-It is a good practice for you to create a factory class that creates an instance of `TestOutputOrganizer` for your own unit tests instantiated with custom parameters. See the following example.
+It is a good practice for you to define a factory class that creates an instance of `TestOutputOrganizer` with your custom parameters for your own project. Use the factory throughout your project. Then you can standardize the organization of test outputs.
+
+See the following example "factory".
 
     package io.github.someone.examples;
 
     import com.kazurayam.unittest.TestOutputOrganizer;
-
-    import java.nio.file.Paths;
 
     /**
      * A Factory class that creates an instance of com.kazurayam.unittest.TestHelper
@@ -433,11 +874,7 @@ It is a good practice for you to create a factory class that creates an instance
         }
     }
 
-This `TestOutputFactory` class implements `create(Class)` method, which will instantiate a `com.kazurayam.unittest.TestOutputOrganizer` class with customized parameter values:
-
-1.  the output directory will be located at `<projectDir>/build/tmp/testOutput`
-
-2.  in the output directory, it will create subdirectory of which name is equal to the "Fully Qualified Class Name" of the given test class.
+This `TestOutputOrganizerFactory` class implements only a single static method `create(Class)` method which will instantiate a `com.kazurayam.unittest.TestOutputOrganizer` class with customized parameter values.
 
 The following code is using the Factory.
 
@@ -445,8 +882,9 @@ The following code is using the Factory.
 
     import com.kazurayam.unittest.TestOutputOrganizer;
     import org.junit.jupiter.api.BeforeAll;
-    import org.junit.jupiter.api.BeforeEach;
     import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
 
     import java.io.IOException;
     import java.nio.charset.StandardCharsets;
@@ -459,33 +897,29 @@ The following code is using the Factory.
 
     public class SampleTest {
 
-        private static TestOutputOrganizer too;
+        private static TestOutputOrganizer too = TestOutputOrganizerFactory.create(SampleTest.class);
 
-        private DateTimeFormatter dtf;
+        private static DateTimeFormatter dtf;
+        private static final Logger log = LoggerFactory.getLogger(SampleTest.class);
 
         @BeforeAll
         public static void beforeAll() throws IOException {
-            too = TestOutputOrganizerFactory.create(SampleTest.class);
-
-            // remove the "test-output/io.github.someone.examples.SampleTest" directory recursively
-            too.cleanOutputSubDirectory();
-
-            // or too.cleanOutputDirectory() to remove the "test-output" directory
-        }
-
-        @BeforeEach
-        public void setup() {
+            log.info("project directory: " + too.toHomeRelativeString(too.getProjectDir()));
+            // remove the "test-output/io.github.someone.somestuff.SampleTest" directory recursively
+            too.cleanClassOutputDirectory();
             dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
         }
 
         @Test
         public void test_write_file() throws IOException {
+            Path methodOutputDir = too.getMethodOutputDirectory("test_write_file");
             LocalDateTime ldt = LocalDateTime.now();
-            Path p = too.resolveOutput(
-                    String.format("test_write_file/sample_%s.txt", dtf.format(ldt)));
+            Path p = methodOutputDir.resolve(String.format("sample_%s.txt", dtf.format(ldt)));
             Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
             assertThat(p).isNotNull().exists();
             assertThat(p.toFile().length()).isGreaterThan(0);
+            log.info("output is found at " + too.toHomeRelativeString(p));
+        }
 
 When you ran the test, the output directory will look like this:
 
@@ -494,123 +928,44 @@ When you ran the test, the output directory will look like this:
         └── test_write_file
             └── sample_20231103_094817.txt
 
-Please note that the file tree has 2 layers of directories in between the output directory `app/build/tmp/testOutput` and the file `sample_yyyyMMdd_HHmmss.txt`.
-
-The 1st layer is the FQCN of the test class.
-
-The 2nd layer is the method name which actually wrote the file.
-
-I find this tree format is useful for organizing a lot of output files created by multiple test cases.
-
-### Example11 More layers of directory under the output sub-directory
-
-The [io.github.someone.examples.SampleTest](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java) class has one more test method:
-
-        @Test
-        public void test_write_file_once_more() throws IOException {
-            LocalDateTime ldt = LocalDateTime.now();
-            Path p = too.resolveOutput(
-                    String.format("test_write_file_once_more/sample_%s.txt", dtf.format(ldt)));
-            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            assertThat(p).isNotNull().exists();
-            assertThat(p.toFile().length()).isGreaterThan(0);
-            System.out.println("[test_write_file_once_more] output is found at " +
-                    TestOutputOrganizer.toHomeRelativeString(p));
-        }
-
-When you ran this test, you would get the output directory as follows:
-
-    $ tree app/build/tmp/testOutput
-    app/build/tmp/testOutput
-    └── io.github.someone.examples.SampleTest
-        ├── test_write_file
-        │   └── sample_20231103_124015.txt
-        └── test_write_file_once_more
-            └── sample_20231103_124015.txt
-
-Please find that one more directory layer is inserted between the output dir and the files.
-
--   `test_write_file`
-
--   `test_write_file_once_more`
-
-How these directories were created? If you read the source of the test class, you would find that it effectively executed the following calls
-
-        Path p = too.resolveOutut("test_write_file/sample_20231103_124015.txt");
-
-and
-
-        Path p = too.resolveOutut("test_write_file_once_more/sample_20231103_124015.txt");
-
-Note that the parameter string to the `resolveOutput(String)` method can contain `/`, which represents one or more directories under the output sub-directory. For example, you can insert a directory of which name stands for the test method name. This technique makes it easy to organize output files created by multiple methods in a single test class.
-
-### Example12 A helper method that translates a Path to a Home Relative string
-
-A Path object can be turned into an absolute path string like:
-
-    /Users/kazurayam/github/unittest-helper/lib/
-
-In this string you can find my personal name "kazurayam". When I write some document, I feel like to copy the output message and paste it into page. However, I do not like exposing my personal name public. I would prefer "Home Relative Path" which starts with a tilde character, like:
-
-    ~/github/unittest-helper/lib/
-
-The `TestOutputOrganizer` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
-
-        @Test
-        public void test_toHomeRelativeString_simple() {
-            TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-            Path projectDir = too.getProjectDir();
-            String homeRelative = too.toHomeRelativeString(projectDir);
-            System.out.println("[test_toHomeRelativeString_simple] " + homeRelative);
-            assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
-        }
-
-This test prints the following output in the console:
-
-    [test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
-
 ### Example13 Copying a source directory to a target directory recursively
 
-        }
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.Test;
+
+    import java.io.IOException;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+
+    import static org.assertj.core.api.Assertions.assertThat;
+
+    public class Ex13Test {
+
+        private static final TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(Ex13Test.class)
+                        .subDirPath(Ex13Test.class)
+                        .build();
 
         @Test
         void test_copyDir() throws IOException {
-            TestOutputOrganizer too =
-                    new TestOutputOrganizer.Builder(this.getClass())
-                            .subDirPath(this.getClass().getName())
-                            .build();
-            String methodName = "test_copyDir";
+            Path methodDir = too.getMethodOutputDirectory("test_copyDir");
             // given
-            Path sourceDir = too.resolveOutput(methodName + "/source");
-            Path sourceFile = too.resolveOutput(methodName + "/source/foo/hello.txt");
+            Path sourceDir = methodDir.resolve("source");
+            Path sourceFile = sourceDir.resolve("foo/hello.txt");
+            Files.createDirectories(sourceFile.getParent());
             Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            Path targetDir = too.resolveOutput(methodName + "/target");
-            Path targetFile = too.resolveOutput(methodName + "/target/foo/hello.txt");
+            Path targetDir = methodDir.resolve("target");
             // when
             too.copyDir(sourceDir, targetDir);
             // then
-
-### Example14 Deleting a directory recursively
-
+            Path targetFile = targetDir.resolve("foo/hello.txt");
+            assertThat(targetFile).exists();
         }
 
-        @Test
-        void test_deleteDir() throws IOException {
-            TestOutputOrganizer too =
-                    new TestOutputOrganizer.Builder(this.getClass())
-                            .subDirPath(this.getClass().getName())
-                            .build();
-            String methodName = "test_deleteDir";
-            // given
-            Path sourceDir = too.resolveOutput(methodName + "/source");
-            Path sourceFile = too.resolveOutput(methodName + "/source/foo/hello.txt");
-            Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            Path targetDir = too.resolveOutput(methodName + "/target");
-            Path targetFile = too.resolveOutput(methodName + "/target/foo/hello.txt");
-            too.copyDir(sourceDir, targetDir);
-            assertThat(targetFile).exists();
-            // when
-            too.deleteDir(targetDir);
-            // then
+    }
 
+I know I can do the same dir-to-dir copy by [FileUtils of Apache Commons IO](https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FileUtils.html#copyDirectory(java.io.File,java.io.File)). If I use the `TestOutputOrganizer.copyDir(Path source, Path target)`, I can simplify the `dependencies` of my project. That’s a small but good thing.
 (FIN)
