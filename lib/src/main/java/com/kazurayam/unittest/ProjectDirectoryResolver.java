@@ -3,21 +3,24 @@ package com.kazurayam.unittest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * ProjectDirectoryResolver resolves the project's directory based on the classpath
  * of a JVM class you are developing.
- *
  * The following quote from
  * https://discuss.gradle.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379/7
  * explains what I wanted to do.
@@ -36,13 +39,18 @@ import java.util.Objects;
 public final class ProjectDirectoryResolver {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectDirectoryResolver.class);
-
+    private final FileSystem fileSystem;
     private final List<List<String>> sublistPatterns;
 
     /**
-     * Sole constructor.
+     *
      */
     public ProjectDirectoryResolver() {
+        this(FileSystems.getDefault());
+    }
+
+    public ProjectDirectoryResolver(FileSystem fileSystem) {
+        this.fileSystem = fileSystem;
         this.sublistPatterns = new ArrayList<>();
         sublistPatterns.add(Arrays.asList("target", "test-classes"));   // Maven
         sublistPatterns.add(Arrays.asList("build", "classes", "java", "test"));  // Gradle, Java
@@ -69,50 +77,53 @@ public final class ProjectDirectoryResolver {
     public List<List<String>> getSublistPatterns() {
         List<List<String>> clone = new ArrayList<>();
         for (List<String> l : sublistPatterns) {
-            List<String> e = new ArrayList<>();
-            for (String le : l) {
-                e.add(le);
-            }
+            List<String> e = new ArrayList<>(l);
             clone.add(e);
         }
         return clone;
     }
 
+    /*
+     * to match "file:/Users/foo/bar", "/Users/foo/bar", "s3:/Users/foo/bar"
+     */
+    static final Pattern URL_PATTERN = Pattern.compile("(\\w+\\:)?(.+)");
+
     /**
      * returns the Path in which the class binary of
      * `com.kazurayam.unittest.ProjectDirectoryResolver` is found on disk.
-     *
      * e.g, "/Users/somebody/selenium-webdriver-java/selenium-webdriver-junit4/build/classes/java/test/" when built by Gradle
      * e.g, "/Users/somebody/selenium-webdriver-java/selenium-webdriver-junit4/target/test-classes/" when built by Maven
-     *
      * @param clazz the Class object based on which the project dir is resolved
      * @return a java.nio.file.Path instance which is derived by clazz.getProtectionDomain().getCodeSource().getLocation()
      */
-    public static final Path getCodeSourceAsPath(Class clazz) {
+    public final Path getCodeSourceAsPath(Class<?> clazz) {
         CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
         URL url = codeSource.getLocation();
         try {
-            Path path = Paths.get(url.toURI());
-            log.trace("The code source : " + path);
-            return path;
-        } catch (URISyntaxException e) {
+            // trim "file:" contained in the URL string
+            String urlStr = url.toURI().toURL().toExternalForm();
+            Matcher m = URL_PATTERN.matcher(urlStr);
+            if (m.matches()) {
+                return fileSystem.getPath(m.group(2));
+            } else {
+                throw new RuntimeException("unexpected value of urlStr: " + urlStr);
+            }
+        } catch (URISyntaxException | MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     /**
      * returns the project directory in which the class binary of
      * `com.kazurayam.webdriver.TestOutputOrganizer` is found on disk.
      * The same value will be returned in either case where the class
      * was built by Gradle and Maven.
-     *
      * e.g, "/Users/somebody/selenium-webdriver-java/selenium-webdriver-junit4/"
-     *
      * The point is, the System property "user.dir" will return
      * "/Users/somebody/selenium-webdriver-java".
      * This does not include the subproject directory
      * "selenium-webdriver-junit4", therefore it is not what we want.
-     *
      * When the TestOutputOrganizer class is built using Gradle, the class will be stored
      * in the directory "selenium-webdriver-java/selenium-webdriver-junit4/build".
      * When the TestOutputOrganizer class is built using Maven, the class will be stored
@@ -126,8 +137,8 @@ public final class ProjectDirectoryResolver {
      *         if the project is a Gradle Multiproject, then this method returns the
      *         path of the subproject's root dir.
      */
-    public Path getProjectDirViaClasspath(Class clazz) {
-        Path codeSourcePath = ProjectDirectoryResolver.getCodeSourceAsPath(clazz);
+    public Path getProjectDirViaClasspath(Class<?> clazz) {
+        Path codeSourcePath = this.getCodeSourceAsPath(clazz);
         // e.g. "/Users/myname/oreilly/selenium-webdriver-java/selenium-webdriver-junit4/build/classes/java/test/com/kazurayam/webdriver/TestOutputOrganizer.class"
         List<String> nameElements = toNameElements(codeSourcePath);
         StringSequence ss = new StringSequence(nameElements);
@@ -148,7 +159,7 @@ public final class ProjectDirectoryResolver {
             throw new IllegalStateException("unable to resolve the project directory via classpath");
         }
         // build the project dir to return as the result
-        Path w = Paths.get("/");
+        Path w = fileSystem.getPath("/");
         for (int i = 0; i < boundary; i++) {
             w = w.resolve(nameElements.get(i));
         }
@@ -157,9 +168,7 @@ public final class ProjectDirectoryResolver {
 
     private static List<String> toNameElements(Path codeSourcePath) {
         List<String> nameElements = new ArrayList<>();
-        Iterator<Path> iter = codeSourcePath.iterator();
-        while (iter.hasNext()) {
-            Path p = iter.next();
+        for (Path p : codeSourcePath) {
             nameElements.add(p.getFileName().toString());
         }
         return nameElements;

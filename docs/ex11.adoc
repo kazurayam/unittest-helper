@@ -1,30 +1,26 @@
-=== Example11 A helper method that translates a Path to a Home Relative string
+=== Example11 Cleaning the output directory recursively
 
-A Path object can be turned into an absolute path string like:
+The `TestOutputOrganizer` class implements
 
-[source]
-----
-/Users/kazurayam/github/unittest-helper/lib/
-----
+- `cleanOutputDirectory()`
+- `cleanClassOutputDirectory()`
+- `cleanMethodOutputDirectory(String methodName0`
 
-In this string you can find my personal name "kazurayam". When I write some document, I feel like to copy the output message and paste it into page. However, I do not like exposing my personal name public. I would prefer "Home Relative Path" which starts with a tilde character, like:
-
-[source]
-----
-~/github/unittest-helper/lib/
-----
-
-The `TestOutputOrganizer` class implements a method `String toHomeRelativeString(Path p)`. This method does the translation.
+These methods remove the respective directories recursively and re-create them. See the following sample test class.
 
 [source, java]
 ----
-include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=96..104]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex11Test.java[]
 ----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex11Test.java[source]
 
-This test prints the following output in the console:
+This will print the following in the console:
 
 [source]
 ----
-[test_toHomeRelativeString_simple] ~/github/unittest-helper/lib
+projectDir=~/github/unittest-helper/app
+outputDirectory=~/github/unittest-helper/app/test-output
+classOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex10Test
+methodOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex10Test/testMethod1
 ----
 

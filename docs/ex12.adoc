@@ -1,7 +1,11 @@
-=== Example12 Copying a source directory to a target directory recursively
+=== Example12 Removing arbitrary directory  recursively
 
-[source,java]
-----
-include::../lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java[lines=170..187]
-----
+The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecursively()` method which removes any directory recursively. See the following sample test class.
 
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex12Test.java[]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex12Test.java[source]
+
+The `cleanDirectoryRecursively(Path dir)` of `TestOutputOrganizer` class is a static method, that removes the specified directory recursively. The dir will become not present. The *dir* can be any arbitrary Path outside the project.

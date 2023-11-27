@@ -1,8 +1,6 @@
-package io.github.someone.somestuff;
+package io.github.someone.examples;
 
 import com.kazurayam.unittest.TestOutputOrganizer;
-
-import java.nio.file.Paths;
 
 /**
  * A Factory class that creates an instance of com.kazurayam.unittest.TestHelper

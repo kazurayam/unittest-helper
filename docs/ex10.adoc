@@ -1,42 +1,31 @@
-=== Example10 More layers of directory under the output sub-directory
+=== Example10 A helper method that translates a absolute Path to a Home Relative string
 
-The link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/io/github/someone/somestuff/SampleTest.java[io.github.someone.somestuff.SampleTest] class has one more test method:
-
-[source]
-----
-include::../app/src/test/java/io/github/someone/somestuff/SampleTest.java[lines=50..60]
-----
-
-When you ran this test, you would get the output directory as follows:
-
-```
-$ tree app/build/tmp/testOutput
-app/build/tmp/testOutput
-└── io.github.someone.somestuff.SampleTest
-    ├── test_write_file
-    │   └── sample_20231103_124015.txt
-    └── test_write_file_once_more
-        └── sample_20231103_124015.txt
-```
-
-Please find that one more directory layer is inserted between the output dir and the files.
-
-- `test_write_file`
-- `test_write_file_once_more`
-
-How these directories were created? If you read the source of the test class, you would find that it effectively executed the following calls
+A Path object can be turned into an absolute path string like:
 
 [source]
 ----
-    Path p = too.resolveOutut("test_write_file/sample_20231103_124015.txt");
+/Users/kazurayam/github/unittest-helper/lib/
 ----
 
-and
+In this string you can find my personal name "kazurayam". When I write some document, often I need to copy the output message and paste it into documents. However, I hesitate exposing my personal name public. I would prefer present a path in *Home Relative string* which starts with a tilde character, like:
 
 [source]
 ----
-    Path p = too.resolveOutut("test_write_file_once_more/sample_20231103_124015.txt");
+~/github/unittest-helper/lib/
 ----
 
-Note that the parameter string to the `resolveOutput(String)` method can contain `/`, which represents one or more directories under the output sub-directory. For example, you can insert a directory of which name stands for the test method name. This technique makes it easy to organize output files created by multiple methods in a single test class.
+The `TestOutputOrganizer` class provides a helper method that translte a Path object into a Home Relative string. See the following example:
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex10Test.java[]
+----
+
+This test prints the following output in the console:
+
+[source]
+----
+file absolute: /Users/kazurayam/github/unittest-helper/app/test-output/sample1.txt
+file relative: ~/github/unittest-helper/app/test-output/sample1.txt
+----
 

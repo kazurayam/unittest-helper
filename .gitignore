@@ -29,5 +29,5 @@ test-output*
 pageSource*.html
 
 sample*txt
-
+screenshot.png
 .DS_Store

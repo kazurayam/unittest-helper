@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -121,14 +120,4 @@ public class CopyDir extends SimpleFileVisitor<Path> {
         Files.walkFileTree(sourceDir, new CopyDir(sourceDir, targetDir));
     }
 
-    /**
-     * usage: "java com.kazurayam.unittest.CopyDir sourceDirPath targetDirPath
-     * @param args [sourceDir,targetDir]
-     * @throws IOException any error while i/o
-     */
-    public static void main(String[] args) throws IOException {
-        Path sourceDir = Paths.get(args[0]);
-        Path targetDir = Paths.get(args[1]);
-        Files.walkFileTree(sourceDir, new CopyDir(sourceDir, targetDir));
-    }
 }
