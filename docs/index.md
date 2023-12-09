@@ -547,7 +547,8 @@ This will print the following in the console:
     [Hello, world!]
 
 The `Path getOutputDirectory()` method makes sure that the directory is existing. If not present, the method will silently create it.
-=== Example8 Sub-directory which stands for the Fully Qualified Class Name of the test class
+
+### Example8 Sub-directory which stands for the Fully Qualified Class Name of the test class
 
 It is a good idea to create a layer of sub-directories, under the output directory, which stands for the Fully Qualified Class Name of the test classes. Please have a look at the following image.
 
@@ -708,7 +709,8 @@ Here you can see
     -   `testMethod3`
 
 3.  Even if you repeat executing this test, you would see only single txt file named with timestamp in each method directory, because `too.cleanMethodOutputDirectory()` cleans up the directory everytime the methods are invoked.
-    === Example10 A helper method that translates a absolute Path to a Home Relative string
+
+### Example10 A helper method that translates a absolute Path to a Home Relative string
 
 A Path object can be turned into an absolute path string like:
 
@@ -849,7 +851,49 @@ The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecurs
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex12Test.java)
 
 The `cleanDirectoryRecursively(Path dir)` of `TestOutputOrganizer` class is a static method, that removes the specified directory recursively. The dir will become not present. The **dir** can be any arbitrary Path outside the project.
-=== Example14 Factory class that creates customized TestOutputOrganizer
+
+### Example13 Copying a source directory to a target directory recursively
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.Test;
+
+    import java.io.IOException;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+
+    import static org.assertj.core.api.Assertions.assertThat;
+
+    public class Ex13Test {
+
+        private static final TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(Ex13Test.class)
+                        .subDirPath(Ex13Test.class)
+                        .build();
+
+        @Test
+        void test_copyDir() throws IOException {
+            Path methodDir = too.getMethodOutputDirectory("test_copyDir");
+            // given
+            Path sourceDir = methodDir.resolve("source");
+            Path sourceFile = sourceDir.resolve("foo/hello.txt");
+            Files.createDirectories(sourceFile.getParent());
+            Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
+            Path targetDir = methodDir.resolve("target");
+            // when
+            too.copyDir(sourceDir, targetDir);
+            // then
+            Path targetFile = targetDir.resolve("foo/hello.txt");
+            assertThat(targetFile).exists();
+        }
+
+    }
+
+I know I can do the same dir-to-dir copy by [FileUtils of Apache Commons IO](https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FileUtils.html#copyDirectory(java.io.File,java.io.File)). If I use the `TestOutputOrganizer.copyDir(Path source, Path target)`, I can simplify the `dependencies` of my project. That’s a small but good thing.
+
+### Example14 Factory class that creates customized TestOutputOrganizer
 
 It is a good practice for you to define a factory class that creates an instance of `TestOutputOrganizer` with your custom parameters for your own project. Use the factory throughout your project. Then you can standardize the organization of test outputs.
 
@@ -928,44 +972,4 @@ When you ran the test, the output directory will look like this:
         └── test_write_file
             └── sample_20231103_094817.txt
 
-### Example13 Copying a source directory to a target directory recursively
-
-    package com.kazurayam.unittesthelperdemo;
-
-    import com.kazurayam.unittest.TestOutputOrganizer;
-    import org.junit.jupiter.api.Test;
-
-    import java.io.IOException;
-    import java.nio.charset.StandardCharsets;
-    import java.nio.file.Files;
-    import java.nio.file.Path;
-
-    import static org.assertj.core.api.Assertions.assertThat;
-
-    public class Ex13Test {
-
-        private static final TestOutputOrganizer too =
-                new TestOutputOrganizer.Builder(Ex13Test.class)
-                        .subDirPath(Ex13Test.class)
-                        .build();
-
-        @Test
-        void test_copyDir() throws IOException {
-            Path methodDir = too.getMethodOutputDirectory("test_copyDir");
-            // given
-            Path sourceDir = methodDir.resolve("source");
-            Path sourceFile = sourceDir.resolve("foo/hello.txt");
-            Files.createDirectories(sourceFile.getParent());
-            Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            Path targetDir = methodDir.resolve("target");
-            // when
-            too.copyDir(sourceDir, targetDir);
-            // then
-            Path targetFile = targetDir.resolve("foo/hello.txt");
-            assertThat(targetFile).exists();
-        }
-
-    }
-
-I know I can do the same dir-to-dir copy by [FileUtils of Apache Commons IO](https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FileUtils.html#copyDirectory(java.io.File,java.io.File)). If I use the `TestOutputOrganizer.copyDir(Path source, Path target)`, I can simplify the `dependencies` of my project. That’s a small but good thing.
 (FIN)
