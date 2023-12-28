@@ -92,7 +92,7 @@ This will create a file at `<projectDir>/test-output/sample2.txt`
 
 If the `<projectDir>/test-output` directory is not there, it will be silently created.
 
-If the `<projectDir>/test-output` directory is already there, it will be just reused.
+If the `<projectDir>/test-output` directory is already there, the call to `cleanOutputDirectory()` will remode the directory recursively and recreate it.
 
 #### Ex3: Write a file under a directory dedicated for the test class
 
@@ -131,7 +131,7 @@ This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`
 
 If the `<projectDir>/build/tmp/testOutput` directory is not yet there, it will be silently created.
 
-If the `<projectDir>/build/tmp/testOutput` directory is already there, it will be just reused.
+If the `<projectDir>/build/tmp/testOutput` directory is already there, the call to `cleanOutputDirectory()` will remove the directory recursively and recreate it.
 
 #### Ex4: Insert a subdirectory which has the Fully Qualified Class Name of the test class
 
@@ -172,7 +172,7 @@ This path structure clearly tells you that the `sample4.txt` file was written by
 
 If the `<projectDir>/testOutput/my.SampleTest` directory is not there, it will be silently created.
 
-If the `<projectDir>/testOutput/my.SampleTest` directory is already there, it will be once removed recursively and recreated.
+If the `<projectDir>/testOutput/my.SampleTest` directory is already there, the call to `cleanOutputDirectory()` will remove the directory recursively and recreate lit.
 
 #### Ex:5 Insert a subdirectory which has the test method name
 
