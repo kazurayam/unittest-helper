@@ -131,7 +131,7 @@ This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`
 
 If the `<projectDir>/build/tmp/testOutput` directory is not yet there, it will be silently created.
 
-If the `<projectDir>/build/tmp/testOutput` directory is already there, it will be once removed recursively and recreated.
+If the `<projectDir>/build/tmp/testOutput` directory is already there, it will be just reused.
 
 #### Ex4: Insert a subdirectory which has the Fully Qualified Class Name of the test class
 
