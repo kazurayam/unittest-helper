@@ -48,7 +48,6 @@ public class SampleTest {
         Path p = Paths.get("sample1.txt");
         Files.writeString(p, "Hello, world!");
     }
-
 ```
 
 This will create a file at `<projectDir>/sample1.txt`
@@ -56,6 +55,32 @@ This will create a file at `<projectDir>/sample1.txt`
 In this case we used `Paths.get("sample1.txt")`. This expression will locate the file `sample1.txt` in the directory which `System.getProperty("user.dir")` expression stands for.
 
 You should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools' settings. Though rarely, the `user.dir` is not very much reliable. See [this issue](https://github.com/kazurayam/selenium-webdriver-java/issues/21) for example. 
+
+TestOutputOrganizer provides an alternative way.
+
+```
+package my;
+
+import org.junit.jupiter.api.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class SampleTest {
+
+    private static final TestOutputOrganizer too = new TestOutputOrganizer.Builder(SampleTest.class).build();
+
+
+    @Test
+    public void test_write_under_the_project_dir() throws Exception {
+        Path projectDir = too.getProjectDir();
+        Path p = projectDir.resolve("sample1.txt");
+        Files.writeString(p, "Hello, world!");
+    }
+```
+
+The `getProject()` method of `TestOutputOrganizer` class will return an instance of `java.nio.Path` which is the project's root directory. The `getProject` method is not dependent of the *current working directory*. How does the method resolves the project's directory? --- I will explain it later.
 
 #### Ex2: Write a file under the default test-output directory
 
@@ -118,7 +143,7 @@ public class SampleTest {
 
     @BeforeAll
     public static void beforeAll() {
-        too.cleanOutputDirectory();
+        too.cleanClassOutputDirectory();
     }
     
     @Test
@@ -129,11 +154,13 @@ public class SampleTest {
 }
 ```
 
-This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`
+This will create a file at `<projectDir>/build/tmp/testOutput/my.SampleTest/sample3.txt`
 
-If the `<projectDir>/build/tmp/testOutput` directory is not yet there, it will be silently created.
+If the `<projectDir>/build/tmp/testOutput/my.SampleTest` directory is not yet there, it will be silently created.
 
-If the `<projectDir>/build/tmp/testOutput` directory is already there, the call to `cleanOutputDirectory()` will remove the directory recursively and recreate it.
+If the `<projectDir>/build/tmp/testOutput/my.SampleTest` directory is already there, the call to `cleanClassOutputDirectory()` will remove the directory recursively and recreate it.
+
+If the `<projectDir>/build/tmp/testOutput/my.SampleTest` directory is already there and if you do not call `cleanClassOutputDirectory()`, then the directory will stay as is and will be reused.
 
 #### Ex4: Insert a subdirectory which has the Fully Qualified Class Name of the test class
 
