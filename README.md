@@ -92,7 +92,7 @@ This will create a file at `<projectDir>/test-output/sample2.txt`
 
 If the `<projectDir>/test-output` directory is not there, it will be silently created.
 
-If the ``<projectDir>/test-output` directory will be silently` is already there, it will be removed recursively and will be recreated.
+If the `<projectDir>/test-output` directory is already there, it will be removed recursively and will be recreated.
 
 #### Ex3: Write a file under a directory dedicated for the test class
 
