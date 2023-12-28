@@ -213,7 +213,7 @@ This path structure clearly tells you that the `sample5.txt` file was written by
 
 If the "method" directory is not there, it will be silently created.
 
-If the "method" directory is already there, it will be once removed recursively and recreated.
+If the "method" directory is already there, it will be just reused.
 
 #### TestOutputOrganizer resolves the project directory via classpath
 
