@@ -227,7 +227,7 @@ If you use Maven to build the project, then most probably you have the class fil
 
 Are you using other build tools so that the project file tree is different from Maven & Gradle? --- This case you can tell your own tree structure to the `TestOutputOrganizer` instance. See the long explanation for detail.
 
-Resolving the project directory via classpath means that the `TestOutputOrgainzer` class works independent on the current working directory (= `System.getProperty('user.dir')`) of the runtime process.
+Resolving the project directory via classpath means that the `TestOutputOrgainzer` class works independent of the current working directory (= `System.getProperty('user.dir')`) of the runtime process.
 
 
 ## Long explanation
