@@ -69,7 +69,8 @@ import java.nio.file.Paths;
 
 public class SampleTest {
 
-    private static final TestOutputOrganizer too = new TestOutputOrganizer.Builder(SampleTest.class).build();
+    private static final TestOutputOrganizer too = 
+        new TestOutputOrganizer.Builder(SampleTest.class).build();
 
 
     @Test
@@ -184,7 +185,7 @@ public class SampleTest {
 
     @BeforeAll
     public static void beforeAll() {
-        too.cleanOutputDirectory();
+        too.cleanClassOutputDirectory();
     }
     
     @Test
@@ -201,7 +202,7 @@ This path structure clearly tells you that the `sample4.txt` file was written by
 
 If the `<projectDir>/testOutput/my.SampleTest` directory is not there, it will be silently created.
 
-If the `<projectDir>/testOutput/my.SampleTest` directory is already there, the call to `cleanOutputDirectory()` will remove the directory recursively and recreate lit.
+If the `<projectDir>/testOutput/my.SampleTest` directory is already there, the call to `cleanClassOutputDirectory()` will remove the directory recursively and recreate lit.
 
 #### Ex:5 Insert a subdirectory which has the test method name
 
@@ -225,12 +226,14 @@ public class SampleTest {
 
     @BeforeAll
     public static void beforeAll() {
-        too.cleanOutputDirectory();
+        too.cleanClassOutputDirectory();
     }
     
     @Test
     public void test_write_into_the_methodOutputDirectory() throws Exception {
-        Path p = too.getMethodOutputDirectory("test_write_into_the_methodOutputDirectory").resolve("sample5.txt");
+        String methodName = "test_write_into_the_methodOutputDirectory";
+        too.cleanMethodOutputDirectory(methodName);
+        Path p = too.getMethodOutputDirectory(methodName).resolve("sample5.txt");
         Files.writeString(p, "Hello, world!");
     }
 }
