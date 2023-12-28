@@ -94,7 +94,7 @@ If the `<projectDir>/test-output` directory is not there, it will be silently cr
 
 If the `<projectDir>/test-output` directory is already there, the call to `cleanOutputDirectory()` will remove the directory recursively and recreate it.
 
-If the `<projectDir>/test-output` directory is already there and you do not call `too.cleanOutputDirectory()`, then the directory will be left as is and resused.
+If the `<projectDir>/test-output` directory is already there and if you do not call `too.cleanOutputDirectory()`, then the directory will be left as is and just reused.
 
 #### Ex3: Write a file under a directory dedicated for the test class
 
