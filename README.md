@@ -92,7 +92,9 @@ This will create a file at `<projectDir>/test-output/sample2.txt`
 
 If the `<projectDir>/test-output` directory is not there, it will be silently created.
 
-If the `<projectDir>/test-output` directory is already there, the call to `cleanOutputDirectory()` will remode the directory recursively and recreate it.
+If the `<projectDir>/test-output` directory is already there, the call to `cleanOutputDirectory()` will remove the directory recursively and recreate it.
+
+If the `<projectDir>/test-output` directory is already there and you do not call `too.cleanOutputDirectory()`, then the directory will be left as is and resused.
 
 #### Ex3: Write a file under a directory dedicated for the test class
 
