@@ -140,7 +140,7 @@ public class SampleTest {
 
     private static final TestOutputOrganizer too = 
         new TestOutputOrganizer.Builder(SampleTest.class)
-            .subDirPath("build/tmp/testOutput").build();
+            .subDirPath(SampleTest.class).build();
 
     @BeforeAll
     public static void beforeAll() {
