@@ -97,7 +97,10 @@ public final class TestOutputOrganizer {
         if (this.subDirPath != null && this.isFQCN) {
             return this.getOutputSubDirectory();
         } else {
-            throw new IllegalStateException("getClassOutputDirectory is not operational when you specify the subDirPath to the Builder");
+            throw new IllegalStateException("getClassOutputDirectory will be operational " +
+                    "only when you specify the subDirPath to the Builder " +
+                    "and the specified subDirPath string is in the format of " +
+                    "Fully-Qualified-Class-Name");
         }
     }
 

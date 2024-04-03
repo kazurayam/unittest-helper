@@ -17,7 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SampleTest {
 
-    private static TestOutputOrganizer too = TestOutputOrganizerFactory.create(SampleTest.class);
+    private static TestOutputOrganizer too =
+            new TestOutputOrganizer.Builder(SampleTest.class)
+                    .subDirPath(SampleTest.class).build();
 
     private static DateTimeFormatter dtf;
     private static final Logger log = LoggerFactory.getLogger(SampleTest.class);
