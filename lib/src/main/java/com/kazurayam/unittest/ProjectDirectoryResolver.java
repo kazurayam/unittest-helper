@@ -54,8 +54,11 @@ public final class ProjectDirectoryResolver {
         this.sublistPatterns = new ArrayList<>();
         sublistPatterns.add(Arrays.asList("target", "test-classes"));   // Maven
         sublistPatterns.add(Arrays.asList("build", "classes", "java", "test"));  // Gradle, Java
+        sublistPatterns.add(Arrays.asList("build", "classes", "java", "functionalTest"));  // Gradle, Java
         sublistPatterns.add(Arrays.asList("build", "classes", "groovy", "test"));  // Gradle, Groovy
+        sublistPatterns.add(Arrays.asList("build", "classes", "groovy", "functionalTest"));  // Gradle, Groovy
         sublistPatterns.add(Arrays.asList("build", "classes", "kotlin", "test"));  // Gradle, Kotlin
+        sublistPatterns.add(Arrays.asList("build", "classes", "kotlin", "functionalTest"));  // Gradle, Kotlin
     }
 
     /**
