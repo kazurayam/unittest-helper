@@ -12,21 +12,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public final class ProjectDirectoryResolverTest {
 
-    private static final Logger log = LoggerFactory.getLogger(ProjectDirectoryResolverTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProjectDirectoryResolverTest.class);
 
     @Test
     public void test_getCodeSourceAsPath() {
         Path p = new ProjectDirectoryResolver().getCodeSourceAsPath(this.getClass());
-        log.info("[testGetCodeSourceAsPath] p = " + p);
+        logger.info("[test_getCodeSourceAsPath] p = " + p);
         assertThat(p).isNotNull().exists();
     }
 
     @Test
     public void test_getProjectDirViaClasspath() {
         Path p = new ProjectDirectoryResolver().getProjectDirViaClasspath(this.getClass());
+        logger.debug("[test_getProjectDirViaClasspath] p=" + p.toString());
+        if (isWindows()) {
+            assertThat(p.toString()).startsWith("C:\\");
+        }
         assertThat(p).isNotNull().exists();
         assertThat(p.getFileName().toString())
                 .isEqualTo("lib");
+    }
+    private boolean isWindows() {
+        String OS = System.getProperty("os.name");
+        return OS.startsWith("Windows");
     }
 
     @Test
@@ -36,7 +44,7 @@ public final class ProjectDirectoryResolverTest {
         assertThat(sublistPatterns).isNotNull();
         assertThat(sublistPatterns.size()).isGreaterThanOrEqualTo(2);
         for (List<String> p : sublistPatterns) {
-            log.info("sublistPattern : " + p);
+            logger.info("sublistPattern : " + p);
         }
     }
 

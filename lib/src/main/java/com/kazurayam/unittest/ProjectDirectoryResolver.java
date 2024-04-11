@@ -135,8 +135,15 @@ public final class ProjectDirectoryResolver {
      */
     public Path getProjectDirViaClasspath(Class<?> clazz) {
         Path codeSourcePath = this.getCodeSourceAsPath(clazz);
-        // e.g. "/Users/myname/oreilly/selenium-webdriver-java/selenium-webdriver-junit4/build/classes/java/test/com/kazurayam/webdriver/TestOutputOrganizer.class"
+        logger.debug("[getProjectDirViaClasspath] codeSourcePath=" + codeSourcePath);
+        Path root = codeSourcePath.getRoot();
+        logger.debug("[getProjectDirViaClasspath] root=" + root);   // root will be C:\ on Windows.
+                                                                   // root wil be null on mac and linux
+        // e.g.
+        // on Mac, "/Users/uraya/github/unittest-helper/lib/build/classes/java/test"
+        // on Win, "C:\\Users\\uraya\\github\\unittest-helper\\lib\\build\\classes\\java\\test"
         List<String> nameElements = toNameElements(codeSourcePath);
+        logger.debug("[getProjectDirViaClasspath] nameElements=" + nameElements);
         StringSequence ss = new StringSequence(nameElements);
         int boundary = -1;
         for (List<String> sublistPattern : this.sublistPatterns) {
@@ -155,7 +162,7 @@ public final class ProjectDirectoryResolver {
             throw new IllegalStateException("unable to resolve the project directory via classpath");
         }
         // build the project dir to return as the result
-        Path w = fileSystem.getPath("/");
+        Path w = root;
         for (int i = 0; i < boundary; i++) {
             w = w.resolve(nameElements.get(i));
         }
