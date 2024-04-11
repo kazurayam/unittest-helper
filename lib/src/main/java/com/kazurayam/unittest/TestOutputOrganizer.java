@@ -22,9 +22,8 @@ import java.util.Objects;
  */
 public final class TestOutputOrganizer {
 
-    private static final Logger log = LoggerFactory.getLogger(TestOutputOrganizer.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestOutputOrganizer.class);
     private final FileSystem fileSystem;
-    private final Class<?> clazz;
     private final Path projectDir;
     private final String outputDirPath;
     private final String subDirPath;
@@ -35,7 +34,7 @@ public final class TestOutputOrganizer {
      */
     private TestOutputOrganizer(Builder builder) {
         this.fileSystem = builder.fileSystem;
-        this.clazz = builder.clazz;
+        Class<?> clazz = builder.clazz;
         this.projectDir = builder.projectDir;
         this.outputDirPath = builder.outputDirPath;
         this.subDirPath = builder.subDirPath;
@@ -201,11 +200,14 @@ public final class TestOutputOrganizer {
     /**
      * This method is meant to be used in messages and documentations.
      * You do not want to show your own personal name in the console messages, right?
-     * So you want to hide the username part of paths.
-     * Translate a Path of "/User/kazurayam/github/unittest-helper/app/foo.txt"
+     * So you will surely want to hide the username part of paths.
+     * This method translate a Path of "/User/kazurayam/github/unittest-helper/app/foo.txt"
      * to "~/github/unittest-helper/app/foo.txt" which is relative to the $HOME
      * of the user if the path is located under the $HOME. If the path is NOT
      * located under the $HOME, just stringify the absolute path.
+     *
+     * This method returns a strin in the UNIX style path representation separated
+     * with '/' charactor even on Windows platform.
      *
      * @param path a Path object to be translated into a Home Relative path string
      * @return a path string prepended by tilde `~` if the path starts with "user.home"
@@ -223,7 +225,7 @@ public final class TestOutputOrganizer {
                     userHome.toAbsolutePath().toUri().toURL().toString())) {
                 // the other path is under the user.dir
                 Path relativePath = userHome.relativize(p).normalize();
-                return TILDE + "/" + relativePath.toString();
+                return TILDE + File.separator + relativePath.toString();
             } else {
                 return p.toString();
             }
