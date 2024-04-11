@@ -9,10 +9,10 @@ import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  */
 public final class ProjectDirectoryResolver {
 
-    private static final Logger log = LoggerFactory.getLogger(ProjectDirectoryResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProjectDirectoryResolver.class);
     private final FileSystem fileSystem;
     private final List<List<String>> sublistPatterns;
 
@@ -54,8 +54,11 @@ public final class ProjectDirectoryResolver {
         this.sublistPatterns = new ArrayList<>();
         sublistPatterns.add(Arrays.asList("target", "test-classes"));   // Maven
         sublistPatterns.add(Arrays.asList("build", "classes", "java", "test"));  // Gradle, Java
+        sublistPatterns.add(Arrays.asList("build", "classes", "java", "functionalTest"));  // Gradle, Java
         sublistPatterns.add(Arrays.asList("build", "classes", "groovy", "test"));  // Gradle, Groovy
+        sublistPatterns.add(Arrays.asList("build", "classes", "groovy", "functionalTest"));  // Gradle, Groovy
         sublistPatterns.add(Arrays.asList("build", "classes", "kotlin", "test"));  // Gradle, Kotlin
+        sublistPatterns.add(Arrays.asList("build", "classes", "kotlin", "functionalTest"));  // Gradle, Kotlin
     }
 
     /**
@@ -100,15 +103,8 @@ public final class ProjectDirectoryResolver {
         CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
         URL url = codeSource.getLocation();
         try {
-            // trim "file:" contained in the URL string
-            String urlStr = url.toURI().toURL().toExternalForm();
-            Matcher m = URL_PATTERN.matcher(urlStr);
-            if (m.matches()) {
-                return fileSystem.getPath(m.group(2));
-            } else {
-                throw new RuntimeException("unexpected value of urlStr: " + urlStr);
-            }
-        } catch (URISyntaxException | MalformedURLException e) {
+            return Paths.get(url.toURI());
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
@@ -139,19 +135,26 @@ public final class ProjectDirectoryResolver {
      */
     public Path getProjectDirViaClasspath(Class<?> clazz) {
         Path codeSourcePath = this.getCodeSourceAsPath(clazz);
-        // e.g. "/Users/myname/oreilly/selenium-webdriver-java/selenium-webdriver-junit4/build/classes/java/test/com/kazurayam/webdriver/TestOutputOrganizer.class"
+        logger.debug("[getProjectDirViaClasspath] codeSourcePath=" + codeSourcePath);
+        Path root = codeSourcePath.getRoot();
+        logger.debug("[getProjectDirViaClasspath] root=" + root);   // root will be C:\ on Windows.
+                                                                   // root wil be null on mac and linux
+        // e.g.
+        // on Mac, "/Users/uraya/github/unittest-helper/lib/build/classes/java/test"
+        // on Win, "C:\\Users\\uraya\\github\\unittest-helper\\lib\\build\\classes\\java\\test"
         List<String> nameElements = toNameElements(codeSourcePath);
+        logger.debug("[getProjectDirViaClasspath] nameElements=" + nameElements);
         StringSequence ss = new StringSequence(nameElements);
         int boundary = -1;
         for (List<String> sublistPattern : this.sublistPatterns) {
             int indexOfBuildDir = ss.indexOfSubsequence(sublistPattern);
             if (indexOfBuildDir > 0) {
                 boundary = indexOfBuildDir;
-                log.trace(String.format("sublistPattern %s is found in the code source path %s at the index %d",
+                logger.trace(String.format("sublistPattern %s is found in the code source path %s at the index %d",
                         sublistPattern, ss, boundary));
                 break;
             } else {
-                log.trace(String.format("sublistPattern %s is NOT found in the code source path %s",
+                logger.trace(String.format("sublistPattern %s is NOT found in the code source path %s",
                         sublistPattern, ss));
             }
         }
@@ -159,7 +162,7 @@ public final class ProjectDirectoryResolver {
             throw new IllegalStateException("unable to resolve the project directory via classpath");
         }
         // build the project dir to return as the result
-        Path w = fileSystem.getPath("/");
+        Path w = root;
         for (int i = 0; i < boundary; i++) {
             w = w.resolve(nameElements.get(i));
         }

@@ -58,6 +58,7 @@ public class OutputIntoDedicatedDirectoryTest {
     public void test_write_into_subdir_under_the_default_output_directory() throws Exception {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
         Path file = too.getOutputDirectory().resolve("sub/sample.txt");
+        Files.createDirectories(file.getParent());
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         log.info("[test_write_into_subdir_under_the_default_output_directory] " +
                 too.toHomeRelativeString(file));

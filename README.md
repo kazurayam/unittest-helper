@@ -48,7 +48,6 @@ public class SampleTest {
         Path p = Paths.get("sample1.txt");
         Files.writeString(p, "Hello, world!");
     }
-
 ```
 
 This will create a file at `<projectDir>/sample1.txt`
@@ -56,6 +55,33 @@ This will create a file at `<projectDir>/sample1.txt`
 In this case we used `Paths.get("sample1.txt")`. This expression will locate the file `sample1.txt` in the directory which `System.getProperty("user.dir")` expression stands for.
 
 You should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools' settings. Though rarely, the `user.dir` is not very much reliable. See [this issue](https://github.com/kazurayam/selenium-webdriver-java/issues/21) for example. 
+
+TestOutputOrganizer provides an alternative way.
+
+```
+package my;
+
+import org.junit.jupiter.api.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class SampleTest {
+
+    private static final TestOutputOrganizer too = 
+        new TestOutputOrganizer.Builder(SampleTest.class).build();
+
+
+    @Test
+    public void test_write_under_the_project_dir() throws Exception {
+        Path projectDir = too.getProjectDir();
+        Path p = projectDir.resolve("sample1.txt");
+        Files.writeString(p, "Hello, world!");
+    }
+```
+
+The `getProject()` method of `TestOutputOrganizer` class will return an instance of `java.nio.Path` which is the project's root directory. The `getProject` method is not dependent of the *current working directory*. How does the method resolves the project's directory? --- I will explain it later.
 
 #### Ex2: Write a file under the default test-output directory
 
@@ -92,7 +118,9 @@ This will create a file at `<projectDir>/test-output/sample2.txt`
 
 If the `<projectDir>/test-output` directory is not there, it will be silently created.
 
-If the ``<projectDir>/test-output` directory will be silently` is already there, it will be removed recursively and will be recreated.
+If the `<projectDir>/test-output` directory is already there, the call to `cleanOutputDirectory()` will remove the directory recursively and recreate it.
+
+If the `<projectDir>/test-output` directory is already there and if you do not call `too.cleanOutputDirectory()`, then the directory will be left as is and just reused.
 
 #### Ex3: Write a file under a directory dedicated for the test class
 
@@ -112,11 +140,11 @@ public class SampleTest {
 
     private static final TestOutputOrganizer too = 
         new TestOutputOrganizer.Builder(SampleTest.class)
-            .subDirPath("build/tmp/testOutput").build();
+            .subDirPath(SampleTest.class).build();
 
     @BeforeAll
     public static void beforeAll() {
-        too.cleanOutputDirectory();
+        too.cleanClassOutputDirectory();
     }
     
     @Test
@@ -127,11 +155,13 @@ public class SampleTest {
 }
 ```
 
-This will create a file at `<projectDir>/build/tmp/testOutput/sample3.txt`
+This will create a file at `<projectDir>/build/tmp/testOutput/my.SampleTest/sample3.txt`
 
-If the `<projectDir>/build/tmp/testOutput` directory is not yet there, it will be silently created.
+If the `<projectDir>/build/tmp/testOutput/my.SampleTest` directory is not yet there, it will be silently created.
 
-If the `<projectDir>/build/tmp/testOutput` directory is already there, it will be once removed recursively and recreated.
+If the `<projectDir>/build/tmp/testOutput/my.SampleTest` directory is already there, the call to `cleanClassOutputDirectory()` will remove the directory recursively and recreate it.
+
+If the `<projectDir>/build/tmp/testOutput/my.SampleTest` directory is already there and if you do not call `cleanClassOutputDirectory()`, then the directory will stay as is and will be reused.
 
 #### Ex4: Insert a subdirectory which has the Fully Qualified Class Name of the test class
 
@@ -155,7 +185,7 @@ public class SampleTest {
 
     @BeforeAll
     public static void beforeAll() {
-        too.cleanOutputDirectory();
+        too.cleanClassOutputDirectory();
     }
     
     @Test
@@ -172,7 +202,7 @@ This path structure clearly tells you that the `sample4.txt` file was written by
 
 If the `<projectDir>/testOutput/my.SampleTest` directory is not there, it will be silently created.
 
-If the `<projectDir>/testOutput/my.SampleTest` directory is already there, it will be once removed recursively and recreated.
+If the `<projectDir>/testOutput/my.SampleTest` directory is already there, the call to `cleanClassOutputDirectory()` will remove the directory recursively and recreate lit.
 
 #### Ex:5 Insert a subdirectory which has the test method name
 
@@ -196,12 +226,14 @@ public class SampleTest {
 
     @BeforeAll
     public static void beforeAll() {
-        too.cleanOutputDirectory();
+        too.cleanClassOutputDirectory();
     }
     
     @Test
     public void test_write_into_the_methodOutputDirectory() throws Exception {
-        Path p = too.getMethodOutputDirectory("test_write_into_the_methodOutputDirectory").resolve("sample5.txt");
+        String methodName = "test_write_into_the_methodOutputDirectory";
+        too.cleanMethodOutputDirectory(methodName);
+        Path p = too.getMethodOutputDirectory(methodName).resolve("sample5.txt");
         Files.writeString(p, "Hello, world!");
     }
 }
@@ -213,7 +245,7 @@ This path structure clearly tells you that the `sample5.txt` file was written by
 
 If the "method" directory is not there, it will be silently created.
 
-If the "method" directory is already there, it will be once removed recursively and recreated.
+If the "method" directory is already there, it will be just reused.
 
 #### TestOutputOrganizer resolves the project directory via classpath
 
@@ -225,7 +257,7 @@ If you use Maven to build the project, then most probably you have the class fil
 
 Are you using other build tools so that the project file tree is different from Maven & Gradle? --- This case you can tell your own tree structure to the `TestOutputOrganizer` instance. See the long explanation for detail.
 
-Resolving the project directory via classpath means that the `TestOutputOrgainzer` class works independent on the current working directory (= `System.getProperty('user.dir')`) of the runtime process.
+Resolving the project directory via classpath means that the `TestOutputOrgainzer` class works independent of the current working directory (= `System.getProperty('user.dir')`) of the runtime process.
 
 
 ## Long explanation

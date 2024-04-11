@@ -115,13 +115,24 @@ public class TestOutputOrganizerTest {
                 .isEqualTo("build");
     }
 
+    private boolean isWindows() {
+        String OS = System.getProperty("os.name");
+        return OS.startsWith("Windows");
+    }
+
     @Test
     public void test_toHomeRelativeString_simple() {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
         Path projectDir = too.getProjectDir();
         String homeRelative = too.toHomeRelativeString(projectDir);
         System.out.println("[test_toHomeRelativeString_simple] " + homeRelative);
-        assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
+        if (isWindows()) {
+            assertThat(homeRelative).isEqualTo("~\\github\\unittest-helper\\lib");
+
+        } else {
+            assertThat(homeRelative).isEqualTo("~/github/unittest-helper/lib");
+
+        }
     }
 
     @Test
@@ -129,16 +140,27 @@ public class TestOutputOrganizerTest {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
         Path p = too.getOutputDirectory().resolve("foo.txt");
         String homeRelative = too.toHomeRelativeString(p);
-        assertThat(homeRelative).isEqualTo(
-                "~/github/unittest-helper/lib/test-output/foo.txt");
+        if (isWindows()) {
+            assertThat(homeRelative).isEqualTo(
+                "~\\github\\unittest-helper\\lib\\test-output\\foo.txt");
+        } else {
+            assertThat(homeRelative).isEqualTo(
+                    "~/github/unittest-helper/lib/test-output/foo.txt");
+
+        }
     }
+
 
     @Test
     public void test_toHomeRelativeString_HOME_itself() {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
         Path p = FileSystems.getDefault().getPath(System.getProperty("user.home"));
         String s = too.toHomeRelativeString(p);
-        assertThat(s).isEqualTo("~/");
+        if (isWindows()) {
+            assertThat(s).isEqualTo("~\\");
+        } else {
+            assertThat(s).isEqualTo("~/");
+        }
     }
 
     @Test
@@ -146,7 +168,11 @@ public class TestOutputOrganizerTest {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
         Path p = FileSystems.getDefault().getPath("/Applications");
         String s = too.toHomeRelativeString(p);
-        assertThat(s).isEqualTo("/Applications");
+        if (isWindows()) {
+            assertThat(s).isEqualTo("C:\\Applications");
+        } else {
+            assertThat(s).isEqualTo("/Applications");
+        }
     }
 
     @Test
