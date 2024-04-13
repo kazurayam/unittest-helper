@@ -137,11 +137,10 @@ public final class ProjectDirectoryResolver {
         Path codeSourcePath = this.getCodeSourceAsPath(clazz);
         logger.debug("[getProjectDirViaClasspath] codeSourcePath=" + codeSourcePath);
         Path root = codeSourcePath.getRoot();
-        logger.debug("[getProjectDirViaClasspath] root=" + root);   // root will be C:\ on Windows.
-                                                                   // root wil be null on mac and linux
-        // e.g.
-        // on Mac, "/Users/uraya/github/unittest-helper/lib/build/classes/java/test"
-        // on Win, "C:\\Users\\uraya\\github\\unittest-helper\\lib\\build\\classes\\java\\test"
+        logger.debug("[getProjectDirViaClasspath] root=" + root);
+        // for example,
+        // on Mac, root="/"
+        // on Win, root="C:\\"
         List<String> nameElements = toNameElements(codeSourcePath);
         logger.debug("[getProjectDirViaClasspath] nameElements=" + nameElements);
         StringSequence ss = new StringSequence(nameElements);
