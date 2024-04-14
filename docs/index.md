@@ -7,7 +7,7 @@
 
 -   date: Nov, 2023
 
--   version: 0.3.0
+-   version: unknown
 
 -   source project: <https://github.com/kazurayam/unittest-helper>
 
@@ -180,7 +180,9 @@ The `TestOutputOrgainzer` class is compiled by Java8.
 
 Using the `TestOutputOrganizer` class, you can well-organize the files created by test classes, as follows:
 
-![well organized test outputs](https://kazurayam.github.io/unittest-helper/images/well-organized-test-outputs.png)
+<figure>
+<img src="https://kazurayam.github.io/unittest-helper/images/well-organized-test-outputs.png" alt="well organized test outputs" />
+</figure>
 
 ## How does the `TestOutputOrganizer` resolves the project root directory ?
 
@@ -233,8 +235,11 @@ This test prints the following result in the console:
 
     sublistPattern : [target, test-classes]
     sublistPattern : [build, classes, java, test]
+    sublistPattern : [build, classes, java, functionalTest]
     sublistPattern : [build, classes, groovy, test]
+    sublistPattern : [build, classes, groovy, functionalTest]
     sublistPattern : [build, classes, kotlin, test]
+    sublistPattern : [build, classes, kotlin, functionalTest]
 
 The 1st sublistPattern is for Maven. the 2nd, sublistPattern is for Java codes built in Gradle. The 3rd is for Groovy codes built in Gradle. The 4th is for Kotlin codes built in Gradle.
 
@@ -941,7 +946,9 @@ The following code is using the Factory.
 
     public class SampleTest {
 
-        private static TestOutputOrganizer too = TestOutputOrganizerFactory.create(SampleTest.class);
+        private static TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(SampleTest.class)
+                        .subDirPath(SampleTest.class).build();
 
         private static DateTimeFormatter dtf;
         private static final Logger log = LoggerFactory.getLogger(SampleTest.class);
@@ -962,8 +969,6 @@ The following code is using the Factory.
             Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
             assertThat(p).isNotNull().exists();
             assertThat(p.toFile().length()).isGreaterThan(0);
-            log.info("output is found at " + too.toHomeRelativeString(p));
-        }
 
 When you ran the test, the output directory will look like this:
 
