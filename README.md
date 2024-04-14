@@ -241,7 +241,7 @@ public class SampleTest {
 
 This will create a file at `<projectDir>/test-output/my.SampleTest/test_write_into_the_methodOutputDirectory/sample5.txt`
 
-This path structure clearly tells you that the `sample5.txt` file was written by the `my.SampleTest` class, the `test_write_into_the_methodOutputDirectory` method.
+This path structure clearly tells you that the `sample5.txt` file was written by the `test_write_into_the_methodOutputDirectory` method of the `my.SampleTest` class.
 
 If the "method" directory is not there, it will be silently created.
 
