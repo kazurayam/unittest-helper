@@ -1,6 +1,6 @@
 # unittest-helper
 
-Using the `com.kazurayam.unittest.TestOutputOrganizer` class, you can easily prepare a directory into which your unit-test can write files. The helper class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG.
+Using the `com.kazurayam.unittest.TestOutputOrganizer` class, you can easily prepare a directory into which your unit-test can write files. The helper class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG. It has been tested mainly on Mac, is tested on Windows as well.
 
 ## Download from
 
@@ -81,7 +81,7 @@ public class SampleTest {
     }
 ```
 
-The `getProject()` method of `TestOutputOrganizer` class will return an instance of `java.nio.Path` which is the project's root directory. The `getProject` method is not dependent of the *current working directory*. How does the method resolves the project's directory? --- I will explain it later.
+The `getProject()` method of `TestOutputOrganizer` class will return an instance of `java.nio.Path` which is the project's root directory. The `getProject` method is independent of the *current working directory*. How does the method resolves the project's directory? --- I will explain it later.
 
 #### Ex2: Write a file under the default test-output directory
 
@@ -155,13 +155,13 @@ public class SampleTest {
 }
 ```
 
-This will create a file at `<projectDir>/build/tmp/testOutput/my.SampleTest/sample3.txt`
+This will create a file at `<projectDir>/test-output/my.SampleTest/sample3.txt`
 
-If the `<projectDir>/build/tmp/testOutput/my.SampleTest` directory is not yet there, it will be silently created.
+If the `<projectDir>/test-output/my.SampleTest` directory is not yet there, it will be silently created.
 
-If the `<projectDir>/build/tmp/testOutput/my.SampleTest` directory is already there, the call to `cleanClassOutputDirectory()` will remove the directory recursively and recreate it.
+If the `<projectDir>/test-output/my.SampleTest` directory is already there, the call to `cleanClassOutputDirectory()` will remove the directory recursively and recreate it.
 
-If the `<projectDir>/build/tmp/testOutput/my.SampleTest` directory is already there and if you do not call `cleanClassOutputDirectory()`, then the directory will stay as is and will be reused.
+If the `<projectDir>/test-output/my.SampleTest` directory is already there and if you do not call `cleanClassOutputDirectory()`, then the directory will stay as is and will be reused.
 
 #### Ex4: Insert a subdirectory which has the Fully Qualified Class Name of the test class
 
@@ -196,13 +196,13 @@ public class SampleTest {
 }
 ```
 
-This will create a file at `<projectDir>/testOutput/my.SampleTest/sample4.txt`
+This will create a file at `<projectDir>/test-output/my.SampleTest/sample4.txt`
 
 This path structure clearly tells you that the `sample4.txt` file was written by the `my.SampleTest` class.
 
-If the `<projectDir>/testOutput/my.SampleTest` directory is not there, it will be silently created.
+If the `<projectDir>/test-output/my.SampleTest` directory is not there, it will be silently created.
 
-If the `<projectDir>/testOutput/my.SampleTest` directory is already there, the call to `cleanClassOutputDirectory()` will remove the directory recursively and recreate lit.
+If the `<projectDir>/test-output/my.SampleTest` directory is already there, the call to `cleanClassOutputDirectory()` will remove the directory recursively and recreate lit.
 
 #### Ex:5 Insert a subdirectory which has the test method name
 
@@ -239,7 +239,7 @@ public class SampleTest {
 }
 ```
 
-This will create a file at `<projectDir>/testOutput/my.SampleTest/test_write_into_the_methodOutputDirectory/sample5.txt`
+This will create a file at `<projectDir>/test-output/my.SampleTest/test_write_into_the_methodOutputDirectory/sample5.txt`
 
 This path structure clearly tells you that the `sample5.txt` file was written by the `my.SampleTest` class, the `test_write_into_the_methodOutputDirectory` method.
 
