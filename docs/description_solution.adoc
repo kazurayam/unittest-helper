@@ -44,7 +44,7 @@ sublistPattern : [build, classes, kotlin, test]
 sublistPattern : [build, classes, kotlin, functionalTest]
 ----
 
-The 1st sublistPattern is for Maven. the 2nd, sublistPattern is for Java codes built in Gradle. The 3rd is for Groovy codes built in Gradle. The 4th is for Kotlin codes built in Gradle.
+The 1st sublistPattern is for Maven. the 2nd, sublistPattern is for Java codes built in Gradle.
 
 Do you need a unique sublistPattern other than those built-in ones?
 
