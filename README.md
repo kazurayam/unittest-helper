@@ -1,6 +1,14 @@
 # unittest-helper
 
-Using the `com.kazurayam.unittest.TestOutputOrganizer` class, you can easily prepare a directory into which your unit-test can write files. The helper class works with any unit-testing frameworks: JUnit4, JUnit5 and TestNG. It has been tested mainly on Mac, is tested on Windows as well.
+When testing, we often need access to a temporary file. However, managing, creating and deleting these files ourselves can be cumbersome. JUnit5 provides [TempDirectory Extension](https://www.baeldung.com/junit-5-temporary-directory) to create and clean up a temporary directory for an individual test or all tests in a test class. When the TempDirectory extension is used, the temporary files under the `@TempDir` will be automatically removed once the tests are done. But quite often I would rather like to see the contents of the temporary files. I need an alternative approach. I want to keep the temporary files when my tests are done. So I have developed `com.kazurayam.unittest.TestOutputOrganizer` class. This class helps
+
+1. resolving the path of "project directory" based on the classpath of the test class rather than naively assuming that the project directory is equal to the value of `System.getProperty("user.home")` which is highly dependent on the runtime environment.
+2. creating a "test-output" directory where tests can write temporary files.
+3. cleaning and recreating the test-output directory
+4. creating a directory for each individual test classes under the test-output directory.
+5. creating a directory for each individual methods of a test class under the test-output directory.
+
+The `TestOutputOrganizer` class was tested with Gradle. I haven't tested it enough with Maven. I have tested it with JUnit5. Hopefully it will work with JUnit4 and TestNG. I have tested it mainly on Mac, and tested it on Windows as well.
 
 ## Download from
 
