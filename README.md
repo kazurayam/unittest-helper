@@ -32,11 +32,11 @@ dependencies {
 
 Here I assume you have a Gradle project with a JUnit5 test class. The test wants to write a file into a local directory. You have a few options into which directory the test to write a file:
 
-1. immediately under the project directory
-2. under a directory `<projectDir>/test-output`. This is the default location which you can use with minimum effort.
-3. under a custom directory: `<projectDir>/build/tmp/testOutput`
+- Option1: immediately under the project directory
+- Option2: under a directory `<projectDir>/test-output`. This is the default location which you can use with minimum effort.
+- Option3: under a custom directory: `<projectDir>/build/tmp/testOutput`
 
-#### Ex1: Write a file immediately under the project dir
+#### Problematic case: Write a file immediately under the current working directory
 
 Let me start with a problematic code:
 
@@ -58,13 +58,13 @@ public class SampleTest {
     }
 ```
 
-This will create a file at `<projectDir>/sample1.txt`
+This code calls `Paths.get("sample1.txt")`. This expression will locate the file `sample1.txt` in the directory which `System.getProperty("user.dir")` expression stands for.
 
-In this case we used `Paths.get("sample1.txt")`. This expression will locate the file `sample1.txt` in the directory which `System.getProperty("user.dir")` expression stands for.
+However, you should be aware that the value of the Java System Property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools' settings. Though rarely, the `user.dir` is not very much reliable. See [this issue](https://github.com/kazurayam/selenium-webdriver-java/issues/21) for example. 
 
-You should note that the value of the system property `user.dir` is dependent on the runtime environment. It is variable by the config of IDE and build tools' settings. Though rarely, the `user.dir` is not very much reliable. See [this issue](https://github.com/kazurayam/selenium-webdriver-java/issues/21) for example. 
+### Ex1: resolving the project directory by classpath
 
-TestOutputOrganizer provides an alternative way.
+The `com.kazurayam.unittest.TestOutputOrganizer` class provides an alternative way how to resolve the project directory; independent on the Java System Property `user.dir`.
 
 ```
 package my;
@@ -74,6 +74,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import com.kazurayam.unittest.TestOutputOrganizer;
 
 public class SampleTest {
 
@@ -89,7 +90,7 @@ public class SampleTest {
     }
 ```
 
-The `getProject()` method of `TestOutputOrganizer` class will return an instance of `java.nio.Path` which is the project's root directory. The `getProject` method is independent of the *current working directory*. How does the method resolves the project's directory? --- I will explain it later.
+You want to create an instance of `TestOutputOrganizer` passing the instance of Class of your testcase.  The `getProjectDir()` method of `TestOutputOrganizer` class will return an instance of `java.nio.Path` which is the project's root directory. The `getProjectDir` method does not refer to the `user.dir` system property. How does the method resolves the project's directory? --- I will explain it later.
 
 #### Ex2: Write a file under the default test-output directory
 
@@ -111,7 +112,7 @@ public class SampleTest {
 
     @BeforeAll
     public static void beforeAll() {
-        too.cleanOutputDirectory();
+        too.cleanOutputDirectory();  // clean the test-output directory and recreate it
     }
     
     @Test
