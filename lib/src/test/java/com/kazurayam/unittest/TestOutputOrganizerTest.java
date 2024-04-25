@@ -183,7 +183,7 @@ public class TestOutputOrganizerTest {
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p).exists();
         // when
-        too.cleanOutputDirectory();
+        p = too.cleanOutputDirectory();
         // then
         Path od = too.createOutputDirectory();
         assertThat(od).exists();
@@ -202,7 +202,7 @@ public class TestOutputOrganizerTest {
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p).exists();
         // when
-        too.cleanOutputSubDirectory();
+        p = too.cleanOutputSubDirectory();
         // then
         assertThat(too.createOutputSubDirectory()).exists();
         assertThat(isEmpty(too.createOutputSubDirectory())).isTrue();
@@ -219,7 +219,7 @@ public class TestOutputOrganizerTest {
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         assertThat(p).exists();
         // when
-        too.cleanOutputSubDirectory();
+        p = too.cleanOutputSubDirectory();
         // then
         assertThat(too.createOutputSubDirectory()).exists();
         assertThat(isEmpty(too.createOutputSubDirectory())).isTrue();

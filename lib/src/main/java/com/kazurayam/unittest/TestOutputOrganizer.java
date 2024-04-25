@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -13,6 +14,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 
 /**
  * Provides utility methods that helps JUnit4/JUnit5/TestNG tests with
@@ -78,10 +80,11 @@ public final class TestOutputOrganizer {
      * @return the reference to this TestOutputOrganizer instance
      * @throws IOException during removing files/directories
      */
-    public void cleanOutputDirectory() throws IOException {
+    public Path cleanOutputDirectory() throws IOException {
         Path outputDir = this.createOutputDirectory();
         DeleteDir.deleteDirectoryRecursively(outputDir);
         Files.createDirectories(outputDir);
+        return outputDir;
     }
 
     //--------------------------------------------------------------------------
@@ -116,10 +119,11 @@ public final class TestOutputOrganizer {
      * @return the reference to this TestOutputOrganizer instance
      * @throws IOException during removing files/directories
      */
-    public void cleanOutputSubDirectory() throws IOException {
+    public Path cleanOutputSubDirectory() throws IOException {
         Path outputSubDir = this.createOutputSubDirectory();
         DeleteDir.deleteDirectoryRecursively(outputSubDir);
         Files.createDirectories(outputSubDir);
+        return outputSubDir;
     }
 
     //--------------------------------------------------------------------------
@@ -140,10 +144,11 @@ public final class TestOutputOrganizer {
         return d;
     }
 
-    public void cleanClassOutputDirectory() throws IOException {
+    public Path cleanClassOutputDirectory() throws IOException {
         Path classOutputDir = this.createClassOutputDirectory();
         DeleteDir.deleteDirectoryRecursively(classOutputDir);
         Files.createDirectories(classOutputDir);
+        return classOutputDir;
     }
 
     //--------------------------------------------------------------------------
@@ -153,51 +158,40 @@ public final class TestOutputOrganizer {
         return resolveClassOutputDirectory().resolve(testMethodName);
     }
 
+    public Path resolveMethodOutputDirectory(Method testMethod) {
+        Objects.requireNonNull(testMethod);
+        return resolveClassOutputDirectory().resolve(testMethod.getName());
+    }
+
     public Path createMethodOutputDirectory(String testMethodName) throws IOException {
         Path d = resolveMethodOutputDirectory(testMethodName);
         Files.createDirectories(d);
         return d;
     }
 
-    public void cleanMethodOutputDirectory(String testMethodName) throws IOException {
+    public Path createMethodOutputDirectory(Method testMethod) throws IOException {
+        Path d = resolveMethodOutputDirectory(testMethod.getName());
+        Files.createDirectories(d);
+        return d;
+    }
+
+    public Path cleanMethodOutputDirectory(String testMethodName) throws IOException {
         Path methodOutputDir = this.createMethodOutputDirectory(testMethodName);
         DeleteDir.deleteDirectoryRecursively(methodOutputDir);
         Files.createDirectories(methodOutputDir);
+        return methodOutputDir;
+    }
+
+    public Path cleanMethodOutputDirectory(Method testMethod) throws IOException {
+        Path methodOutputDir = this.createMethodOutputDirectory(testMethod);
+        DeleteDir.deleteDirectoryRecursively(methodOutputDir);
+        Files.createDirectories(methodOutputDir);
+        return methodOutputDir;
     }
 
     //--------------------------------------------------------------------------
 
-    /**
-     * Create the output directory if it is not yet there.
-     * Returns the Path of a file that a test class write its output into.
-     * As default, the output file will be located under the "test-output" directory.
-     * You can change the directory location by calling setOutputDirPath(Path).
-     *
-     * @param fileName the file name
-     * @return Path of a file as the output written by a test class
-     * @deprecated since 0.3.0
-     */
-    /*
-    @Deprecated
-    public Path resolveOutput(String fileName) throws IOException {
-        Path outFile =
-                (subPathUnderOutputDirectory != null) ?
-                        createOutputDirectory().resolve(subPathUnderOutputDirectory).resolve(fileName) :
-                        createOutputDirectory().resolve(fileName);
-        // make sure the parent directory to be present
-        Path parentDir = outFile.getParent();
-        if (!Files.exists(parentDir)) {
-            try {
-                Files.createDirectories(parentDir);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return outFile;
-    }
-*/
-
-    static final String TILDE = "~";
+    private static final String TILDE = "~";
 
     /**
      * This method is meant to be used in messages and documentations.
