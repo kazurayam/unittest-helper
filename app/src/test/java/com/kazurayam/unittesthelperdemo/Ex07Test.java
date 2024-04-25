@@ -21,7 +21,7 @@ public class Ex07Test {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
                         .outputDirectoryPathRelativeToProject("build/tmp/testOutput").build();
-        Path file = too.getOutputDirectory().resolve("sample.txt");
+        Path file = too.createOutputDirectory().resolve("sample.txt");
         // you do not have to make sure that the parent directory exists
         // Files.createDirectories(file.getParent());
 
@@ -31,7 +31,7 @@ public class Ex07Test {
         List<String> content = Files.readAllLines(file);
         log.info(content.toString());
 
-        assertThat(too.getOutputDirectory().getFileName().toString()).isEqualTo("testOutput");
+        assertThat(too.createOutputDirectory().getFileName().toString()).isEqualTo("testOutput");
     }
 
 }

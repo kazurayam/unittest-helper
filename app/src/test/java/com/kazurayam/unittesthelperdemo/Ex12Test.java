@@ -1,5 +1,6 @@
 package com.kazurayam.unittesthelperdemo;
 
+import com.kazurayam.unittest.DeleteDir;
 import com.kazurayam.unittest.TestOutputOrganizer;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ public class Ex12Test {
         Path file = dir.resolve("foo.txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         // when
-        TestOutputOrganizer.cleanDirectoryRecursively(dir);
+        DeleteDir.deleteDirectoryRecursively(dir);
         // then
         assertThat(file).doesNotExist();
         assertThat(dir).doesNotExist();

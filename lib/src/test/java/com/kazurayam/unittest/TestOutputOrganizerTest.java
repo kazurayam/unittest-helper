@@ -30,7 +30,7 @@ public class TestOutputOrganizerTest {
     @Test
     public void test_getOutputDir_default() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path p = too.getOutputDirectory();
+        Path p = too.createOutputDirectory();
         log.info("[test_getOutputDir_default] output dir : " + p);
         assertThat(p.getFileName().toString()).isEqualTo("test-output");
     }
@@ -42,7 +42,7 @@ public class TestOutputOrganizerTest {
                 new TestOutputOrganizer.Builder(this.getClass())
                         .outputDirectoryPathRelativeToProject(FileSystems.getDefault().getPath(dirName).toString())
                         .build();
-        Path p = too.getOutputDirectory();
+        Path p = too.createOutputDirectory();
         log.info("[test_getOutputDir_custom] output dir : " + p);
         assertThat(p.getFileName().toString()).isEqualTo(dirName);
     }
@@ -51,7 +51,7 @@ public class TestOutputOrganizerTest {
     public void test_getClassOutputDirectory() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
                 .subPathUnderOutputDirectory(this.getClass()).build();
-        Path p = too.getClassOutputDirectory();
+        Path p = too.createClassOutputDirectory();
         log.info("[test_getClassOutputDirectory] " + p);
         assertThat(p.getFileName().toString()).isEqualTo(this.getClass().getName());
     }
@@ -60,7 +60,7 @@ public class TestOutputOrganizerTest {
     public void test_getMethodOutputDirectory() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
                 .subPathUnderOutputDirectory(this.getClass()).build();
-        Path p = too.getMethodOutputDirectory("test_getMethodOutputDirectory");
+        Path p = too.createMethodOutputDirectory("test_getMethodOutputDirectory");
         log.info("[test_getMethodOutputDirectory]" + p);
         assertThat(p.getFileName().toString()).isEqualTo("test_getMethodOutputDirectory");
         assertThat(p.getParent().getFileName().toString()).isEqualTo(this.getClass().getName());
@@ -137,7 +137,7 @@ public class TestOutputOrganizerTest {
     @Test
     public void test_toHomeRelativeString_simple_more() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path p = too.getOutputDirectory().resolve("foo.txt");
+        Path p = too.createOutputDirectory().resolve("foo.txt");
         String homeRelative = too.toHomeRelativeString(p);
         if (isWindows()) {
             assertThat(homeRelative).isEqualTo(
@@ -184,7 +184,7 @@ public class TestOutputOrganizerTest {
         // when
         too.cleanOutputDirectory();
         // then
-        Path od = too.getOutputDirectory();
+        Path od = too.createOutputDirectory();
         assertThat(od).exists();
         assertThat(isEmpty(od)).isTrue();
     }
@@ -202,8 +202,8 @@ public class TestOutputOrganizerTest {
         assertThat(p).exists();
         //
         too.cleanOutputSubDirectory();
-        assertThat(too.getOutputSubDirectory()).exists();
-        assertThat(isEmpty(too.getOutputSubDirectory())).isTrue();
+        assertThat(too.createOutputSubDirectory()).exists();
+        assertThat(isEmpty(too.createOutputSubDirectory())).isTrue();
     }
 
     @Test
@@ -218,8 +218,8 @@ public class TestOutputOrganizerTest {
         assertThat(p).exists();
         //
         too.cleanOutputSubDirectory();
-        assertThat(too.getOutputSubDirectory()).exists();
-        assertThat(isEmpty(too.getOutputSubDirectory())).isTrue();
+        assertThat(too.createOutputSubDirectory()).exists();
+        assertThat(isEmpty(too.createOutputSubDirectory())).isTrue();
     }
 
     boolean isEmpty(Path path) throws IOException {
@@ -285,8 +285,8 @@ public class TestOutputOrganizerTest {
         assertThat(p).exists();
         //
         too.cleanOutputSubDirectory();
-        assertThat(too.getOutputSubDirectory()).exists();
-        assertThat(isEmpty(too.getOutputSubDirectory())).isTrue();
+        assertThat(too.createOutputSubDirectory()).exists();
+        assertThat(isEmpty(too.createOutputSubDirectory())).isTrue();
     }
 
     /**
@@ -301,7 +301,7 @@ public class TestOutputOrganizerTest {
         Path file = dir.resolve("foo.txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         // when
-        TestOutputOrganizer.cleanDirectoryRecursively(dir);
+        DeleteDir.deleteDirectoryRecursively(dir);
         // then
         assertThat(file).doesNotExist();
         assertThat(dir).doesNotExist();

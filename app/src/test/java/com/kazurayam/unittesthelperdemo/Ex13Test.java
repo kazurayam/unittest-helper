@@ -19,7 +19,7 @@ public class Ex13Test {
 
     @Test
     void test_copyDir() throws IOException {
-        Path methodDir = too.getMethodOutputDirectory("test_copyDir");
+        Path methodDir = too.createMethodOutputDirectory("test_copyDir");
         // given
         Path sourceDir = methodDir.resolve("source");
         Path sourceFile = sourceDir.resolve("foo/hello.txt");

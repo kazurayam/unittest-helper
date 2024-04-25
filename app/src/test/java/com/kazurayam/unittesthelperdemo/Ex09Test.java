@@ -31,7 +31,7 @@ public class Ex09Test {
     @Test
     public void testMethod1() throws Exception {
         too.cleanMethodOutputDirectory("testMethod1");
-        Path methodDir = too.getMethodOutputDirectory("testMethod1");
+        Path methodDir = too.createMethodOutputDirectory("testMethod1");
         Path file = methodDir.resolve(DateTimeFormatter.ISO_DATE_TIME.format(timestamp) + ".txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
     }
@@ -39,7 +39,7 @@ public class Ex09Test {
     @Test
     public void testMethod2() throws Exception {
         too.cleanMethodOutputDirectory("testMethod2");
-        Path methodDir = too.getMethodOutputDirectory("testMethod2");
+        Path methodDir = too.createMethodOutputDirectory("testMethod2");
         Path file = methodDir.resolve(DateTimeFormatter.ISO_DATE_TIME.format(timestamp) + ".txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
     }
@@ -47,14 +47,14 @@ public class Ex09Test {
     @Test
     public void testMethod3() throws Exception {
         too.cleanMethodOutputDirectory("testMethod3");
-        Path methodDir = too.getMethodOutputDirectory("testMethod3");
+        Path methodDir = too.createMethodOutputDirectory("testMethod3");
         Path file = methodDir.resolve(DateTimeFormatter.ISO_DATE_TIME.format(timestamp) + ".txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
     }
 
     @AfterAll
     public static void afterAll() throws IOException {
-        Files.find(too.getClassOutputDirectory(), 999, (p, bfa) -> bfa.isRegularFile())
+        Files.find(too.createClassOutputDirectory(), 999, (p, bfa) -> bfa.isRegularFile())
                 .sorted()
                 .forEach(p -> log.info(too.toHomeRelativeString(p)));
     }

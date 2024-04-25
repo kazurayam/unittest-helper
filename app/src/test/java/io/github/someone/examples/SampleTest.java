@@ -34,7 +34,7 @@ public class SampleTest {
 
     @Test
     public void test_write_file() throws IOException {
-        Path methodOutputDir = too.getMethodOutputDirectory("test_write_file");
+        Path methodOutputDir = too.createMethodOutputDirectory("test_write_file");
         LocalDateTime ldt = LocalDateTime.now();
         Path p = methodOutputDir.resolve(String.format("sample_%s.txt", dtf.format(ldt)));
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
@@ -45,7 +45,7 @@ public class SampleTest {
 
     @Test
     public void test_write_file_once_more() throws IOException {
-        Path methodOutputDir = too.getMethodOutputDirectory("test_write_file_once_more");
+        Path methodOutputDir = too.createMethodOutputDirectory("test_write_file_once_more");
         LocalDateTime ldt = LocalDateTime.now();
         Path p = methodOutputDir.resolve(String.format("sample_%s.txt", dtf.format(ldt)));
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));

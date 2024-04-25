@@ -61,52 +61,12 @@ public final class TestOutputOrganizer {
      * You can customize the name of the output directory by calling setOutputDir(Path.get("dirName")),
      * which is relative to the project directory.
      */
-    public Path getOutputDirectory() throws IOException {
-        Path d = getProjectDir().resolve(outputDirectoryPathRelativeToProject);
-        Files.createDirectories(d);
-        return d;
+    public Path resolveOutputDirectory() {
+        return getProjectDir().resolve(outputDirectoryPathRelativeToProject);
     }
 
-    /**
-     *
-     * @return subDirPath may be null if not set
-     */
-    public String getSubPathUnderOutputDirectory() {
-        return subPathUnderOutputDirectory;
-    }
-
-    /**
-     * if the subDirPath is set by setSubDir(Path d), then will return
-     *     getOutputDir().resolve(subDirPath)
-     * if the subDirpath is not set, then will return the same as getOutputDir()
-     * @return Path of output sub directory
-     */
-    public Path getOutputSubDirectory() throws IOException {
-        if (this.subPathUnderOutputDirectory != null) {
-            Path d = getOutputDirectory().resolve(this.subPathUnderOutputDirectory);
-            Files.createDirectories(d);
-            return d;
-        } else {
-            return this.getOutputDirectory();
-        }
-    }
-
-    public Path getClassOutputDirectory() throws IOException {
-        if (this.subPathUnderOutputDirectory != null && this.isByFullyQualifiedClassName) {
-            return this.getOutputSubDirectory();
-        } else {
-            throw new IllegalStateException("getClassOutputDirectory will be operational " +
-                    "only when you specify the subDirPath to the Builder " +
-                    "and the specified subDirPath string is in the format of " +
-                    "Fully-Qualified-Class-Name");
-        }
-    }
-
-    public Path getMethodOutputDirectory(String testMethodName) throws IOException {
-        Objects.requireNonNull(testMethodName);
-        assert !testMethodName.isEmpty();
-        Path classOutputDir = getClassOutputDirectory();
-        Path d = classOutputDir.resolve(testMethodName);
+    public Path createOutputDirectory() throws IOException {
+        Path d = resolveOutputDirectory();
         Files.createDirectories(d);
         return d;
     }
@@ -119,9 +79,34 @@ public final class TestOutputOrganizer {
      * @throws IOException during removing files/directories
      */
     public void cleanOutputDirectory() throws IOException {
-        Path outputDir = this.getOutputDirectory();
-        cleanDirectoryRecursively(outputDir);
+        Path outputDir = this.createOutputDirectory();
+        DeleteDir.deleteDirectoryRecursively(outputDir);
         Files.createDirectories(outputDir);
+    }
+
+    //--------------------------------------------------------------------------
+    public String getSubPathUnderOutputDirectory() {
+        return subPathUnderOutputDirectory;
+    }
+
+    /**
+     * if the subDirPath is set by setSubDir(Path d), then will return
+     *     getOutputDir().resolve(subDirPath)
+     * if the subDirpath is not set, then will return the same as getOutputDir()
+     * @return Path of output sub directory
+     */
+    public Path resolveOutputSubDirectory() {
+        if (this.subPathUnderOutputDirectory != null) {
+            return resolveOutputDirectory().resolve(this.subPathUnderOutputDirectory);
+        } else {
+            return resolveOutputDirectory();
+        }
+    }
+
+    public Path createOutputSubDirectory() throws IOException {
+        Path d = resolveOutputDirectory();
+        Files.createDirectories(d);
+        return d;
     }
 
     /**
@@ -132,38 +117,55 @@ public final class TestOutputOrganizer {
      * @throws IOException during removing files/directories
      */
     public void cleanOutputSubDirectory() throws IOException {
-        Path outputSubDir = this.getOutputSubDirectory();
-        cleanDirectoryRecursively(outputSubDir);
+        Path outputSubDir = this.createOutputSubDirectory();
+        DeleteDir.deleteDirectoryRecursively(outputSubDir);
         Files.createDirectories(outputSubDir);
     }
 
+    //--------------------------------------------------------------------------
+    public Path resolveClassOutputDirectory() {
+        if (this.subPathUnderOutputDirectory != null && this.isByFullyQualifiedClassName) {
+            return resolveOutputSubDirectory();
+        } else {
+            throw new IllegalStateException("getClassOutputDirectory will be operational " +
+                    "only when you specify the subDirPath to the Builder " +
+                    "and the specified subDirPath string is in the format of " +
+                    "Fully-Qualified-Class-Name");
+        }
+    }
+
+    public Path createClassOutputDirectory() throws IOException {
+        Path d = resolveClassOutputDirectory();
+        Files.createDirectories(d);
+        return d;
+    }
+
     public void cleanClassOutputDirectory() throws IOException {
-        Path classOutputDir = this.getClassOutputDirectory();
-        cleanDirectoryRecursively(classOutputDir);
+        Path classOutputDir = this.createClassOutputDirectory();
+        DeleteDir.deleteDirectoryRecursively(classOutputDir);
         Files.createDirectories(classOutputDir);
     }
 
+    //--------------------------------------------------------------------------
+    public Path resolveMethodOutputDirectory(String testMethodName) {
+        Objects.requireNonNull(testMethodName);
+        assert !testMethodName.isEmpty();
+        return resolveClassOutputDirectory().resolve(testMethodName);
+    }
+
+    public Path createMethodOutputDirectory(String testMethodName) throws IOException {
+        Path d = resolveMethodOutputDirectory(testMethodName);
+        Files.createDirectories(d);
+        return d;
+    }
+
     public void cleanMethodOutputDirectory(String testMethodName) throws IOException {
-        Path methodOutputDir = this.getMethodOutputDirectory(testMethodName);
-        cleanDirectoryRecursively(methodOutputDir);
+        Path methodOutputDir = this.createMethodOutputDirectory(testMethodName);
+        DeleteDir.deleteDirectoryRecursively(methodOutputDir);
         Files.createDirectories(methodOutputDir);
     }
 
-    /**
-     * remove the directory recursively.
-     * If the dir is not present, does nothing.
-     *
-     * @param dir directory to remove
-     * @throws IOException when any failure occured while removing files/dirs
-     */
-    public static void cleanDirectoryRecursively(Path dir) throws IOException {
-        if (Files.exists(dir)) {
-            Files.walk(dir)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        }
-    }
+    //--------------------------------------------------------------------------
 
     /**
      * Create the output directory if it is not yet there.
@@ -179,8 +181,8 @@ public final class TestOutputOrganizer {
     public Path resolveOutput(String fileName) throws IOException {
         Path outFile =
                 (subPathUnderOutputDirectory != null) ?
-                        getOutputDirectory().resolve(subPathUnderOutputDirectory).resolve(fileName) :
-                        getOutputDirectory().resolve(fileName);
+                        createOutputDirectory().resolve(subPathUnderOutputDirectory).resolve(fileName) :
+                        createOutputDirectory().resolve(fileName);
         // make sure the parent directory to be present
         Path parentDir = outFile.getParent();
         if (!Files.exists(parentDir)) {

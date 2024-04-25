@@ -19,15 +19,15 @@ public class Ex11Test {
     public static void beforeAll() throws Exception {
         log.info("projectDir=" + too.toHomeRelativeString(too.getProjectDir()));
         too.cleanOutputDirectory();
-        log.info("outputDirectory=" + too.toHomeRelativeString(too.getOutputDirectory()));
+        log.info("outputDirectory=" + too.toHomeRelativeString(too.createOutputDirectory()));
         too.cleanClassOutputDirectory();
-        log.info("classOutputDirectory=" + too.toHomeRelativeString(too.getClassOutputDirectory()));
+        log.info("classOutputDirectory=" + too.toHomeRelativeString(too.createClassOutputDirectory()));
     }
 
     @Test
     public void testMethod1() throws Exception {
         too.cleanMethodOutputDirectory("testMethod1");
-        Path methodDir = too.getMethodOutputDirectory("testMethod1");
+        Path methodDir = too.createMethodOutputDirectory("testMethod1");
         log.info("methodOutputDirectory=" + too.toHomeRelativeString(methodDir));
     }
 }

@@ -31,7 +31,7 @@ public class Ex08Test {
     @Test
     public void test_write_a_file() throws Exception {
         // when
-        Path classOutputDir = too.getClassOutputDirectory();
+        Path classOutputDir = too.createClassOutputDirectory();
         log.info("[test_write_a_file] classOutputDir: " +
                 too.toHomeRelativeString(classOutputDir));
 

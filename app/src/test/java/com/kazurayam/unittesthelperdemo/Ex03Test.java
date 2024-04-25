@@ -15,7 +15,7 @@ public class Ex03Test {
     @Test
     public void test_getOutputDir_as_default() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path outputDir = too.getOutputDirectory();
+        Path outputDir = too.createOutputDirectory();
         log.info("[test_getOutputDir_as_default] " + outputDir);
         log.info("[test_getOutputDir_as_default] " +
                 too.toHomeRelativeString(outputDir));

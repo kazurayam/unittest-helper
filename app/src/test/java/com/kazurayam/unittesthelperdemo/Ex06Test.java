@@ -17,7 +17,7 @@ public class Ex06Test {
     @Test
     public void test_write_into_subdir_under_the_default_output_directory() throws Exception {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path file = too.getOutputDirectory().resolve("sub/sample.txt");
+        Path file = too.createOutputDirectory().resolve("sub/sample.txt");
         // you need to make sure that the parent directory exists
         Files.createDirectories(file.getParent());
 

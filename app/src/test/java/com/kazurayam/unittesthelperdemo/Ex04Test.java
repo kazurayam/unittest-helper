@@ -18,7 +18,7 @@ public class Ex04Test {
                 new TestOutputOrganizer.Builder(this.getClass())
                         .outputDirectoryPathRelativeToProject("test-output-another")
                         .build();
-        Path outputDir = too.getOutputDirectory();
+        Path outputDir = too.createOutputDirectory();
         log.info("[test_getOutputDir_custom] " +
                 too.toHomeRelativeString(outputDir));
     }
@@ -28,7 +28,7 @@ public class Ex04Test {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
                 .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
                 .build();
-        Path outputDir = too.getOutputDirectory();
+        Path outputDir = too.createOutputDirectory();
         log.info("[test_getOutputDir_custom_more] " +
                 too.toHomeRelativeString(outputDir));
     }
