@@ -17,8 +17,8 @@ public class DeleteDirTest {
     @BeforeAll
     static void setupClass() throws IOException {
         too = new TestOutputOrganizer.Builder(DeleteDirTest.class)
-                .outputDirPath("build/tmp/testOutput")
-                .subDirPath(CopyDirTest.class.getName()).build();
+                .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
+                .subPathUnderOutputDirectory(CopyDirTest.class).build();
         too.cleanOutputSubDirectory();
     }
 

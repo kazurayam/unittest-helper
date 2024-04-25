@@ -19,7 +19,7 @@ public class Ex09Test {
     private static final Logger log = LoggerFactory.getLogger(Ex09Test.class);
     private static final TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(Ex09Test.class)
-                    .subDirPath(Ex09Test.class)
+                    .subPathUnderOutputDirectory(Ex09Test.class)
                     .build();
     private static LocalDateTime timestamp;
 

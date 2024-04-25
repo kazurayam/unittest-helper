@@ -19,8 +19,8 @@ public class Ex08Test {
     private static final Logger log = LoggerFactory.getLogger(Ex08Test.class);
     private static final TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(Ex08Test.class)
-                    .outputDirPath("build/tmp/testOutput")
-                    .subDirPath(Ex08Test.class)
+                    .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
+                    .subPathUnderOutputDirectory(Ex08Test.class)
                     .build();
 
     @BeforeAll

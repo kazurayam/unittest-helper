@@ -3,7 +3,6 @@ package com.kazurayam.unittest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystem;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -40,7 +38,7 @@ public final class ProjectDirectoryResolver {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectDirectoryResolver.class);
     private final FileSystem fileSystem;
-    private final List<List<String>> sublistPatterns;
+    private final List<List<String>> pathElementsAsClasspathComponentList;
 
     /**
      *
@@ -51,35 +49,35 @@ public final class ProjectDirectoryResolver {
 
     public ProjectDirectoryResolver(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
-        this.sublistPatterns = new ArrayList<>();
-        sublistPatterns.add(Arrays.asList("target", "test-classes"));   // Maven
-        sublistPatterns.add(Arrays.asList("build", "classes", "java", "test"));  // Gradle, Java
-        sublistPatterns.add(Arrays.asList("build", "classes", "java", "functionalTest"));  // Gradle, Java
-        sublistPatterns.add(Arrays.asList("build", "classes", "groovy", "test"));  // Gradle, Groovy
-        sublistPatterns.add(Arrays.asList("build", "classes", "groovy", "functionalTest"));  // Gradle, Groovy
-        sublistPatterns.add(Arrays.asList("build", "classes", "kotlin", "test"));  // Gradle, Kotlin
-        sublistPatterns.add(Arrays.asList("build", "classes", "kotlin", "functionalTest"));  // Gradle, Kotlin
+        this.pathElementsAsClasspathComponentList = new ArrayList<>();
+        pathElementsAsClasspathComponentList.add(Arrays.asList("target", "test-classes"));   // Maven
+        pathElementsAsClasspathComponentList.add(Arrays.asList("build", "classes", "java", "test"));  // Gradle, Java
+        pathElementsAsClasspathComponentList.add(Arrays.asList("build", "classes", "java", "functionalTest"));  // Gradle, Java
+        pathElementsAsClasspathComponentList.add(Arrays.asList("build", "classes", "groovy", "test"));  // Gradle, Groovy
+        pathElementsAsClasspathComponentList.add(Arrays.asList("build", "classes", "groovy", "functionalTest"));  // Gradle, Groovy
+        pathElementsAsClasspathComponentList.add(Arrays.asList("build", "classes", "kotlin", "test"));  // Gradle, Kotlin
+        pathElementsAsClasspathComponentList.add(Arrays.asList("build", "classes", "kotlin", "functionalTest"));  // Gradle, Kotlin
     }
 
     /**
      *
-     * @param sublistPattern e.g, ["bin", "groovy"], ["bin", "keyword"], ["bin", "lib"], ["bin", "listener"], ["bin", "testcase"]
+     * @param addPathElementsAsClasspathComponent e.g, ["bin", "groovy"], ["bin", "keyword"], ["bin", "lib"], ["bin", "listener"], ["bin", "testcase"]
      */
-    public void addSublistPattern(List<String> sublistPattern) {
-        Objects.requireNonNull(sublistPattern);
-        if (sublistPattern.isEmpty()) {
-            throw new IllegalArgumentException("sublistPattern must not be null");
+    public void addPathElementsAsClasspathComponent(List<String> addPathElementsAsClasspathComponent) {
+        Objects.requireNonNull(addPathElementsAsClasspathComponent);
+        if (addPathElementsAsClasspathComponent.isEmpty()) {
+            throw new IllegalArgumentException("addPathElementsAsClasspathComponent must not be null");
         }
-        this.sublistPatterns.add(sublistPattern);
+        this.pathElementsAsClasspathComponentList.add(addPathElementsAsClasspathComponent);
     }
 
     /**
      *
      * @return the list of Sublist Patterns including both builtin and ones you added
      */
-    public List<List<String>> getSublistPatterns() {
+    public List<List<String>> getPathElementsAsClasspathComponentList() {
         List<List<String>> clone = new ArrayList<>();
-        for (List<String> l : sublistPatterns) {
+        for (List<String> l : pathElementsAsClasspathComponentList) {
             List<String> e = new ArrayList<>(l);
             clone.add(e);
         }
@@ -145,7 +143,7 @@ public final class ProjectDirectoryResolver {
         logger.debug("[getProjectDirViaClasspath] nameElements=" + nameElements);
         StringSequence ss = new StringSequence(nameElements);
         int boundary = -1;
-        for (List<String> sublistPattern : this.sublistPatterns) {
+        for (List<String> sublistPattern : this.pathElementsAsClasspathComponentList) {
             int indexOfBuildDir = ss.indexOfSubsequence(sublistPattern);
             if (indexOfBuildDir > 0) {
                 boundary = indexOfBuildDir;

@@ -1,6 +1,5 @@
 package com.kazurayam.unittest;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +40,7 @@ public class TestOutputOrganizerTest {
         String dirName = "customDir";
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirPath(FileSystems.getDefault().getPath(dirName).toString())
+                        .outputDirectoryPathRelativeToProject(FileSystems.getDefault().getPath(dirName).toString())
                         .build();
         Path p = too.getOutputDirectory();
         log.info("[test_getOutputDir_custom] output dir : " + p);
@@ -51,7 +50,7 @@ public class TestOutputOrganizerTest {
     @Test
     public void test_getClassOutputDirectory() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-                .subDirPath(this.getClass()).build();
+                .subPathUnderOutputDirectory(this.getClass()).build();
         Path p = too.getClassOutputDirectory();
         log.info("[test_getClassOutputDirectory] " + p);
         assertThat(p.getFileName().toString()).isEqualTo(this.getClass().getName());
@@ -60,7 +59,7 @@ public class TestOutputOrganizerTest {
     @Test
     public void test_getMethodOutputDirectory() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-                .subDirPath(this.getClass()).build();
+                .subPathUnderOutputDirectory(this.getClass()).build();
         Path p = too.getMethodOutputDirectory("test_getMethodOutputDirectory");
         log.info("[test_getMethodOutputDirectory]" + p);
         assertThat(p.getFileName().toString()).isEqualTo("test_getMethodOutputDirectory");
@@ -86,7 +85,7 @@ public class TestOutputOrganizerTest {
     public void test_resolveOutput_with_subDirPath() throws Exception {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .subDirPath(FileSystems.getDefault().getPath(this.getClass().getName()).toString())
+                        .subPathUnderOutputDirectory(FileSystems.getDefault().getPath(this.getClass().getName()).toString())
                         .build();
         Path p = too.resolveOutput("test_resolveOutput_with_subDir/hello.json");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
@@ -97,7 +96,7 @@ public class TestOutputOrganizerTest {
     public void test_resolveOutput_into_custom_location() throws Exception {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirPath(FileSystems.getDefault().getPath("build/tmp/testOutput").toString())
+                        .outputDirectoryPathRelativeToProject(FileSystems.getDefault().getPath("build/tmp/testOutput").toString())
                         .build();
         Path p = too.resolveOutput("hello.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
@@ -196,7 +195,7 @@ public class TestOutputOrganizerTest {
         // given
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .subDirPath(FileSystems.getDefault().getPath(this.getClass().getName()).toString())
+                        .subPathUnderOutputDirectory(FileSystems.getDefault().getPath(this.getClass().getName()).toString())
                         .build();
         Path p = too.resolveOutput("foo.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
@@ -212,7 +211,7 @@ public class TestOutputOrganizerTest {
         // given
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .subDirPath(FileSystems.getDefault().getPath(this.getClass().getName()).toString())
+                        .subPathUnderOutputDirectory(FileSystems.getDefault().getPath(this.getClass().getName()).toString())
                         .build();
         Path p = too.resolveOutput("foo.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
@@ -236,7 +235,7 @@ public class TestOutputOrganizerTest {
     void test_copyDir() throws IOException {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .subDirPath(this.getClass().getName())
+                        .subPathUnderOutputDirectory(this.getClass().getName())
                         .build();
         String methodName = "test_copyDir";
         // given
@@ -255,7 +254,7 @@ public class TestOutputOrganizerTest {
     void test_deleteDir() throws IOException {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .subDirPath(this.getClass().getName())
+                        .subPathUnderOutputDirectory(this.getClass().getName())
                         .build();
         String methodName = "test_deleteDir";
         // given
@@ -278,7 +277,7 @@ public class TestOutputOrganizerTest {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
 
-                        .sublistPattern(Arrays.asList("bin", "classes"))
+                        .pathElementsAsClasspathComponent(Arrays.asList("bin", "classes"))
                         // should compile
                         .build();
         Path p = too.resolveOutput("foo.txt");

@@ -17,8 +17,8 @@ public class CopyDirTest {
     @BeforeAll
     static void setupClass() throws IOException {
         too = new TestOutputOrganizer.Builder(CopyDirTest.class)
-                .outputDirPath("build/tmp/testOutput")
-                .subDirPath(CopyDirTest.class.getName()).build();
+                .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
+                .subPathUnderOutputDirectory(CopyDirTest.class).build();
         too.cleanOutputSubDirectory();
     }
 

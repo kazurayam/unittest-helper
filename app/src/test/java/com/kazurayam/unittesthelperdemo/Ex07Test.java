@@ -20,7 +20,7 @@ public class Ex07Test {
     public void test_write_into_subdir_under_the_custom_output_directory() throws Exception {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirPath("build/tmp/testOutput").build();
+                        .outputDirectoryPathRelativeToProject("build/tmp/testOutput").build();
         Path file = too.getOutputDirectory().resolve("sample.txt");
         // you do not have to make sure that the parent directory exists
         // Files.createDirectories(file.getParent());

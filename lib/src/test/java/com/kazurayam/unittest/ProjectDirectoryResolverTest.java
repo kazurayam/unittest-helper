@@ -40,7 +40,7 @@ public final class ProjectDirectoryResolverTest {
     @Test
     public void test_getSublistPatterns() {
         List<List<String>> sublistPatterns =
-                new ProjectDirectoryResolver().getSublistPatterns();
+                new ProjectDirectoryResolver().getPathElementsAsClasspathComponentList();
         assertThat(sublistPatterns).isNotNull();
         assertThat(sublistPatterns.size()).isGreaterThanOrEqualTo(2);
         for (List<String> p : sublistPatterns) {

@@ -16,7 +16,7 @@ public class Ex04Test {
     public void test_getOutputDir_custom() throws IOException {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirPath("test-output-another")
+                        .outputDirectoryPathRelativeToProject("test-output-another")
                         .build();
         Path outputDir = too.getOutputDirectory();
         log.info("[test_getOutputDir_custom] " +
@@ -26,7 +26,7 @@ public class Ex04Test {
     @Test
     public void test_getOutputDir_custom_more() throws IOException {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-                .outputDirPath("build/tmp/testOutput")
+                .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
                 .build();
         Path outputDir = too.getOutputDirectory();
         log.info("[test_getOutputDir_custom_more] " +

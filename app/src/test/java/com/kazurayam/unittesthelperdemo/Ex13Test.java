@@ -14,7 +14,7 @@ public class Ex13Test {
 
     private static final TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(Ex13Test.class)
-                    .subDirPath(Ex13Test.class)
+                    .subPathUnderOutputDirectory(Ex13Test.class)
                     .build();
 
     @Test
