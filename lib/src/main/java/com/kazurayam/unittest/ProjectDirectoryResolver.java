@@ -133,14 +133,14 @@ public final class ProjectDirectoryResolver {
      */
     public Path getProjectDirViaClasspath(Class<?> clazz) {
         Path codeSourcePath = this.getCodeSourceAsPath(clazz);
-        logger.debug("[getProjectDirViaClasspath] codeSourcePath=" + codeSourcePath);
+        logger.trace("[getProjectDirViaClasspath] codeSourcePath=" + codeSourcePath);
         Path root = codeSourcePath.getRoot();
-        logger.debug("[getProjectDirViaClasspath] root=" + root);
+        logger.trace("[getProjectDirViaClasspath] root=" + root);
         // for example,
         // on Mac, root="/"
         // on Win, root="C:\\"
         List<String> nameElements = toNameElements(codeSourcePath);
-        logger.debug("[getProjectDirViaClasspath] nameElements=" + nameElements);
+        logger.trace("[getProjectDirViaClasspath] nameElements=" + nameElements);
         StringSequence ss = new StringSequence(nameElements);
         int boundary = -1;
         for (List<String> sublistPattern : this.pathElementsAsClasspathComponentList) {

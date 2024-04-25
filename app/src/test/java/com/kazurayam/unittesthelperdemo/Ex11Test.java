@@ -17,7 +17,7 @@ public class Ex11Test {
                     .build();
     @BeforeAll
     public static void beforeAll() throws Exception {
-        log.info("projectDir=" + too.toHomeRelativeString(too.getProjectDir()));
+        log.info("projectDir=" + too.toHomeRelativeString(too.getProjectDirectory()));
         too.cleanOutputDirectory();
         log.info("outputDirectory=" + too.toHomeRelativeString(too.createOutputDirectory()));
         too.cleanClassOutputDirectory();

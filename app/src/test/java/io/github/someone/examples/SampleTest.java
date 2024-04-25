@@ -26,7 +26,7 @@ public class SampleTest {
 
     @BeforeAll
     public static void beforeAll() throws IOException {
-        log.info("project directory: " + too.toHomeRelativeString(too.getProjectDir()));
+        log.info("project directory: " + too.toHomeRelativeString(too.getProjectDirectory()));
         // remove the "test-output/io.github.someone.somestuff.SampleTest" directory recursively
         too.cleanClassOutputDirectory();
         dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");

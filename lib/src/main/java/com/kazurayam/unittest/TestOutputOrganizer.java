@@ -10,9 +10,9 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Provides utility methods that helps JUnit4/JUnit5/TestNG tests with
@@ -24,7 +24,7 @@ public final class TestOutputOrganizer {
 
     private static final Logger logger = LoggerFactory.getLogger(TestOutputOrganizer.class);
     private final FileSystem fileSystem;
-    private final Path projectDir;
+    private final Path projectDirectory;
     private final String outputDirectoryPathRelativeToProject;
     private final String subPathUnderOutputDirectory;
     private final Boolean isByFullyQualifiedClassName;
@@ -34,7 +34,7 @@ public final class TestOutputOrganizer {
      */
     private TestOutputOrganizer(Builder builder) {
         this.fileSystem = builder.fileSystem;
-        this.projectDir = builder.projectDir;
+        this.projectDirectory = builder.projectDirectory;
         this.outputDirectoryPathRelativeToProject = builder.outputDirectoryPathRelativeToProject;
         this.subPathUnderOutputDirectory = builder.subPathUnderOutputDirectory;
         this.isByFullyQualifiedClassName = builder.isByFullyQualifiedClassName;
@@ -43,8 +43,8 @@ public final class TestOutputOrganizer {
     /**
      * @return the project directory where the clazz is hosted
      */
-    public Path getProjectDir() {
-        return projectDir;
+    public Path getProjectDirectory() {
+        return projectDirectory;
     }
 
     /**
@@ -62,7 +62,7 @@ public final class TestOutputOrganizer {
      * which is relative to the project directory.
      */
     public Path resolveOutputDirectory() {
-        return getProjectDir().resolve(outputDirectoryPathRelativeToProject);
+        return getProjectDirectory().resolve(outputDirectoryPathRelativeToProject);
     }
 
     public Path createOutputDirectory() throws IOException {
@@ -177,6 +177,7 @@ public final class TestOutputOrganizer {
      * @return Path of a file as the output written by a test class
      * @deprecated since 0.3.0
      */
+    /*
     @Deprecated
     public Path resolveOutput(String fileName) throws IOException {
         Path outFile =
@@ -194,6 +195,7 @@ public final class TestOutputOrganizer {
         }
         return outFile;
     }
+*/
 
     static final String TILDE = "~";
 
@@ -264,7 +266,7 @@ public final class TestOutputOrganizer {
     public static class Builder {
         private final FileSystem fileSystem;
         private final Class<?> clazz;
-        private Path projectDir;
+        private Path projectDirectory;
         private List<String> pathElementsAsClasspathComponent;
         private String outputDirectoryPathRelativeToProject;
         private String subPathUnderOutputDirectory;
@@ -288,7 +290,7 @@ public final class TestOutputOrganizer {
         public Builder(FileSystem fileSystem, Class<?> clazz) {
             this.fileSystem = fileSystem;
             this.clazz = clazz;
-            this.projectDir = null;
+            this.projectDirectory = null;
             this.pathElementsAsClasspathComponent = null;
             this.outputDirectoryPathRelativeToProject = DEFAULT_OUTPUT_DIRECTORY_RELATIVE_TO_PROJECT;
             this.subPathUnderOutputDirectory = null;
@@ -367,7 +369,7 @@ public final class TestOutputOrganizer {
             if (pathElementsAsClasspathComponent != null) {
                 pdr.addPathElementsAsClasspathComponent(pathElementsAsClasspathComponent);
             }
-            this.projectDir = pdr.getProjectDirViaClasspath(clazz);
+            this.projectDirectory = pdr.getProjectDirViaClasspath(clazz);
             return new TestOutputOrganizer(this);
         }
     }

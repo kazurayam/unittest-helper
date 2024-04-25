@@ -19,7 +19,7 @@ public class OutputIntoDedicatedDirectoryTest {
 
     @Test
     public void test_getProjectDir() {
-        Path projectDir = too.getProjectDir();
+        Path projectDir = too.getProjectDirectory();
         log.info("[test_getProjectDir] " + projectDir);
         log.info("[test_getProjectDir] " +
                 too.toHomeRelativeString(projectDir));

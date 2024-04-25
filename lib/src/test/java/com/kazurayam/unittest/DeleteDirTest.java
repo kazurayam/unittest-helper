@@ -25,11 +25,12 @@ public class DeleteDirTest {
     @Test
     void test_deleteDirectoryRecursively() throws IOException {
         // given
-        Path sourceDir = too.resolveOutput("source");
-        Path sourceFile = too.resolveOutput("source/foo/hello.txt");
+        Path sourceDir = too.resolveOutputSubDirectory().resolve("source");
+        Path sourceFile = too.resolveOutputSubDirectory().resolve("source/foo/hello.txt");
+        Files.createDirectories(sourceFile.getParent());
         Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-        Path targetDir = too.resolveOutput("target");
-        Path targetFile = too.resolveOutput("target/foo/hello.txt");
+        Path targetDir = too.resolveOutputSubDirectory().resolve("target");
+        Path targetFile = too.resolveOutputSubDirectory().resolve("target/foo/hello.txt");
         Files.walkFileTree(sourceDir, new CopyDir(sourceDir, targetDir));
         assertThat(targetFile).exists();
         // when
