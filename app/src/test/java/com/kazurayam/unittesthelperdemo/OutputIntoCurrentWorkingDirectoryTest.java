@@ -1,6 +1,5 @@
 package com.kazurayam.unittesthelperdemo;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;

@@ -1,4 +1,4 @@
 rootProject.name = 'unittest-helper'
-include('lib', 'app')
+include('lib', 'app', 'demo')
 include 'selenium-webdriver-junit5'
 
