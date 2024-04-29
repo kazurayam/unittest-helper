@@ -11,6 +11,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -258,7 +259,7 @@ public final class TestOutputOrganizer {
         private final FileSystem fileSystem;
         private final Class<?> clazz;
         private Path projectDirectory;
-        private List<String> pathElementsAsClasspathComponent;
+        private List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE;
         private String outputDirectoryPathRelativeToProject;
         private Optional<String> subPathUnderOutputDirectory = Optional.empty();
         private Boolean isByFullyQualifiedClassName;
@@ -282,23 +283,24 @@ public final class TestOutputOrganizer {
             this.fileSystem = fileSystem;
             this.clazz = clazz;
             this.projectDirectory = null;
-            this.pathElementsAsClasspathComponent = null;
+            this.listOfCSPE = new ArrayList<>();
             this.outputDirectoryPathRelativeToProject = DEFAULT_OUTPUT_DIRECTORY_RELATIVE_TO_PROJECT;
             this.subPathUnderOutputDirectory = Optional.empty();
             this.isByFullyQualifiedClassName = false;
         }
 
-        /**
-         * add a pathElementsAsClasspathComponent
-         * @param pathElementsAsClasspathComponent like ["bin", "classes"]
+        /*
+         * add a codeSourcePathElementsUnderProjectDirectory into the registration list
+         * @param CodeSourcePathElementsUnderProjectDirectory like ["bin", "classes"]
          * @return the reference to this Builder instance
          */
-        public Builder pathElementsAsClasspathComponent(List<String> pathElementsAsClasspathComponent) {
-            Objects.requireNonNull(pathElementsAsClasspathComponent);
-            if (pathElementsAsClasspathComponent.isEmpty()) {
-                throw new IllegalArgumentException("pathElementsAsClasspathComponent is empty");
+        public Builder addCodeSourcePathElementsUnderProjectDirectory(
+                CodeSourcePathElementsUnderProjectDirectory cspe) {
+            Objects.requireNonNull(cspe);
+            if (cspe.isEmpty()) {
+                throw new IllegalArgumentException("cspe is empty");
             }
-            this.pathElementsAsClasspathComponent = pathElementsAsClasspathComponent;
+            this.listOfCSPE.add(cspe);
             return this;
         }
 
@@ -357,10 +359,10 @@ public final class TestOutputOrganizer {
          */
         public TestOutputOrganizer build() {
             ProjectDirectoryResolver pdr = new ProjectDirectoryResolver(fileSystem);
-            if (pathElementsAsClasspathComponent != null) {
-                pdr.addPathElementsAsClasspathComponent(pathElementsAsClasspathComponent);
+            for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
+                pdr.addCodeSourcePathElementsUnderProjectDirectory(cspe);
             }
-            this.projectDirectory = pdr.getProjectDirViaClasspath(clazz);
+            this.projectDirectory = pdr.resolveProjectDirectoryViaClasspath(clazz);
             return new TestOutputOrganizer(this);
         }
     }

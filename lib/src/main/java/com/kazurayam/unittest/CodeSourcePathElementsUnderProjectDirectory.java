@@ -1,11 +1,11 @@
 package com.kazurayam.unittest;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <PRE>
@@ -35,15 +35,15 @@ import java.nio.file.Paths;
  * This class gives a categorical name to the part "build/classes/java/test/" here.
  *
  */
-public class CodeSourcePathElementsUnderProjectDirectory {
+public final class CodeSourcePathElementsUnderProjectDirectory {
 
     private List<String> cspe = new ArrayList<>();
 
-    CodeSourcePathElementsUnderProjectDirectory(List<String> cspe) {
+    public CodeSourcePathElementsUnderProjectDirectory(List<String> cspe) {
         this.cspe = cspe;
     }
 
-    CodeSourcePathElementsUnderProjectDirectory(String pathElement, String... more) {
+    public CodeSourcePathElementsUnderProjectDirectory(String pathElement, String... more) {
         this.cspe = new ArrayList<>();
         Path p = Paths.get(pathElement);
         if (p.getNameCount() > 0) {
@@ -54,6 +54,21 @@ public class CodeSourcePathElementsUnderProjectDirectory {
         if (more.length > 0) {
             this.cspe.addAll(Arrays.asList(more));
         }
+    }
+
+    /**
+     * copy constructor
+     */
+    public CodeSourcePathElementsUnderProjectDirectory(CodeSourcePathElementsUnderProjectDirectory source) {
+        this(source.toString());
+    }
+
+    public List<String> asList() {
+        return new ArrayList<>(this.cspe);
+    }
+
+    public boolean isEmpty() {
+        return this.cspe.isEmpty();
     }
 
     @Override

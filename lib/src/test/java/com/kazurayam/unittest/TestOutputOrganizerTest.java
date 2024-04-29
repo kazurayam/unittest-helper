@@ -58,11 +58,14 @@ public class TestOutputOrganizerTest {
 
     @Test
     public void test_resolveMethodOutputDirectory() {
-        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-                .subPathUnderOutputDirectory(this.getClass()).build();
-        Path p = too.resolveMethodOutputDirectory("test_resolveMethodOutputDirectory");
-        log.info("[test_resolveMethodOutputDirectory] " + p);
-        assertThat(p.getFileName().toString()).isEqualTo("test_resolveMethodOutputDirectory");
+        TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(this.getClass())
+                        .subPathUnderOutputDirectory(this.getClass()).build();
+        String testMethodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        assert testMethodName.equals("test_resolveMethodOutputDirectory");
+        Path p = too.resolveMethodOutputDirectory(testMethodName);
+        log.info("[" + testMethodName + "] p = " + p);
+        assertThat(p.getFileName().toString()).isEqualTo(testMethodName);
         assertThat(p.getParent().getFileName().toString()).isEqualTo(this.getClass().getName());
     }
 
@@ -281,8 +284,8 @@ public class TestOutputOrganizerTest {
         // given
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .pathElementsAsClasspathComponent(Arrays.asList("bin", "classes"))
-                        // should compile
+                        .addCodeSourcePathElementsUnderProjectDirectory(
+                                new CodeSourcePathElementsUnderProjectDirectory("bin", "classes"))
                         .build();
         Path p = too.createOutputSubDirectory().resolve("foo.txt");
         Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));

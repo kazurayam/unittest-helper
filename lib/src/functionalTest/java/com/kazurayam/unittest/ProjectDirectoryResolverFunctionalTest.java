@@ -13,7 +13,7 @@ public final class ProjectDirectoryResolverFunctionalTest {
 
     @Test
     public void test_getProjectDirViaClasspath() {
-        Path p = new ProjectDirectoryResolver().getProjectDirViaClasspath(this.getClass());
+        Path p = new ProjectDirectoryResolver().resolveProjectDirectoryViaClasspath(this.getClass());
         assertThat(p).isNotNull().exists();
         assertThat(p.getFileName().toString())
                 .isEqualTo("lib");

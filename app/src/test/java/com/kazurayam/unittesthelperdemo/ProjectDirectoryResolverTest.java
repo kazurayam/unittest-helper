@@ -1,5 +1,6 @@
 package com.kazurayam.unittesthelperdemo;
 
+import com.kazurayam.unittest.CodeSourcePathElementsUnderProjectDirectory;
 import com.kazurayam.unittest.ProjectDirectoryResolver;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -17,18 +18,18 @@ public final class ProjectDirectoryResolverTest {
     @Test
     public void test_getProjectDirViaClasspath() {
         ProjectDirectoryResolver resolver = new ProjectDirectoryResolver();
-        Path projectDir = resolver.getProjectDirViaClasspath(ProjectDirectoryResolverTest.class);
+        Path projectDir = resolver.resolveProjectDirectoryViaClasspath(ProjectDirectoryResolverTest.class);
         log.info("projectDir: " + projectDir);
     }
 
     @Test
-    public void test_getSublistPatterns() {
-        List<List<String>> sublistPatterns =
-                new ProjectDirectoryResolver().getPathElementsAsClasspathComponentList();
-        assertThat(sublistPatterns).isNotNull();
-        assertThat(sublistPatterns.size()).isGreaterThanOrEqualTo(2);
-        for (List<String> p : sublistPatterns) {
-            log.info("sublistPattern : " + p);
+    public void test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
+        List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
+                new ProjectDirectoryResolver().getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
+        assertThat(listOfCSPE).isNotNull();
+        assertThat(listOfCSPE.size()).isGreaterThanOrEqualTo(2);
+        for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
+            log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspe);
         }
     }
 }

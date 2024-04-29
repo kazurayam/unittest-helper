@@ -38,6 +38,10 @@ public final class StringSequence {
         this.sequence = sequence;
     }
 
+    public Integer indexOf(CodeSourcePathElementsUnderProjectDirectory cspe) {
+        return indexOfSubsequence(cspe.asList());
+    }
+
     /**
      * returns the value equal to indexListOfSubsequence().get(0)
      *

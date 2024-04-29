@@ -16,14 +16,14 @@ public final class ProjectDirectoryResolverTest {
 
     @Test
     public void test_getCodeSourceAsPath() {
-        Path p = new ProjectDirectoryResolver().getCodeSourceAsPath(this.getClass());
+        Path p = new ProjectDirectoryResolver().getCodeSourcePathOf(this.getClass());
         logger.info("[test_getCodeSourceAsPath] p = " + p);
         assertThat(p).isNotNull().exists();
     }
 
     @Test
     public void test_getProjectDirViaClasspath() {
-        Path p = new ProjectDirectoryResolver().getProjectDirViaClasspath(this.getClass());
+        Path p = new ProjectDirectoryResolver().resolveProjectDirectoryViaClasspath(this.getClass());
         logger.debug("[test_getProjectDirViaClasspath] p=" + p.toString());
         if (isWindows()) {
             assertThat(p.toString()).startsWith("C:\\");
@@ -38,13 +38,13 @@ public final class ProjectDirectoryResolverTest {
     }
 
     @Test
-    public void test_getSublistPatterns() {
-        List<List<String>> sublistPatterns =
-                new ProjectDirectoryResolver().getPathElementsAsClasspathComponentList();
-        assertThat(sublistPatterns).isNotNull();
-        assertThat(sublistPatterns.size()).isGreaterThanOrEqualTo(2);
-        for (List<String> p : sublistPatterns) {
-            logger.info("sublistPattern : " + p);
+    public void test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
+        List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
+                new ProjectDirectoryResolver().getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
+        assertThat(listOfCSPE).isNotNull();
+        assertThat(listOfCSPE.size()).isGreaterThanOrEqualTo(2);
+        for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
+            logger.info("sublistPattern : " + cspe);
         }
     }
 
