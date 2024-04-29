@@ -37,6 +37,34 @@ import java.util.List;
  */
 public final class CodeSourcePathElementsUnderProjectDirectory {
 
+    public static CodeSourcePathElementsUnderProjectDirectory MAVEN_TEST =
+            new CodeSourcePathElementsUnderProjectDirectory(
+                    "target", "test-classes");
+    public static CodeSourcePathElementsUnderProjectDirectory GRADLE_JAVA_TEST =
+            new CodeSourcePathElementsUnderProjectDirectory(
+                    "build", "classes", "java", "test");
+
+    public static CodeSourcePathElementsUnderProjectDirectory GRADLE_JAVA_FUNCTIONALTEST =
+            new CodeSourcePathElementsUnderProjectDirectory(
+                    "build", "classes", "java", "functionalTest");
+
+    public static CodeSourcePathElementsUnderProjectDirectory GRADLE_GROOVY_TEST =
+            new CodeSourcePathElementsUnderProjectDirectory(
+                    "build", "classes", "groovy", "test");
+
+    public static CodeSourcePathElementsUnderProjectDirectory GRADLE_GROOVY_FUNCTIONALTEST =
+            new CodeSourcePathElementsUnderProjectDirectory(
+                    "build", "classes", "groovy", "functionalTest");
+
+    public static CodeSourcePathElementsUnderProjectDirectory GRADLE_KOTLIN_TEST =
+            new CodeSourcePathElementsUnderProjectDirectory(
+                    "build", "classes", "kotlin", "test");
+
+    public static CodeSourcePathElementsUnderProjectDirectory GRADLE_KOTLIN_FUNCTIONALTEST =
+            new CodeSourcePathElementsUnderProjectDirectory(
+                    "build", "classes", "kotlin", "functionalTest");
+
+
     private List<String> cspe = new ArrayList<>();
 
     public CodeSourcePathElementsUnderProjectDirectory(List<String> cspe) {

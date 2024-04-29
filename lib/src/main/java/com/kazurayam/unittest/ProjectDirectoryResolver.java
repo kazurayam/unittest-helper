@@ -49,13 +49,13 @@ public final class ProjectDirectoryResolver {
     public ProjectDirectoryResolver(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
         listOfCSPE = new ArrayList<>();
-        listOfCSPE.add(new CodeSourcePathElementsUnderProjectDirectory("target", "test-classes"));   // Maven
-        listOfCSPE.add(new CodeSourcePathElementsUnderProjectDirectory("build", "classes", "java", "test"));  // Gradle, Java
-        listOfCSPE.add(new CodeSourcePathElementsUnderProjectDirectory("build", "classes", "java", "functionalTest"));  // Gradle, Java
-        listOfCSPE.add(new CodeSourcePathElementsUnderProjectDirectory("build", "classes", "groovy", "test"));  // Gradle, Groovy
-        listOfCSPE.add(new CodeSourcePathElementsUnderProjectDirectory("build", "classes", "groovy", "functionalTest"));  // Gradle, Groovy
-        listOfCSPE.add(new CodeSourcePathElementsUnderProjectDirectory("build", "classes", "kotlin", "test"));  // Gradle, Kotlin
-        listOfCSPE.add(new CodeSourcePathElementsUnderProjectDirectory("build", "classes", "kotlin", "functionalTest"));  // Gradle, Kotlin
+        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.MAVEN_TEST);
+        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_JAVA_TEST);
+        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_JAVA_FUNCTIONALTEST);
+        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_GROOVY_TEST);
+        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_GROOVY_FUNCTIONALTEST);
+        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_KOTLIN_TEST);
+        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_KOTLIN_FUNCTIONALTEST);
     }
 
     /**
