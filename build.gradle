@@ -1,5 +1,5 @@
 group 'com.kazurayam'
-version '0.3.0'
+version '0.4.0'
 
 /**
  * translate docs/index_.adoc to docs/index.md

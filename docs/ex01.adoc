@@ -1,4 +1,4 @@
-=== Example1 Locating a file path via Current Working Directory
+= === Example1 Locating a file path via Current Working Directory
 
 [source,java]
 ----

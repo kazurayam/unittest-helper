@@ -3,41 +3,30 @@
 = Unittest Helper
 
 - author: kazurayam
-- date: Nov, 2023
 - version: {projectVersion}
 - source project: link:https://github.com/kazurayam/unittest-helper[]
 - javadoc: link:https://kazurayam.github.io/unittest-helper/api[]
+- distributed at: link:https://mvnrepository.com/artifact/com.kazurayam/unittest-helper[]
 
-include::description_problem.adoc[]
-include::description_solution.adoc[]
+include::problem_to_solve.adoc[]
 
-== Examples
+//include::description_problem.adoc[]
+//include::description_solution.adoc[]
 
-include::ex01.adoc[]
+//== Examples
 
-include::ex02.adoc[]
-
-include::ex03.adoc[]
-
-include::ex04.adoc[]
-
-include::ex05.adoc[]
-
-include::ex06.adoc[]
-
-include::ex07.adoc[]
-
-include::ex08.adoc[]
-
-include::ex09.adoc[]
-
-include::ex10.adoc[]
-
-include::ex11.adoc[]
-
-include::ex12.adoc[]
-
-include::ex13.adoc[]
-
-include::ex14.adoc[]
-(FIN)
+//include::ex01.adoc[]
+//include::ex02.adoc[]
+//include::ex03.adoc[]
+//include::ex04.adoc[]
+//include::ex05.adoc[]
+//include::ex06.adoc[]
+//include::ex07.adoc[]
+//include::ex08.adoc[]
+//include::ex09.adoc[]
+//include::ex10.adoc[]
+//include::ex11.adoc[]
+//include::ex12.adoc[]
+//include::ex13.adoc[]
+//include::ex14.adoc[]
+//(FIN)
