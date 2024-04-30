@@ -5,23 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74a392ca-ad77-4490-be5e-7086c3e22f8f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jupyter-settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/unittest-helper.app.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/lib/unittest-helper.lib.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/test/java/demo/OnProjectDirectoryTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/test/simplelogger.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex01.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ex01.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/index_.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index_.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,30 +53,30 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1 (1).executor": "Run",
-    "Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1.executor": "Run",
-    "Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_ListOfStrings.executor": "Run",
-    "Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_multiple_strings.executor": "Run",
-    "Gradle.ProjectDirectoryResolverTest.executor": "Run",
-    "Gradle.S1FindingProjectDirByCWDTest.resolvingDirBasedOnCWD.executor": "Run",
-    "Gradle.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.testIt.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "aspect.path.notification.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1 (1).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_ListOfStrings.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_multiple_strings.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ProjectDirectoryResolverTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.S1FindingProjectDirByCWDTest.resolvingDirBasedOnCWD.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.testIt.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;aspect.path.notification.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Gradle.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.testIt">
     <configuration name="CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1 (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
