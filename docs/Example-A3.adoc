@@ -1,5 +1,5 @@
 
-=== Example-A3 adding a custom instance of "Code Source Path Elements"
+=== Example-A3 adding a custom instance of "Code Source Path Elements Under Project Directory"
 
 [source, java]
 ----

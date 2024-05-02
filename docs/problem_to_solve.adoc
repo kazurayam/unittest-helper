@@ -18,7 +18,7 @@ include::../preliminary-study/src/test/java/study/S2WritingSystemPropertyValueIn
 - This test writes the value of System Property `browserType` into a file named `browserType.txt` which is located in the `test-output` directory.
 
 
-You can find how the Gradle task `testS2` is defined in the link:https://github.com/kazurayam/unittest-helper/preliminary-study/build.gradle[]
+You can find how the Gradle task `testS2` is defined in the link:https://github.com/kazurayam/unittest-helper/blob/develop/preliminary-study/build.gradle[unittest-helper/preliminary-study/build.gradle]
 
 [code,groovy]
 ----
@@ -34,7 +34,7 @@ tasks.register("testS2", Test) {
 1. I declared that I want to use NestNG to run my test cases in the `testS2` task.
 2. I specifically chose a class of which className starts with `S2`.
 3. I passed all entries of `System.properties`, including the ones given as a commandline parameter by `-DbrowserType=XXXX`, into the `testS2` task
-4. I requested Gradle show all of messages from the test classes to stdout to be printed in the console
+4. I requested Gradle to show all messages emitted by the test classes into the stdout to be printed in the console
 5. I forced Gradle to run the `testS2` task even if there is no change in the input.
 
 I opened the Terminal app, and ran the following commands.
@@ -94,9 +94,9 @@ In the Case1, I got `unittest-helper/preliminary-study/test-output`, with which 
 
 image::images/00_problem_to_solve.png[]
 
-In the Case2, I ran the same test class a bit differently. In the Case1, I ran it in the directory `unittest-helper/preliminary-study`, and in the Case2, I ran it in the directory `unittest-helper`.
+In two cases I ran the same test class just a little bit bit differently. In the Case1, I ran the test while the Current Working Directory is `unittest-helper/preliminary-study`, and in the Case2, I ran the test while the CWD is `unittest-helper`.
 
-In the Case2, I got the `test-output` directory under the `unittest-helper` directory, which is the root project's directory. Why did I get this difference? --- It is because the `testS2` task has a single line:
+In the Case2, I got the `test-output` directory under the `unittest-helper` directory, which is the root project's directory. Why did I get this result? ... It is because the `testS2` task in the `build.gradle` has a single line:
 
 [code,groovy]
 ----
@@ -107,5 +107,6 @@ tasks.register("testS2", Test) {
 }
 ----
 
-By this single line, Gradle captured all the values of System.properties at the timing when I invoked `gradle` command and the values were imported into the runtime environment where the test class `S2WrintingSystemPropertyValueIntoFileInTheOutputDirecvtoryTest` ran. In the Case1, the System Property `user.dir` had the value of `/Users/kazurayam/github/unittest-helpers/preliminary-study; and in the Case2, the `user.dir` had the value of `/Users/kazurayam/github/unittest-helper`. Therefore, the directory `test-output` was located at the different layer of project structure.
+By this single line, Gradle captured all the values of System.properties at the timing when I invoked `gradle` command and the values were transferred into the runtime environment where the test class `S2WrintingSystemPropertyValueIntoFileInTheOutputDirecvtoryTest` ran. In the Case1, the System Property `user.dir` had the value of `/Users/kazurayam/github/unittest-helpers/preliminary-study; and in the Case2, the `user.dir` had the value of `/Users/kazurayam/github/unittest-helper`. Therefore, in two cases, the test class got different value of `System.getProperty("user.dir")`.
 
+The Current Working Directory, which is resolved `System.getProperty("user.dir")`, can move sometimes; not very much reliable for a test class to find where the "project directory" is. This is the problem I am focused.

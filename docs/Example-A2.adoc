@@ -1,4 +1,4 @@
-=== Example-A2 Printing the list of registered "Code Source Path Elements"
+=== Example-A2 Printing the list of registered "Code Source Path Elements Under Project Directory"
 
 [source, java]
 ----

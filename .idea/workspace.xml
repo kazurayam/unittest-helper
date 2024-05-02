@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbc5a4fc-b015-4a08-86d1-ae07c327d7b6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Example-A2.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-A2.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Example-A3.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-A3.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Example-D1.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-D1.adoc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/problem_to_solve.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/problem_to_solve.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/solution.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/solution.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

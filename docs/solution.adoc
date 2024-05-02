@@ -6,7 +6,8 @@ I want the `test-output` directory to be steadily located under the subproject's
 
 There is a method for a test classes to find out the location of project's directory without referring to the System property `user.dir`. I will show you a sample code how to.
 
-Please find link:https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java[]:
+Please find link:https://github.com/kazurayam/unittest-helper/blob/develop/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java[unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java]:
+
 [source,java]
 ----
 include::../preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java[]
@@ -69,7 +70,7 @@ I can analyze this long path string into 4 segments, as follows:
 
 - `/Users/kazurayam/github/unittest-helper/`: Gradle *root project's directory*
 - `preliminary-study/`: Gradle *subProject's directory*:
-- `build/classes/java/test/`: link:https://github.com/kazurayam/unittest-helper/blob/issue36/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java[*Code Source Path Elements*]
+- `build/classes/java/test/`: link:https://github.com/kazurayam/unittest-helper/blob/issue36/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java[*Code Source Path Elements Under Project Directory*]
 - `study/S3FindingProjectDirByClasspathTest.class`: the test class
 
 === "Code Source Path Elements Under Project Directory" differs according to runtime environments

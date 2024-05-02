@@ -12,6 +12,7 @@ public class S3FindingProjectDirByClasspathTest {
 
     @Test
     public void getLocationWhereThisClassIsFound() {
+
         // THE MAGIC
         ProtectionDomain pd = this.getClass().getProtectionDomain();
         CodeSource codeSource = pd.getCodeSource();

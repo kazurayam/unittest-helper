@@ -66,7 +66,7 @@ Please find [unittest-helper/preliminary-stydy/src/test/java/study/S2WritingSyst
 
 -   This test writes the value of System Property `browserType` into a file named `browserType.txt` which is located in the `test-output` directory.
 
-You can find how the Gradle task `testS2` is defined in the <https://github.com/kazurayam/unittest-helper/preliminary-study/build.gradle>
+You can find how the Gradle task `testS2` is defined in the [unittest-helper/preliminary-study/build.gradle](https://github.com/kazurayam/unittest-helper/blob/develop/preliminary-study/build.gradle)
 
     tasks.register("testS2", Test) {
         useTestNG()                                  // (1)
@@ -82,7 +82,7 @@ You can find how the Gradle task `testS2` is defined in the <https://github.com/
 
 3.  I passed all entries of `System.properties`, including the ones given as a commandline parameter by `-DbrowserType=XXXX`, into the `testS2` task
 
-4.  I requested Gradle show all of messages from the test classes to stdout to be printed in the console
+4.  I requested Gradle to show all messages emitted by the test classes into the stdout to be printed in the console
 
 5.  I forced Gradle to run the `testS2` task even if there is no change in the input.
 
@@ -139,9 +139,9 @@ In the Case1, I got `unittest-helper/preliminary-study/test-output`, with which 
 <img src="images/00_problem_to_solve.png" alt="00 problem to solve" />
 </figure>
 
-In the Case2, I ran the same test class a bit differently. In the Case1, I ran it in the directory `unittest-helper/preliminary-study`, and in the Case2, I ran it in the directory `unittest-helper`.
+In two cases I ran the same test class just a little bit bit differently. In the Case1, I ran the test while the Current Working Directory is `unittest-helper/preliminary-study`, and in the Case2, I ran the test while the CWD is `unittest-helper`.
 
-In the Case2, I got the `test-output` directory under the `unittest-helper` directory, which is the root project’s directory. Why did I get this difference? --- It is because the `testS2` task has a single line:
+In the Case2, I got the `test-output` directory under the `unittest-helper` directory, which is the root project’s directory. Why did I get this result? …​ It is because the `testS2` task in the `build.gradle` has a single line:
 
     tasks.register("testS2", Test) {
         ...
@@ -149,7 +149,9 @@ In the Case2, I got the `test-output` directory under the `unittest-helper` dire
         ...
     }
 
-By this single line, Gradle captured all the values of System.properties at the timing when I invoked `gradle` command and the values were imported into the runtime environment where the test class `S2WrintingSystemPropertyValueIntoFileInTheOutputDirecvtoryTest` ran. In the Case1, the System Property `user.dir` had the value of `` /Users/kazurayam/github/unittest-helpers/preliminary-study; and in the Case2, the `user.dir `` had the value of `/Users/kazurayam/github/unittest-helper`. Therefore, the directory `test-output` was located at the different layer of project structure.
+By this single line, Gradle captured all the values of System.properties at the timing when I invoked `gradle` command and the values were transferred into the runtime environment where the test class `S2WrintingSystemPropertyValueIntoFileInTheOutputDirecvtoryTest` ran. In the Case1, the System Property `user.dir` had the value of `` /Users/kazurayam/github/unittest-helpers/preliminary-study; and in the Case2, the `user.dir `` had the value of `/Users/kazurayam/github/unittest-helper`. Therefore, in two cases, the test class got different value of `System.getProperty("user.dir")`.
+
+The Current Working Directory, which is resolved `System.getProperty("user.dir")`, can move sometimes; not very much reliable for a test class to find where the "project directory" is. This is the problem I am focused.
 
 ## Solution
 
@@ -159,7 +161,7 @@ I want the `test-output` directory to be steadily located under the subproject�
 
 There is a method for a test classes to find out the location of project’s directory without referring to the System property `user.dir`. I will show you a sample code how to.
 
-Please find <https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java>:
+Please find [unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java](https://github.com/kazurayam/unittest-helper/blob/develop/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java):
 
     package study;
 
@@ -175,6 +177,7 @@ Please find <https://github.com/kazurayam/unittest-helper/preliminary-study/src/
 
         @Test
         public void getLocationWhereThisClassIsFound() {
+
             // THE MAGIC
             ProtectionDomain pd = this.getClass().getProtectionDomain();
             CodeSource codeSource = pd.getCodeSource();
@@ -240,7 +243,7 @@ I can analyze this long path string into 4 segments, as follows:
 
 -   `preliminary-study/`: Gradle **subProject’s directory**:
 
--   `build/classes/java/test/`: [**Code Source Path Elements**](https://github.com/kazurayam/unittest-helper/blob/issue36/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java)
+-   `build/classes/java/test/`: [**Code Source Path Elements Under Project Directory**](https://github.com/kazurayam/unittest-helper/blob/issue36/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java)
 
 -   `study/S3FindingProjectDirByClasspathTest.class`: the test class
 
@@ -296,7 +299,7 @@ This will print the following in the console:
 
 How the `com.kazurayam.unittest.ProjectDirectoryResolver` class find the path of project directory via classpath? --- I will describe the detail later. For now, let me talk about how to utilize this library.
 
-### Example-A2 Printing the list of registered "Code Source Path Elements"
+### Example-A2 Printing the list of registered "Code Source Path Elements Under Project Directory"
 
         @Test
         public void test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
@@ -326,7 +329,7 @@ This will print the following in the console:
 
 This is the list of `com.kazurayam.unittest.CodeSourcePathElementsUnderProjectDirectory` objects registered in the `com.kazurayam.unittest.ProjectDirectoryResolver` class as default.
 
-### Example-A3 adding a custom instance of "Code Source Path Elements"
+### Example-A3 adding a custom instance of "Code Source Path Elements Under Project Directory"
 
         @Test
         public void test_addCodeSourcePathElementsUnderProjectDirectory() {
@@ -750,7 +753,7 @@ The `TestOutputOrganizer` class implements
 
 -   `cleanClassOutputDirectory()`
 
--   `cleanMethodOutputDirectory(String methodName0`
+-   `cleanMethodOutputDirectory(String methodName)`
 
 These methods remove the respective directories recursively and re-create them. See the following sample test class.
 

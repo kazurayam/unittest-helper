@@ -4,7 +4,7 @@ The `TestOutputOrganizer` class implements
 
 - `cleanOutputDirectory()`
 - `cleanClassOutputDirectory()`
-- `cleanMethodOutputDirectory(String methodName0`
+- `cleanMethodOutputDirectory(String methodName)`
 
 These methods remove the respective directories recursively and re-create them. See the following sample test class.
 
