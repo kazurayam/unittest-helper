@@ -1,12 +1,13 @@
-=== Example3 Locating the default output directory
+
+=== Example-B1 Locating the default output directory
 
 I want to create a directory named `test-output` under the project directory. I would let my test classes to write files into the directory. I want to for output files `test-output` directory by calling `getOutputDir()`.
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex03Test.java[]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB1Test.java[]
 ----
-link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex03Test.java[source]
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB1Test.java[source]
 
 This will print the following in the console:
 

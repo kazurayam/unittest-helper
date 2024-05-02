@@ -1,7 +1,6 @@
 package com.kazurayam.unittesthelperdemo;
 
 import com.kazurayam.unittest.DeleteDir;
-import com.kazurayam.unittest.TestOutputOrganizer;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -12,10 +11,10 @@ import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Ex12Test {
+public class ExampleF1Test {
 
     @Test
-    public void test_cleanDirectoryRecursively() throws IOException {
+    public void test_deleteDirectoryRecursively() throws IOException {
         // given
         Path dir = Paths.get("build/work");
         Files.createDirectories(dir);

@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class Ex04Test {
+public class ExampleB2Test {
 
-    Logger log = LoggerFactory.getLogger(Ex04Test.class);
+    Logger log = LoggerFactory.getLogger(ExampleB2Test.class);
 
     @Test
     public void test_getOutputDir_custom() throws IOException {

@@ -65,22 +65,22 @@ public final class CodeSourcePathElementsUnderProjectDirectory {
                     "build", "classes", "kotlin", "functionalTest");
 
 
-    private List<String> cspe = new ArrayList<>();
+    private List<String> cspeupdStringList = new ArrayList<>();
 
-    public CodeSourcePathElementsUnderProjectDirectory(List<String> cspe) {
-        this.cspe = cspe;
+    public CodeSourcePathElementsUnderProjectDirectory(List<String> cspeupdStringList) {
+        this.cspeupdStringList = cspeupdStringList;
     }
 
     public CodeSourcePathElementsUnderProjectDirectory(String pathElement, String... more) {
-        this.cspe = new ArrayList<>();
+        this.cspeupdStringList = new ArrayList<>();
         Path p = Paths.get(pathElement);
         if (p.getNameCount() > 0) {
             for (int i = 0; i < p.getNameCount(); i++) {
-                this.cspe.add(p.getName(i).toString());
+                this.cspeupdStringList.add(p.getName(i).toString());
             }
         }
         if (more.length > 0) {
-            this.cspe.addAll(Arrays.asList(more));
+            this.cspeupdStringList.addAll(Arrays.asList(more));
         }
     }
 
@@ -92,17 +92,17 @@ public final class CodeSourcePathElementsUnderProjectDirectory {
     }
 
     public List<String> asList() {
-        return new ArrayList<>(this.cspe);
+        return new ArrayList<>(this.cspeupdStringList);
     }
 
     public boolean isEmpty() {
-        return this.cspe.isEmpty();
+        return this.cspeupdStringList.isEmpty();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (String s : cspe) {
+        for (String s : cspeupdStringList) {
             sb.append(s);
             sb.append(File.separator);
         }

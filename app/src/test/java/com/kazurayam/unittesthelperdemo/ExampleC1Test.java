@@ -10,22 +10,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class Ex06Test {
+public class ExampleC1Test {
 
-    Logger log = LoggerFactory.getLogger(Ex06Test.class);
+    Logger log = LoggerFactory.getLogger(ExampleC1Test.class);
 
     @Test
-    public void test_write_into_subdir_under_the_default_output_directory() throws Exception {
+    public void test_write_a_file_into_the_default_output_directory() throws Exception {
         TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path file = too.createOutputDirectory().resolve("sub/sample.txt");
-        // you need to make sure that the parent directory exists
-        Files.createDirectories(file.getParent());
-
+        Path file = too.createOutputDirectory().resolve("sample.txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-        log.info("[test_write_into_subdir_under_the_default_output_directory] " +
+        log.info("[test_write_a_file_into_the_default_output_directory] " +
                 too.toHomeRelativeString(file));
         List<String> content = Files.readAllLines(file);
         log.info(content.toString());
     }
-
 }

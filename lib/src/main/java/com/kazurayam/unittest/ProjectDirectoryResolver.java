@@ -37,7 +37,7 @@ public final class ProjectDirectoryResolver {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectDirectoryResolver.class);
     private final FileSystem fileSystem;
-    private final List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE;
+    private final List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPEUPD;
 
     /**
      *
@@ -48,27 +48,27 @@ public final class ProjectDirectoryResolver {
 
     public ProjectDirectoryResolver(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
-        listOfCSPE = new ArrayList<>();
-        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.MAVEN_TEST);
-        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_JAVA_TEST);
-        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_JAVA_FUNCTIONALTEST);
-        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_GROOVY_TEST);
-        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_GROOVY_FUNCTIONALTEST);
-        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_KOTLIN_TEST);
-        listOfCSPE.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_KOTLIN_FUNCTIONALTEST);
+        listOfCSPEUPD = new ArrayList<>();
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.MAVEN_TEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_JAVA_TEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_JAVA_FUNCTIONALTEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_GROOVY_TEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_GROOVY_FUNCTIONALTEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_KOTLIN_TEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_KOTLIN_FUNCTIONALTEST);
     }
 
     /**
      *
-     * @param cspe e.g, CodeSourcePathElementsUnderProjectDirectory of ["build", "classes", "main", "java"]
+     * @param cspeupd e.g, CodeSourcePathElementsUnderProjectDirectory of ["build", "classes", "main", "java"]
      *
      */
-    public void addCodeSourcePathElementsUnderProjectDirectory(CodeSourcePathElementsUnderProjectDirectory cspe) {
-        Objects.requireNonNull(cspe);
-        if (cspe.isEmpty()) {
+    public void addCodeSourcePathElementsUnderProjectDirectory(CodeSourcePathElementsUnderProjectDirectory cspeupd) {
+        Objects.requireNonNull(cspeupd);
+        if (cspeupd.isEmpty()) {
             throw new IllegalArgumentException("codeSourcePathElementsUnderProjectDirectory must not be null");
         }
-        this.listOfCSPE.add(cspe);
+        this.listOfCSPEUPD.add(cspeupd);
     }
 
     /**
@@ -78,10 +78,8 @@ public final class ProjectDirectoryResolver {
     public List<CodeSourcePathElementsUnderProjectDirectory>
     getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
         List<CodeSourcePathElementsUnderProjectDirectory> clone = new ArrayList<>();
-        for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
-            CodeSourcePathElementsUnderProjectDirectory e =
-                    new CodeSourcePathElementsUnderProjectDirectory(cspe);
-            clone.add(e);
+        for (CodeSourcePathElementsUnderProjectDirectory cspeupd : listOfCSPEUPD) {
+            clone.add(new CodeSourcePathElementsUnderProjectDirectory(cspeupd));
         }
         return clone;
     }
@@ -151,7 +149,7 @@ public final class ProjectDirectoryResolver {
         logger.trace(String.format("[%s] nameElements=%s", methodName, nameElements));
         StringSequence ss = new StringSequence(nameElements);
         int boundary = -1;
-        for (CodeSourcePathElementsUnderProjectDirectory cspe : this.listOfCSPE) {
+        for (CodeSourcePathElementsUnderProjectDirectory cspe : this.listOfCSPEUPD) {
             int indexOfBuildDir = ss.indexOf(cspe);
             if (indexOfBuildDir > 0) {
                 boundary = indexOfBuildDir;

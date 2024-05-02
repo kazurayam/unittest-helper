@@ -1,8 +1,8 @@
-=== Example14 Factory class that creates customized TestOutputOrganizer
+=== Example-G1 Factory class that instantiates a customized TestOutputOrganizer
 
-It is a good practice for you to define a factory class that creates an instance of `TestOutputOrganizer` with your custom parameters for your own project. Use the factory throughout your project. Then you can standardize the organization of test outputs.
+It is a good practice for you to define a factory class that creates an instance of `com.kazurayam.unittest.TestOutputOrganizer` with your customized parameters for your own project. Use the factory throughout your project. Then you can standardize the organization of test outputs.
 
-See the following example "factory".
+See the following code for sample "factory" class.
 
 [source]
 ----

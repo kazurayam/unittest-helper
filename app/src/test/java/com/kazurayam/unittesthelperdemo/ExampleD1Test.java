@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
-public class Ex11Test {
+public class ExampleD1Test {
 
-    private static final Logger log = LoggerFactory.getLogger(Ex11Test.class);
+    private static final Logger log = LoggerFactory.getLogger(ExampleD1Test.class);
     private static final TestOutputOrganizer too =
-            new TestOutputOrganizer.Builder(Ex11Test.class)
-                    .subPathUnderOutputDirectory(Ex11Test.class)
+            new TestOutputOrganizer.Builder(ExampleD1Test.class)
+                    .subPathUnderOutputDirectory(ExampleD1Test.class)
                     .build();
     @BeforeAll
     public static void beforeAll() throws Exception {

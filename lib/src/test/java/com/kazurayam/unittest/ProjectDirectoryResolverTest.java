@@ -39,12 +39,12 @@ public final class ProjectDirectoryResolverTest {
 
     @Test
     public void test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
-        List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
+        List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPEUPD =
                 new ProjectDirectoryResolver().getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
-        assertThat(listOfCSPE).isNotNull();
-        assertThat(listOfCSPE.size()).isGreaterThanOrEqualTo(2);
-        for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
-            logger.info("sublistPattern : " + cspe);
+        assertThat(listOfCSPEUPD).isNotNull();
+        assertThat(listOfCSPEUPD.size()).isGreaterThanOrEqualTo(2);
+        for (CodeSourcePathElementsUnderProjectDirectory cspeupd : listOfCSPEUPD) {
+            logger.info("CodeSourcePathElementsUnderProjectDirectory: " + cspeupd);
         }
     }
 

@@ -1,11 +1,11 @@
-=== Example6 Writing a file into a subdirectory under the default output directory
+=== Example-C2 Create a subdirectory under the default output directory, write a file into it
 
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex06Test.java[]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC2Test.java[]
 ----
-link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex06Test.java[source]
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC2Test.java[source]
 
 This will print the following in the console:
 

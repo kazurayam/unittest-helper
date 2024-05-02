@@ -12,12 +12,12 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class Ex07Test {
+public class ExampleC3Test {
 
-    Logger log = LoggerFactory.getLogger(Ex07Test.class);
+    Logger log = LoggerFactory.getLogger(ExampleC3Test.class);
 
     @Test
-    public void test_write_into_subdir_under_the_custom_output_directory() throws Exception {
+    public void test_write_into_the_custom_output_directory() throws Exception {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
                         .outputDirectoryPathRelativeToProject("build/tmp/testOutput").build();
@@ -26,7 +26,8 @@ public class Ex07Test {
         // Files.createDirectories(file.getParent());
 
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-        log.info("[test_write_into_subdir_under_the_custom_output_directory] " +
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        log.info("[" + methodName + "] " +
                 too.toHomeRelativeString(file));
         List<String> content = Files.readAllLines(file);
         log.info(content.toString());

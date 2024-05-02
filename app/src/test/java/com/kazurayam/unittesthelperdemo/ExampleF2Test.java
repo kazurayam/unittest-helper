@@ -10,11 +10,11 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Ex13Test {
+public class ExampleF2Test {
 
     private static final TestOutputOrganizer too =
-            new TestOutputOrganizer.Builder(Ex13Test.class)
-                    .subPathUnderOutputDirectory(Ex13Test.class)
+            new TestOutputOrganizer.Builder(ExampleF2Test.class)
+                    .subPathUnderOutputDirectory(ExampleF2Test.class)
                     .build();
 
     @Test

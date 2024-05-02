@@ -1,0 +1,29 @@
+=== Example-C5 One more layer of subdirectory that stands for the test method name
+
+The Example-C4 showed that you can create a subdirectory which stands for the Fully Qualified Class Name of the test class. You can add one more layer of subdirectory which stands for the method name. This is useful for organizing the outputs in further detail.
+
+[source,java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC5Test.java[]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC5Test.java[source]
+
+Please find that this test utilizes the `getMethodOutputDirectory(String methodName)` method and `cleanMethodOutputDirectory(String methodName)` method of `TestOutputOrganizer` class.
+
+When I ran this, I got the following output:
+
+[source]
+----
+~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleC5Test/testMethod1/2023-11-27T15:33:28.362.txt
+~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleC5Test/testMethod2/2023-11-27T15:33:28.362.txt
+~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleC5Test/testMethod3/2023-11-27T15:33:28.362.txt
+----
+
+Here you can see
+
+1. The classOutputDirectory is `~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleC5Test`
+2. Under the classOutputDirectory, there is a layer of methodDirectory, that is:
+  - `testMethod1`
+  - `testMethod2`
+  - `testMethod3`
+3. Even if you repeat executing this test, you would see only single txt file named with timestamp in each method directory, because `too.cleanMethodOutputDirectory()` cleans up the directory everytime the methods are invoked.

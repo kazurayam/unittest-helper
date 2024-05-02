@@ -1,0 +1,92 @@
+== Solution
+
+I want the `test-output` directory to be steadily located under the subproject's directory `preliminary-study/` regardless at which directory the System property `user.dir` is set at runtime. For that intent, I do not like to rely on the value of System property `user.dir` to find out where the subproject directory is.
+
+=== How to find supProject's directory without referring to `System.getProperty("user.dir")`?
+
+There is a method for a test classes to find out the location of project's directory without referring to the System property `user.dir`. I will show you a sample code how to.
+
+Please find link:https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java[]:
+[source,java]
+----
+include::../preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java[]
+----
+
+You can run this test by `testS3` task defined in the `unittest-helper/preliminary-study/build.gradle`. I ran it and got messages, as follows:
+
+[code,commandline]
+----
+$ pwd
+/Users/kazuakiurayama/github/unittest-helper/preliminary-study
+
+$ gradle testS3
+
+> Task :preliminary-study:testS3
+
+Gradle suite > Gradle test > study.S3FindingProjectDirByClasspathTest > getLocationWhereThisClassIsFound STANDARD_OUT
+    codeSource url=file:/Users/kazuakiurayama/github/unittest-helper/preliminary-study/build/classes/java/test/
+    project directory=file:/Users/kazuakiurayama/github/unittest-helper/preliminary-study/
+
+BUILD SUCCESSFUL in 2s
+2 actionable tasks: 1 executed, 1 up-to-date
+----
+
+And also I ran the same task at the root project's directory:
+
+[code,commandline]
+----
+$ pwd
+/Users/kazuakiurayama/github/unittest-helper
+
+$ gradle :preliminary-study:testS3
+
+> Task :preliminary-study:testS3
+
+Gradle suite > Gradle test > study.S3FindingProjectDirByClasspathTest > getLocationWhereThisClassIsFound STANDARD_OUT
+    codeSource url=file:/Users/kazuakiurayama/github/unittest-helper/preliminary-study/build/classes/java/test/
+    project directory=file:/Users/kazuakiurayama/github/unittest-helper/preliminary-study/
+
+BUILD SUCCESSFUL in 2s
+2 actionable tasks: 1 executed, 1 up-to-date
+----
+
+As you see, in both cases, the test class printed the same path string as the project directory:
+
+[code,commandline]
+----
+    project directory=file:/Users/kazuakiurayama/github/unittest-helper/preliminary-study/
+----
+
+I like this result. The test class `study.S3FindingProjectDirByClasspathTest` proved that it can find the location of the subproject's directory is without referring to `System.getProperty("user.dir")`.
+
+=== Introducing "Code Source Path Elements Under Project Directory"
+
+In order to explain the design of the `study.S3FindingProjectDirByClasspathTest`, I need to introduce a new terminology "Code Source Path Elements Under Project Directory". I would use an acronym "CSPEUPD" for short when appropriate. Let me assume that a test class file has the actual path on my machine like this:
+
+`/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/study/S3FindingProjectDirByClasspathTest.class`
+
+I can analyze this long path string into 4 segments, as follows:
+
+- `/Users/kazurayam/github/unittest-helper/`: Gradle *root project's directory*
+- `preliminary-study/`: Gradle *subProject's directory*:
+- `build/classes/java/test/`: link:https://github.com/kazurayam/unittest-helper/blob/issue36/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java[*Code Source Path Elements*]
+- `study/S3FindingProjectDirByClasspathTest.class`: the test class
+
+=== "Code Source Path Elements Under Project Directory" differs according to runtime environments
+
+Read the source of `getLocationWhereThisClassIsFound` method of link:https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java[study.S3FindingProjectDirByClasspathTest]. The method has a fragment:
+
+[code, java]
+----
+        String codeSourcePathElementsUnderProjectDirectory = "build/classes/java/test/";
+        String projectDir =
+                url.toString().replace(codeSourcePathElementsUnderProjectDirectory,"");
+
+----
+
+Here you find a string literal `build/classes/java/test/`, which is a concatenation of path elements under the project directory, is valid only in a Gradle project in Java language. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IntelliJ IDEA, Eclipse, NetBeans, etc). The CSPEUPD is dependent on the runtime environment. If I want my test classes to be able to find the subProject's directory runtime, my test classes have to try the possible values of CSPEUPD to match the actual URL of the CodeSource of the test class at runtime.
+
+Well, it is a complicated processing. This requires good programming efforts.
+
+The `com.kazurayam.unittest.ProjectDirectoryResolver` class provides a solution to this technical issue.
+
