@@ -12,9 +12,11 @@ public class S3FindingProjectDirByClasspathTest {
 
     @Test
     public void getLocationWhereThisClassIsFound() {
+        // THE MAGIC
         ProtectionDomain pd = this.getClass().getProtectionDomain();
         CodeSource codeSource = pd.getCodeSource();
         URL url = codeSource.getLocation();
+
         System.out.println("codeSource url=" + url.toString());
         // e.g, "url=file:/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/"
         assertThat(url.toString()).contains("unittest-helper/preliminary-study/build/classes/java/test");

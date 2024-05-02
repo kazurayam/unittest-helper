@@ -151,11 +151,11 @@ In the Case2, I got the `test-output` directory under the `unittest-helper` dire
 
 By this single line, Gradle captured all the values of System.properties at the timing when I invoked `gradle` command and the values were imported into the runtime environment where the test class `S2WrintingSystemPropertyValueIntoFileInTheOutputDirecvtoryTest` ran. In the Case1, the System Property `user.dir` had the value of `` /Users/kazurayam/github/unittest-helpers/preliminary-study; and in the Case2, the `user.dir `` had the value of `/Users/kazurayam/github/unittest-helper`. Therefore, the directory `test-output` was located at the different layer of project structure.
 
-### I want to locate the output directory under the subProject’s directory
+## Solution
 
 I want the `test-output` directory to be steadily located under the subproject’s directory `preliminary-study/` regardless at which directory the System property `user.dir` is set at runtime. For that intent, I do not like to rely on the value of System property `user.dir` to find out where the subproject directory is.
 
-### How can I find the supProject’s directory without `System.getProperty("user.dir")`?
+### How to find supProject’s directory without referring to `System.getProperty("user.dir")`?
 
 There is a method for a test classes to find out the location of project’s directory without referring to the System property `user.dir`. I will show you a sample code how to.
 
@@ -175,9 +175,11 @@ Please find <https://github.com/kazurayam/unittest-helper/preliminary-study/src/
 
         @Test
         public void getLocationWhereThisClassIsFound() {
+            // THE MAGIC
             ProtectionDomain pd = this.getClass().getProtectionDomain();
             CodeSource codeSource = pd.getCodeSource();
             URL url = codeSource.getLocation();
+
             System.out.println("codeSource url=" + url.toString());
             // e.g, "url=file:/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/"
             assertThat(url.toString()).contains("unittest-helper/preliminary-study/build/classes/java/test");
