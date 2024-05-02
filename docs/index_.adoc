@@ -14,9 +14,10 @@ include::solution.adoc[]
 
 == Sample Codes
 
-include::ex01.adoc[]
-include::ex02.adoc[]
-include::ex03.adoc[]
+include::Example-A1.adoc[]
+include::Example-A2.adoc[]
+include::Example-A3.adoc[]
+include::Example-B1.adoc[]
 include::ex04.adoc[]
 include::ex05.adoc[]
 include::ex06.adoc[]

@@ -1,6 +1,6 @@
-=== Example1 Resolving the project directory resolved via classpath
+=== Example-A1 Resolving the project directory resolved via classpath
 
-I want my tests to be able to resolve the path of the project directory so that my tests can locate temporary output files surely under the project directory. And I want my tests to be independent from the *current working directory*. I want to find out the project directory's path value based on the path value of the class file of the test itself. The following code shows it is possible.
+I want my tests to be able to resolve the path of the project directory so that my tests can locate temporary output files surely under the project directory. And I want my tests to be independent of the *current working directory*. I want to find out the project directory's path value based on the path value of the class file of the test itself. The following code shows it is possible.
 
 [source, java]
 ----
