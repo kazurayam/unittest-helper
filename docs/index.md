@@ -41,9 +41,11 @@ Please find <https://github.com/kazurayam/unittest-helper/preliminary-study/src/
             Optional<String> text =
                     Optional.ofNullable(System.getProperty("browserType"));
             System.out.println("System.property(\"browserType\")=" + text.orElse("null"));
+
             // write the "browserType" value into a file
             // in the "test-output" directory under the "user.dir"
             Path currentWorkingDirectory = Paths.get(System.getProperty("user.dir"));
+
             Path outputDir = currentWorkingDirectory.resolve("test-output");
             Path file = outputDir.resolve("browserType.txt");
             System.out.println("file path=" + TestUtils.shortenPath(file));
@@ -76,13 +78,13 @@ You can find how the task `testS2` is defined in the <https://github.com/kazuray
 
 1\) I declared that I want to use NestNG to run my test cases in the `testS2` task.
 2) I specifically chose a class of which className starts with `S2`.
-3) I passed all of System.properties into the `testS2` task
+3) I passed all entries of `System.properties` into the `testS2` task
 4) I specified to show all of messages from the test classes to stdout to be printed in the console
 5) I specified Gradle to run the `testS2` task even if there is no change in the input.
 
 I opened the Terminal app, and ran the following commands.
 
-## Case1: with the subproject’s directory as Current Working Directory
+### Case1: with the subproject’s directory as Current Working Directory
 
     $ cd ~/github/unittest-helper
     $ cd preliminary-study
@@ -102,7 +104,7 @@ I opened the Terminal app, and ran the following commands.
 
 Please note that the output directory `test-output` was located in the **subproject’s directory** `unittest-helper/preliminary-study/`.
 
-## Case2: with the root project’s directory as Current Working Directory
+### Case2: with the root project’s directory as Current Working Directory
 
 Gradle allows us another way of invoking the same task `testS2`, as follows:
 
@@ -123,7 +125,7 @@ Gradle allows us another way of invoking the same task `testS2`, as follows:
 
 Please note that the output directory `test-output` was located in the **root project’s directory** `unittest-helper/`.
 
-## Problem: Current Working Directory is not necessarily equal to the subproject’s directory
+### Problem: Current Working Directory is not necessarily equal to the subproject’s directory
 
 I want my test class `study.S2WritingSystemPropertyValueIntoFileInTheOutputDireoctyTest` to create the directory `test-output` always under the subproject’s directory. In the Case1, I got `unittest-helper/preliminary-study/test-output`, with which I am OK. However, in the Case2, I got `unittest-helper/test-output`. I am not happy with the result.
 
@@ -141,11 +143,11 @@ The source code of the test class `study.S2WritingSystemPropertyValueIntoFileInT
 
 By this single line, Gradle captured all the values of System.properties at the timing when I invoked `gradle` command and the values were imported into the runtime environment where the test class `S2WrintingSystemPropertyValueIntoFileInTheOutputDirecvtoryTest` ran. In the Case1, the System Property `user.dir` had the value of `` …​/unittest-helpers/preliminary-study; and in the Case2, the `user.dir `` had the value of `…​/unittest-helper`. Therefore the directory `test-output` was located at the different layer of project structure.
 
-## What I want
+### What I want
 
 I want the `test-output` directory to be always under the subproject’s directory regardless at which directory the System property `user.dir` is set at runtime. **I should NOT rely on the `user.dir` to find out where the subproject directory is.**
 
-## But how?
+### But how?
 
 There is a narrow path for every test classes to find out where the project’s directory is without referring to the System property `user.dir`. I will show you a sample code how to.
 
@@ -218,7 +220,7 @@ Please note that in both trial, the test class printed the path string as the pr
 
 This is what I want to achieve. The test class `S3FindingProjectDirByClasspathTest` proved that it can find where the subproject’s directory is without refering to the System property `user.dir`. Please read the source of `getLocationWhereThisClassIsFound()` method to find out the coding technique.
 
-## A difficulty to overcome
+### Difficulties to overcome
 
 Read the source of `getLocationWhereThisClassIsFound` method of [S3FindingProjectDirByClasspathTest](https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java). You would notice a technical issue to overcome. The method has a fragment:
 

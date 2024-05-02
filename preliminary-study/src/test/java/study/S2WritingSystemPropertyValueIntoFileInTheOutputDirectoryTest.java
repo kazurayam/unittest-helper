@@ -16,9 +16,11 @@ public class S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest {
         Optional<String> text =
                 Optional.ofNullable(System.getProperty("browserType"));
         System.out.println("System.property(\"browserType\")=" + text.orElse("null"));
+
         // write the "browserType" value into a file
         // in the "test-output" directory under the "user.dir"
         Path currentWorkingDirectory = Paths.get(System.getProperty("user.dir"));
+
         Path outputDir = currentWorkingDirectory.resolve("test-output");
         Path file = outputDir.resolve("browserType.txt");
         System.out.println("file path=" + TestUtils.shortenPath(file));
