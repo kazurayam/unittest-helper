@@ -1,4 +1,4 @@
-=== Example-E1 A helper method that translates a absolute Path to a Home Relative string
+=== Example-E1 A helper method that translates an absolute Path to a `user.home`-relative string
 
 A Path object can be turned into an absolute path string like:
 

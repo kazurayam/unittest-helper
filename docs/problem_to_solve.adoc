@@ -1,8 +1,8 @@
 == Problems to solve
 
-Let me explain the problem that I am focused with a sample code.
+Let me show you a set of sample codes to explain the problem that I am focused.
 
-I cloned the link:https://github.com/kazurayam/unittest-helper[unittest-helper] project onto my Mac machine.
+I would assume that you have a clone of the link:https://github.com/kazurayam/unittest-helper[unittest-helper] project on your machine.
 
 Please note that this project is a link:https://docs.gradle.org/current/userguide/intro_multi_project_builds.html[Gradle Multi-Project], where the root directory `unittest-helper` contains a few sub-directories `lib`, `app` and `preliminary-study`. Each of these 3 directories contain `build.gradle` file. Multi-Project is just a usual style of Gradle project structure nowadays. It is no exceptional.
 

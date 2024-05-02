@@ -6,21 +6,29 @@
   <component name="ChangeListManager">
     <list default="true" id="74a392ca-ad77-4490-be5e-7086c3e22f8f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex07Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC3Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex08Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC4Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex09Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC5Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex10Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleE1Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex11Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleD1Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex12Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF1Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex13Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF2Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex07.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-C3.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex08.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-C4.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex09.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-C5.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex10.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-E1.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex11.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-D1.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex12.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-F1.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex13.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-F2.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/index_.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index_.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Example-E1.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-E1.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/allclasses-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/allclasses-index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/allpackages-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/allpackages-index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.Option.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.Option.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/DeleteDir.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/DeleteDir.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/ProjectDirectoryResolver.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/ProjectDirectoryResolver.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/StringSequence.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/StringSequence.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.Builder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.Builder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/help-doc.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/help-doc.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/index-all.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/legal/ASSEMBLY_EXCEPTION" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/legal/ASSEMBLY_EXCEPTION" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/member-search-index.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/member-search-index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/overview-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/overview-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/search.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/search.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/stylesheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/stylesheet.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/type-search-index.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/type-search-index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/problem_to_solve.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/problem_to_solve.adoc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,7 +261,7 @@
       <workItem from="1714428482254" duration="3332000" />
       <workItem from="1714435579766" duration="11347000" />
       <workItem from="1714563826143" duration="25000" />
-      <workItem from="1714603559253" duration="16991000" />
+      <workItem from="1714603559253" duration="17750000" />
     </task>
     <servers />
   </component>
