@@ -28,20 +28,20 @@ include::Example-C1.adoc[]
 
 include::Example-C2.adoc[]
 
-include::ex07.adoc[]
+include::Example-C3.adoc[]
 
-include::ex08.adoc[]
+include::Example-C4.adoc[]
 
-include::ex09.adoc[]
+include::Example-C5.adoc[]
 
-include::ex10.adoc[]
+include::Example-D1.adoc[]
 
-include::ex11.adoc[]
+include::Example-E1.adoc[]
 
-include::ex12.adoc[]
+include::Example-F1.adoc[]
 
-include::ex13.adoc[]
+include::Example-F2.adoc[]
 
-include::ex14.adoc[]
+include::Example-G1.adoc[]
 
 (FIN)

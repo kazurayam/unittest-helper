@@ -1,4 +1,4 @@
-=== Example10 A helper method that translates a absolute Path to a Home Relative string
+=== Example-E1 A helper method that translates a absolute Path to a Home Relative string
 
 A Path object can be turned into an absolute path string like:
 
@@ -18,7 +18,7 @@ The `TestOutputOrganizer` class provides a helper method that translte a Path ob
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex10Test.java[]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleE1Test.java[]
 ----
 
 This test prints the following output in the console:

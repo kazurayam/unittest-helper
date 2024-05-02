@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class Ex08Test {
+public class ExampleC4Test {
 
-    private static final Logger log = LoggerFactory.getLogger(Ex08Test.class);
+    private static final Logger log = LoggerFactory.getLogger(ExampleC4Test.class);
     private static final TestOutputOrganizer too =
-            new TestOutputOrganizer.Builder(Ex08Test.class)
+            new TestOutputOrganizer.Builder(ExampleC4Test.class)
                     .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
-                    .subPathUnderOutputDirectory(Ex08Test.class)
+                    .subPathUnderOutputDirectory(ExampleC4Test.class)
                     .build();
 
     @BeforeAll

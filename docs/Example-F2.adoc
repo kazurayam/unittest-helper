@@ -1,0 +1,10 @@
+=== Example-F2 Copying a source directory to a target directory recursively
+
+`com.kazurayam.unittest.TestOutputOrganizer` class has an instance method `copyDir(Path source, Path target)` which just copies the content files/directories from the source into the target recursively.
+
+[source,java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF2Test.java[]
+----
+
+I know I can do the same dir-to-dir copy by link:https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FileUtils.html#copyDirectory(java.io.File,java.io.File)[FileUtils of Apache Commons IO]. If I use the `TestOutputOrganizer.copyDir(Path source, Path target)`, I can simplify the dependency of my project. That's a small but good reason.

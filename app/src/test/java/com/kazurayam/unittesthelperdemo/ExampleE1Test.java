@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class Ex10Test {
+public class ExampleE1Test {
 
-    private static final Logger log = LoggerFactory.getLogger(Ex10Test.class);
+    private static final Logger log = LoggerFactory.getLogger(ExampleE1Test.class);
     private static final TestOutputOrganizer too =
-            new TestOutputOrganizer.Builder(Ex10Test.class)
+            new TestOutputOrganizer.Builder(ExampleE1Test.class)
                     .build();
     @Test
     public void test_smoke() throws IOException {

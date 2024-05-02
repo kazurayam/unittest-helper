@@ -530,7 +530,7 @@ You can create layers of sub-directories under the output directory managed by t
             // you need to make sure that the parent directory exists
             Files.createDirectories(file.getParent());
 
-### Example7 Writing a file into a custom output directory
+### Example-C3 Create a custom output directory, write a file into it
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -546,12 +546,12 @@ You can create layers of sub-directories under the output directory managed by t
 
     import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-    public class Ex07Test {
+    public class ExampleC3Test {
 
-        Logger log = LoggerFactory.getLogger(Ex07Test.class);
+        Logger log = LoggerFactory.getLogger(ExampleC3Test.class);
 
         @Test
-        public void test_write_into_subdir_under_the_custom_output_directory() throws Exception {
+        public void test_write_into_the_custom_output_directory() throws Exception {
             TestOutputOrganizer too =
                     new TestOutputOrganizer.Builder(this.getClass())
                             .outputDirectoryPathRelativeToProject("build/tmp/testOutput").build();
@@ -560,7 +560,8 @@ You can create layers of sub-directories under the output directory managed by t
             // Files.createDirectories(file.getParent());
 
             Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            log.info("[test_write_into_subdir_under_the_custom_output_directory] " +
+            String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+            log.info("[" + methodName + "] " +
                     too.toHomeRelativeString(file));
             List<String> content = Files.readAllLines(file);
             log.info(content.toString());
@@ -570,7 +571,7 @@ You can create layers of sub-directories under the output directory managed by t
 
     }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex07Test.java)
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC3Test.java)
 
 This will print the following in the console:
 
@@ -579,7 +580,7 @@ This will print the following in the console:
 
 The `Path getOutputDirectory()` method makes sure that the directory is existing. If not present, the method will silently create it.
 
-### Example8 Sub-directory which stands for the Fully Qualified Class Name of the test class
+### Example-C4 Create subdirectory which stands for the Fully Qualified Class Name of test class
 
 It is a good idea to create a layer of sub-directories, under the output directory, which stands for the Fully Qualified Class Name of the test classes. Please have a look at the following image.
 
@@ -607,13 +608,13 @@ The following code shows how to use "ClassOutputDirectory" managed by `TestOutpu
 
     import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-    public class Ex08Test {
+    public class ExampleC4Test {
 
-        private static final Logger log = LoggerFactory.getLogger(Ex08Test.class);
+        private static final Logger log = LoggerFactory.getLogger(ExampleC4Test.class);
         private static final TestOutputOrganizer too =
-                new TestOutputOrganizer.Builder(Ex08Test.class)
+                new TestOutputOrganizer.Builder(ExampleC4Test.class)
                         .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
-                        .subPathUnderOutputDirectory(Ex08Test.class)
+                        .subPathUnderOutputDirectory(ExampleC4Test.class)
                         .build();
 
         @BeforeAll
@@ -642,18 +643,18 @@ The following code shows how to use "ClassOutputDirectory" managed by `TestOutpu
 
     }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex08Test.java)
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC4Test.java)
 
 Please find that this test calls the `getClassOutputDirectory()` method and the `cleanClassOutputDirectory()` method of `TestOutputOrganizer` class. In order to make these methods operational, you MUST specify `.subDirPath(Clazz<?> testClass)` to the `TestOutputOrganizer.Builder`.
 
 This test prints the following:
 
-    [test_write_a_file] classOutputDir: ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.Ex08Test
-    [test_write_a_file] created a file ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.Ex08Test/sample.txt
+    [test_write_a_file] classOutputDir: ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.ExampleC4Test
+    [test_write_a_file] created a file ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.ExampleC4Test/sample.txt
 
-### Example9 One more sub-directory which stands for the method name of the test class
+### Example-C5 One more layer of subdirectory that stands for the test method name
 
-The Example8 showed that you can create a sub-directory which stands for the FQCN of the test class. You can add one more sub-directory which stands for the method name. This helps organizing the outputs from a test class further.
+The Example-C4 showed that you can create a subdirectory which stands for the Fully Qualified Class Name of the test class. You can add one more layer of subdirectory which stands for the method name. This is useful for organizing the outputs in further detail.
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -671,12 +672,12 @@ The Example8 showed that you can create a sub-directory which stands for the FQC
     import java.time.LocalDateTime;
     import java.time.format.DateTimeFormatter;
 
-    public class Ex09Test {
+    public class ExampleC5Test {
 
-        private static final Logger log = LoggerFactory.getLogger(Ex09Test.class);
+        private static final Logger log = LoggerFactory.getLogger(ExampleC5Test.class);
         private static final TestOutputOrganizer too =
-                new TestOutputOrganizer.Builder(Ex09Test.class)
-                        .subPathUnderOutputDirectory(Ex09Test.class)
+                new TestOutputOrganizer.Builder(ExampleC5Test.class)
+                        .subPathUnderOutputDirectory(ExampleC5Test.class)
                         .build();
         private static LocalDateTime timestamp;
 
@@ -717,19 +718,19 @@ The Example8 showed that you can create a sub-directory which stands for the FQC
         }
     }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex09Test.java)
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC5Test.java)
 
 Please find that this test utilizes the `getMethodOutputDirectory(String methodName)` method and `cleanMethodOutputDirectory(String methodName)` method of `TestOutputOrganizer` class.
 
 When I ran this, I got the following output:
 
-    ~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex09Test/testMethod1/2023-11-27T15:33:28.362.txt
-    ~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex09Test/testMethod2/2023-11-27T15:33:28.362.txt
-    ~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex09Test/testMethod3/2023-11-27T15:33:28.362.txt
+    ~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleC5Test/testMethod1/2023-11-27T15:33:28.362.txt
+    ~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleC5Test/testMethod2/2023-11-27T15:33:28.362.txt
+    ~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleC5Test/testMethod3/2023-11-27T15:33:28.362.txt
 
 Here you can see
 
-1.  The classOutputDirectory is `~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex09Test`
+1.  The classOutputDirectory is `~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleC5Test`
 
 2.  Under the classOutputDirectory, there is a layer of methodDirectory, that is:
 
@@ -741,7 +742,62 @@ Here you can see
 
 3.  Even if you repeat executing this test, you would see only single txt file named with timestamp in each method directory, because `too.cleanMethodOutputDirectory()` cleans up the directory everytime the methods are invoked.
 
-### Example10 A helper method that translates a absolute Path to a Home Relative string
+### Example-D1 Cleaning the output directory recursively
+
+The `TestOutputOrganizer` class implements
+
+-   `cleanOutputDirectory()`
+
+-   `cleanClassOutputDirectory()`
+
+-   `cleanMethodOutputDirectory(String methodName0`
+
+These methods remove the respective directories recursively and re-create them. See the following sample test class.
+
+    package com.kazurayam.unittesthelperdemo;
+
+    import com.kazurayam.unittest.TestOutputOrganizer;
+    import org.junit.jupiter.api.BeforeAll;
+    import org.junit.jupiter.api.Test;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+
+    import java.nio.file.Path;
+
+    public class ExampleD1Test {
+
+        private static final Logger log = LoggerFactory.getLogger(ExampleD1Test.class);
+        private static final TestOutputOrganizer too =
+                new TestOutputOrganizer.Builder(ExampleD1Test.class)
+                        .subPathUnderOutputDirectory(ExampleD1Test.class)
+                        .build();
+        @BeforeAll
+        public static void beforeAll() throws Exception {
+            log.info("projectDir=" + too.toHomeRelativeString(too.getProjectDirectory()));
+            too.cleanOutputDirectory();
+            log.info("outputDirectory=" + too.toHomeRelativeString(too.createOutputDirectory()));
+            too.cleanClassOutputDirectory();
+            log.info("classOutputDirectory=" + too.toHomeRelativeString(too.createClassOutputDirectory()));
+        }
+
+        @Test
+        public void testMethod1() throws Exception {
+            too.cleanMethodOutputDirectory("testMethod1");
+            Path methodDir = too.createMethodOutputDirectory("testMethod1");
+            log.info("methodOutputDirectory=" + too.toHomeRelativeString(methodDir));
+        }
+    }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleD1Test.java)
+
+This will print the following in the console:
+
+    projectDir=~/github/unittest-helper/app
+    outputDirectory=~/github/unittest-helper/app/test-output
+    classOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleD1Test
+    methodOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleD1Test/testMethod1
+
+### Example-E1 A helper method that translates a absolute Path to a Home Relative string
 
 A Path object can be turned into an absolute path string like:
 
@@ -764,11 +820,11 @@ The `TestOutputOrganizer` class provides a helper method that translte a Path ob
     import java.io.IOException;
     import java.nio.file.Path;
 
-    public class Ex10Test {
+    public class ExampleE1Test {
 
-        private static final Logger log = LoggerFactory.getLogger(Ex10Test.class);
+        private static final Logger log = LoggerFactory.getLogger(ExampleE1Test.class);
         private static final TestOutputOrganizer too =
-                new TestOutputOrganizer.Builder(Ex10Test.class)
+                new TestOutputOrganizer.Builder(ExampleE1Test.class)
                         .build();
         @Test
         public void test_smoke() throws IOException {
@@ -784,69 +840,13 @@ This test prints the following output in the console:
     file absolute: /Users/kazurayam/github/unittest-helper/app/test-output/sample1.txt
     file relative: ~/github/unittest-helper/app/test-output/sample1.txt
 
-### Example11 Cleaning the output directory recursively
+### Example-F1 Removing a directory recursively
 
-The `TestOutputOrganizer` class implements
-
--   `cleanOutputDirectory()`
-
--   `cleanClassOutputDirectory()`
-
--   `cleanMethodOutputDirectory(String methodName0`
-
-These methods remove the respective directories recursively and re-create them. See the following sample test class.
-
-    package com.kazurayam.unittesthelperdemo;
-
-    import com.kazurayam.unittest.TestOutputOrganizer;
-    import org.junit.jupiter.api.BeforeAll;
-    import org.junit.jupiter.api.Test;
-    import org.slf4j.Logger;
-    import org.slf4j.LoggerFactory;
-
-    import java.nio.file.Path;
-
-    public class Ex11Test {
-
-        private static final Logger log = LoggerFactory.getLogger(Ex11Test.class);
-        private static final TestOutputOrganizer too =
-                new TestOutputOrganizer.Builder(Ex11Test.class)
-                        .subPathUnderOutputDirectory(Ex11Test.class)
-                        .build();
-        @BeforeAll
-        public static void beforeAll() throws Exception {
-            log.info("projectDir=" + too.toHomeRelativeString(too.getProjectDirectory()));
-            too.cleanOutputDirectory();
-            log.info("outputDirectory=" + too.toHomeRelativeString(too.createOutputDirectory()));
-            too.cleanClassOutputDirectory();
-            log.info("classOutputDirectory=" + too.toHomeRelativeString(too.createClassOutputDirectory()));
-        }
-
-        @Test
-        public void testMethod1() throws Exception {
-            too.cleanMethodOutputDirectory("testMethod1");
-            Path methodDir = too.createMethodOutputDirectory("testMethod1");
-            log.info("methodOutputDirectory=" + too.toHomeRelativeString(methodDir));
-        }
-    }
-
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex11Test.java)
-
-This will print the following in the console:
-
-    projectDir=~/github/unittest-helper/app
-    outputDirectory=~/github/unittest-helper/app/test-output
-    classOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex10Test
-    methodOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex10Test/testMethod1
-
-### Example12 Removing arbitrary directory recursively
-
-The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecursively()` method which removes any directory recursively. See the following sample test class.
+The `com.kazurayam.unittest.DeleteDir` class implements a static method `cleanDirectoryRecursively(Path)` method which removes any directory recursively. See the following sample test class.
 
     package com.kazurayam.unittesthelperdemo;
 
     import com.kazurayam.unittest.DeleteDir;
-    import com.kazurayam.unittest.TestOutputOrganizer;
     import org.junit.jupiter.api.Test;
 
     import java.io.IOException;
@@ -857,10 +857,10 @@ The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecurs
 
     import static org.assertj.core.api.Assertions.assertThat;
 
-    public class Ex12Test {
+    public class ExampleF1Test {
 
         @Test
-        public void test_cleanDirectoryRecursively() throws IOException {
+        public void test_deleteDirectoryRecursively() throws IOException {
             // given
             Path dir = Paths.get("build/work");
             Files.createDirectories(dir);
@@ -874,11 +874,13 @@ The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecurs
         }
     }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex12Test.java)
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF1Test.java)
 
-The `cleanDirectoryRecursively(Path dir)` of `TestOutputOrganizer` class is a static method, that removes the specified directory recursively. The dir will become not present. The **dir** can be any arbitrary Path outside the project.
+The `cleanDirectoryRecursively(Path dir)` of `DeleteDir` class removes the specified directory and its content files/directories recursively. The dir will disappear. If you want to recreate the `dir` as empty dir, use `java.nio.file.Files.createDirectories(Path dir)`.
 
-### Example13 Copying a source directory to a target directory recursively
+### Example-F2 Copying a source directory to a target directory recursively
+
+`com.kazurayam.unittest.TestOutputOrganizer` class has an instance method `copyDir(Path source, Path target)` which just copies the content files/directories from the source into the target recursively.
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -892,11 +894,11 @@ The `cleanDirectoryRecursively(Path dir)` of `TestOutputOrganizer` class is a st
 
     import static org.assertj.core.api.Assertions.assertThat;
 
-    public class Ex13Test {
+    public class ExampleF2Test {
 
         private static final TestOutputOrganizer too =
-                new TestOutputOrganizer.Builder(Ex13Test.class)
-                        .subPathUnderOutputDirectory(Ex13Test.class)
+                new TestOutputOrganizer.Builder(ExampleF2Test.class)
+                        .subPathUnderOutputDirectory(ExampleF2Test.class)
                         .build();
 
         @Test
@@ -917,13 +919,13 @@ The `cleanDirectoryRecursively(Path dir)` of `TestOutputOrganizer` class is a st
 
     }
 
-I know I can do the same dir-to-dir copy by [FileUtils of Apache Commons IO](https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FileUtils.html#copyDirectory(java.io.File,java.io.File)). If I use the `TestOutputOrganizer.copyDir(Path source, Path target)`, I can simplify the `dependencies` of my project. That’s a small but good thing.
+I know I can do the same dir-to-dir copy by [FileUtils of Apache Commons IO](https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FileUtils.html#copyDirectory(java.io.File,java.io.File)). If I use the `TestOutputOrganizer.copyDir(Path source, Path target)`, I can simplify the dependency of my project. That’s a small but good reason.
 
-### Example14 Factory class that creates customized TestOutputOrganizer
+### Example-G1 Factory class that instantiates a customized TestOutputOrganizer
 
-It is a good practice for you to define a factory class that creates an instance of `TestOutputOrganizer` with your custom parameters for your own project. Use the factory throughout your project. Then you can standardize the organization of test outputs.
+It is a good practice for you to define a factory class that creates an instance of `com.kazurayam.unittest.TestOutputOrganizer` with your customized parameters for your own project. Use the factory throughout your project. Then you can standardize the organization of test outputs.
 
-See the following example "factory".
+See the following code for sample "factory" class.
 
     package io.github.someone.examples;
 

@@ -1,10 +1,10 @@
-=== Example7 Writing a file into a custom output directory
+=== Example-C3 Create a custom output directory, write a file into it
 
 [source, java]
 ----
-include::../app/src/test/java/com/kazurayam/unittesthelperdemo/Ex07Test.java[]
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC3Test.java[]
 ----
-link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex07Test.java[source]
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC3Test.java[source]
 
 This will print the following in the console:
 
