@@ -168,6 +168,21 @@ Please note that in both trial, the test class printed the path string as the pr
 
 This is what I want to achieve. The test class `S3FindingProjectDirByClasspathTest` proved that it can find where the subproject's directory is without refering to the System property `user.dir`. Please read the source of `getLocationWhereThisClassIsFound()` method to find out the coding technique.
 
+=== Introducing "Code Source Path Elements"
+
+Let me introduce a new terminology "Code Source Path Elements".
+
+Let me assume I have a file on my machine with the actual path of:
+
+`/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/study/S3FindingProjectDirByClasspathTest.class`
+
+I can analyze this long path string into 4 segments, as follows:
+
+- Gradle *root project' directory*: `/Users/kazurayam/github/unittest-helper/`
+- Gradle *subproject's directory*: `preliminary-study/`
+- link:https://github.com/kazurayam/unittest-helper/blob/issue36/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java[*Code Source Path Elements*]: `build/classes/java/test/`
+- class path: `study/S3FindingProjectDirByClasspathTest.class`
+
 === Difficulties to overcome
 
 Read the source of `getLocationWhereThisClassIsFound` method of link:https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java[S3FindingProjectDirByClasspathTest]. You would notice a technical issue to overcome. The method has a fragment:
@@ -180,5 +195,6 @@ Read the source of `getLocationWhereThisClassIsFound` method of link:https://git
 
 ----
 
-Here you find a string literal `build/classes/java/test/` which is a valid path elements under the project directory only in a Gradle Java project. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IDEA, Eclipse, NetBeans, etc). This possible variation makes thinks difficult to manage.
+Here you find a string literal `build/classes/java/test/` which is a valid path elements under the project directory only in a Gradle Java project. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IDEA, Eclipse, NetBeans, etc). In other words, the "Code Source Path Elements" is dependent on the runtime environment. If I want my test classes to be able to find the subProject's directory runtime, my test classes have to be able to try all the possible values of "Code Source Path Elements" to find the one that exactly matches the runtime environment.
 
+The `com.kazurayam.unittest.ProjectDirectoryResolver` class provides a solution to this issue.

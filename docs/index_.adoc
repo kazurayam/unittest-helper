@@ -10,9 +10,6 @@
 
 include::problem_to_solve.adoc[]
 
-include::description_problem.adoc[]
-include::description_solution.adoc[]
-
 == Examples
 
 include::ex01.adoc[]

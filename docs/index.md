@@ -220,6 +220,24 @@ Please note that in both trial, the test class printed the path string as the pr
 
 This is what I want to achieve. The test class `S3FindingProjectDirByClasspathTest` proved that it can find where the subproject’s directory is without refering to the System property `user.dir`. Please read the source of `getLocationWhereThisClassIsFound()` method to find out the coding technique.
 
+### Introducing "Code Source Path Elements"
+
+Let me introduce a new terminology "Code Source Path Elements".
+
+Let me assume I have a file on my machine with the actual path of:
+
+`/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/study/S3FindingProjectDirByClasspathTest.class`
+
+I can analyze this long path string into 4 segments, as follows:
+
+-   Gradle **root project' directory**: `/Users/kazurayam/github/unittest-helper/`
+
+-   Gradle **subproject’s directory**: `preliminary-study/`
+
+-   [**Code Source Path Elements**](https://github.com/kazurayam/unittest-helper/blob/issue36/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java): `build/classes/java/test/`
+
+-   class path: `study/S3FindingProjectDirByClasspathTest.class`
+
 ### Difficulties to overcome
 
 Read the source of `getLocationWhereThisClassIsFound` method of [S3FindingProjectDirByClasspathTest](https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java). You would notice a technical issue to overcome. The method has a fragment:
@@ -228,241 +246,9 @@ Read the source of `getLocationWhereThisClassIsFound` method of [S3FindingProjec
             String projectDir =
                     url.toString().replace(codeSourcePathElementsUnderProjectDirectory,"");
 
-Here you find a string literal `build/classes/java/test/` which is a valid path elements under the project directory only in a Gradle Java project. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IDEA, Eclipse, NetBeans, etc). This possible variation makes thinks difficult to manage.
+Here you find a string literal `build/classes/java/test/` which is a valid path elements under the project directory only in a Gradle Java project. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IDEA, Eclipse, NetBeans, etc). In other words, the "Code Source Path Elements" is dependent on the runtime environment. If I want my test classes to be able to find the subProject’s directory runtime, my test classes have to be able to try all the possible values of "Code Source Path Elements" to find the one that exactly matches the runtime environment.
 
-## Problems to solve
-
-### Is Current Working Directory reliable for unit-tests? --- Not always
-
-Sometimes, I want my JUnit-based tests in Java to write a file. Where to locate the file? The simplest idea would be to write the file immediately under the project directory. Let me show you an example.
-
--   I have a Gradle Multi-project <https://github.com/kazurayam/unittest-helper>
-
--   In this parent project, I have a Gradle sub-project [`:app`](https://github.com/kazurayam/unittest-helper/tree/develop/app).
-
--   In this sub-project, I have a JUnit5-based test class [`com.kazurayam.unittesthelperdemo.OutputIntoCurrentWorkingDirectoryTest`](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OutputIntoCurrentWorkingDirectoryTest.java)
-
--   If you have a look at the source, you would find that this test calls `java.nio.file.Paths.get(String fileName)`, will locate a file `sample1.txt` in the **current working directory** runtime, as follows:
-
-<!-- -->
-
-        public void test_write_under_current_working_directory() throws Exception {
-            Path p = Paths.get("sample1.txt");
-            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            System.out.println("[test_write_under_current_working_directory] p = " + p.toAbsolutePath());
-        }
-
--   When I run this test, I will get the file in the sub-project’s directory, as follows
-
-<!-- -->
-
-    $ pwd
-    ~/github/unittest-helper
-    :~/github/unittest-helper (develop *)
-    $ tree -L 1 app
-    app
-    ├── build
-    ├── build.gradle
-    ├── sample1.txt
-    └── src
-
-    3 directories, 2 files
-
-The `sample1.txt` file was written into the **current working directory**, which is the sub-project’s directory. OK. This is what I expected.
-
-Now, I would show you another sample code. It will show you a call to `Paths.get(String fileName)` does not necessarily write a file into the project directory. Have a look at a sub-project [`selenium-webdriver-junit5`](https://github.com/kazurayam/unittest-helper/tree/develop/selenium-webdriver-junit5).
-
-> The `selenium-webdriver-junit` project is quoted from the sample code of the book [
-> Boni García, "Hands-On Selenium WebDriver with Java"](https://github.com/bonigarcia/selenium-webdriver-java)
-
-It contains:
-
--   [selenium-webdriver-junit5/build.gradle](https://github.com/kazurayam/unittest-helper/blob/develop/selenium-webdriver-junit5/build.gradle)
-
--   [ScreenshotPngJupiterTest.java](https://github.com/kazurayam/unittest-helper/blob/develop/selenium-webdriver-junit5/src/test/java/io/github/bonigarcia/webdriver/jupiter/screenshots/ScreenshotPngJupiterTest.java)
-
-The test class has a line:
-
-            Path destination = Paths.get("screenshot.png");
-
-So I expect that the `ScreeshotPngJupiterTest.java` will write a file immediately under the sub-project directory. However, in fact when I ran the test, I was surprised to find the file `screenshot.png` was written into the parent project directory, not into the sub-project directory.
-
-    $ pwd
-    ~/github/unittest-helper
-
-    $ gradle :selenium-webdriver-junit5:test
-    ...(a few minutes passed)
-
-    $ tree -L 2 .
-    .
-    ...
-    ├── build.gradle
-    ...
-    ├── screenshot.png           <===
-    ├── selenium-webdriver-junit5
-    │   ├── README.md
-    │   ├── build
-    │   ├── build.gradle
-    │   └── src
-    └── settings.gradle
-
-    16 directories, 29 files
-
-Why the `screenshot.png` file was written into the parent project `unittest-helper` directory? Why not the file was written into the sub-project `selenium-webdriver-junit5` directory? This is the original problem I got.
-
-I studied the codes and found the cause of the issue. In the `selenium-webdriver-junit5/build.gradle` I found a line:
-
-    test {
-        ...
-        systemProperty System.properties
-    }
-
-With this single line, the problem occurred. When I ran a command `gradle :selenium-webdriver-junit5:test` in the command line, the `System.properites` contained the `System.getProperty("user.dir")` with the value equals to the parent project’s directory, which was passed to the test classes invoked. Consequently in the test class, a call to `java.nio.file.Paths.get(String fileName)` found the `System.getProperty("user.dir")` has the path of the parent project directory, not the sub-project directory.
-
-Consequently I learned that I should not use `java.nio.file.Paths.get(String fileName)` in the test classes at all because it does not necessarily return the path of project directory.
-
-But how to locate the output files from tests without `Paths.get(String)`? The following post in the Gradle forum gave me a clue:
-
--   [Gradle Forums, How do I set the working dreictory for TestNG in a multi-project Gradle build?](https://discuss.gradle.org/t/how-do-i-set-the-working-directory-for-testng-in-a-multi-project-gradle-build/7379/7)
-
-> luke\_daley
-> Gradle Employee
-> Nov '13
->
-> Loading from the filesystem using relative paths during unit tests is problematic because different environments will set a different working directory for the test process. For example, Gradle uses the projects directory while IntelliJ uses the directory of the root project.
->
-> The only really safe way to solve this problem is to load via the classpath. Is this a possibility for your scenario?
-
-OK, I would try that.
-
-### Organizing output files from tests; it requires efforts
-
-The easiest way to locate an output file from a unit-test is to call `java.io.File("some-file.txt")` or `java.nio.Paths("some-file.txt")`. Then the `some-file.txt` will be located under the current working directory = `System.getProperty("user.dir")`. Using Maven and Gradle, the current working directory will usually be equal to the project’s directory. However, you should be careful. If you are dependent on calling `java.io.File(relative path)` too often, you will get a lot of temporary files located in the project directory, like this.
-
-    .
-    ├── 2023.10.24_22.07.27.742-7440524241d0dbd63ca5eec377b6455c.png    --- x
-    ├── 2023.10.24_22.07.29.333-7440524241d0dbd63ca5eec377b6455c.png    --- x
-    ├── build
-    │   ├── allure-results
-    │   ├── classes
-    │   ├── downloads
-    │   ├── generated
-    │   ├── reports
-    │   ├── resources
-    │   ├── test-results
-    │   └── tmp
-    ├── build.gradle
-    ├── extentReport.html    --- x
-    ├── fullpage-screenshot-chrome.png    --- x
-    ├── gradle
-    │   └── wrapper
-    ├── gradlew
-    ├── gradlew.bat
-    ├── login.har    --- x
-    ├── my-pdf.pdf    --- x
-    ├── pom.xml
-    ├── screenshot.png    --- x
-    ├── src
-    │   ├── main
-    │   └── test
-    ├── target
-    │   ├── classes
-    │   ├── generated-sources
-    │   ├── generated-test-sources
-    │   ├── maven-status
-    │   └── test-classes
-    ├── testAccessibility.json    --- x
-    ├── webdrivermanager.pdf    --- x
-    ├── webdrivermanager.png    --- x
-    └── webelement-screenshot.png    --- x
-
-    20 directories, 15 files
-
-Here the files labeled with "--- x" are the temporary output files created by the unit-tests.
-
-Temporary files located in the project directory make the project tree dirty. The files scattered in the project directory are difficult to manage. If you want to remove them, you have to choose each files and delete them one by one manually.
-
-Rather, I want to create a dedicated directory where all test classes should write their output into. I would list it in the `.gitignore` file to exclude the temporary files out of the git repository.
-
-## Solution
-
-This project provides a Java class [`com.kazurayam.unittest.TestOutputOrganizer`](https://github.com/kazurayam/unittest-helper/blob/develop/lib/src/main/java/com/kazurayam/unittest/TestOutputOrganizer.java).
-
-The `TestOutputOrganizer` helps your unit tests to save files into a dedicated directory in the Maven/Gradle project. Using this class, you can easily prepare a directory into which your unit tests can write files. The location of the output directory is resolved via the classpath of the unit-test class. The `TestOutputOrganizer` does ot depend on the value returned by `System.getProperty("user.dir")`.
-
-The `TestOutputOrgainzer` class is independent on the type of unit-testing frameworks you choose: JUnit4, JUnit5 and TestNG.
-
-The `TestOutputOrgainzer` class is compiled by Java8.
-
-Using the `TestOutputOrganizer` class, you can well-organize the files created by test classes, as follows:
-
-<figure>
-<img src="https://kazurayam.github.io/unittest-helper/images/well-organized-test-outputs.png" alt="well organized test outputs" />
-</figure>
-
-## How does the `TestOutputOrganizer` resolves the project root directory ?
-
-The `getProject()` method of `TestOutputOrganizer` class internally works as follows.
-
-1.  The constructor call `new TestOutputOrganizer.Builder(this.getClass())` tells it should look at the code source of `this` object, which is `/Users/kazurayam/github/unittest-helper/app/build/classes/java/test/com/kazurayam/unittestshelperdemo/OrganizerPresentTest.class`.
-
-2.  The `TestOutputOrganizer` internally tries to find out which build tool you used: Maven or Gradle?
-    If you used Maven, it expects that the project directory to have a subdirectory `target/test-classes`. If the `TestOutputOrganizer` found `target/test-classes` in the code source path, then the parent directory of the `target` directory is presumed to be the project directory.
-    If you use Gradle, the `TestOutputOrganizer` expects that the project directory would have a subdirectory `build/classes/java/test`. So `TestOutputOrganizer` tries to find `build/classes/java/test` in the code source path. When the subdirectory pattern is found in the code source path, then the parent directory of the `build` directory is presumed to be the project dir.
-
-The `com.kazurayam.unittest.ProjectDirectoryResovler` class has a list of the patterns to match against the code source given. You can che check the content of the list. Let me assume you have the following test code:
-
-    package com.kazurayam.unittesthelperdemo;
-
-    import com.kazurayam.unittest.CodeSourcePathElementsUnderProjectDirectory;
-    import com.kazurayam.unittest.ProjectDirectoryResolver;
-    import org.junit.jupiter.api.Test;
-    import org.slf4j.Logger;
-    import org.slf4j.LoggerFactory;
-
-    import java.nio.file.Path;
-    import java.util.List;
-
-    import static org.assertj.core.api.Assertions.assertThat;
-
-    public final class ProjectDirectoryResolverTest {
-
-        Logger log = LoggerFactory.getLogger(ProjectDirectoryResolverTest.class);
-
-        @Test
-        public void test_getProjectDirViaClasspath() {
-            ProjectDirectoryResolver resolver = new ProjectDirectoryResolver();
-            Path projectDir = resolver.resolveProjectDirectoryViaClasspath(ProjectDirectoryResolverTest.class);
-            log.info("projectDir: " + projectDir);
-        }
-
-        @Test
-        public void test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
-            List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
-                    new ProjectDirectoryResolver().getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
-            assertThat(listOfCSPE).isNotNull();
-            assertThat(listOfCSPE.size()).isGreaterThanOrEqualTo(2);
-            for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
-                log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspe);
-            }
-        }
-    }
-
-This test prints the following result in the console:
-
-    sublistPattern : [target, test-classes]
-    sublistPattern : [build, classes, java, test]
-    sublistPattern : [build, classes, java, functionalTest]
-    sublistPattern : [build, classes, groovy, test]
-    sublistPattern : [build, classes, groovy, functionalTest]
-    sublistPattern : [build, classes, kotlin, test]
-    sublistPattern : [build, classes, kotlin, functionalTest]
-
-The 1st sublistPattern is for Maven. the 2nd, sublistPattern is for Java codes built in Gradle.
-
-Do you need a unique sublistPattern other than those built-in ones?
-
-OK. You can add more sublistPatterns for your own needs by calling the `TestOutputOrganizer.Builder.sublistPattern(List<String>)` method.
+The `com.kazurayam.unittest.ProjectDirectoryResolver` class provides a solution to this issue.
 
 ## Examples
 

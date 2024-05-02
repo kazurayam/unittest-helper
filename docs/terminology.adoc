@@ -1,0 +1,11 @@
+== Terminology
+
+
+`/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/study/S3FindingProjectDirByClasspathTest.class`
+
+=>
+
+- Gradle *root project' directory*: `/Users/kazurayam/github/unittest-helper/`
+- Gradle *subproject's directory*: `preliminary-study/`
+- link:https://github.com/kazurayam/unittest-helper/blob/issue36/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java[*Code Source Path Elements*]: `build/classes/java/test/`
+- class path: `study/S3FindingProjectDirByClasspathTest.class`
