@@ -1,3 +1,4 @@
+
 === Example-B1 Locating the default output directory
 
 I want to create a directory named `test-output` under the project directory. I would let my test classes to write files into the directory. I want to for output files `test-output` directory by calling `getOutputDir()`.

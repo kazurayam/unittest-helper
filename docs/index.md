@@ -228,9 +228,9 @@ As you see, in both cases, the test class printed the same path string as the pr
 
 I like this result. The test class `study.S3FindingProjectDirByClasspathTest` proved that it can find the location of the subproject’s directory is without referring to `System.getProperty("user.dir")`.
 
-### Introducing "Code Source Path Elements"
+### Introducing "Code Source Path Elements Under Project Directory"
 
-In order to explain the design of the `study.S3FindingProjectDirByClasspathTest`, I need to introduce a new terminology "Code Source Path Elements". Let me assume that a test class file has the actual path on my machine like this:
+In order to explain the design of the `study.S3FindingProjectDirByClasspathTest`, I need to introduce a new terminology "Code Source Path Elements Under Project Directory". I would use an acronym "CSPEUPD" for short when appropriate. Let me assume that a test class file has the actual path on my machine like this:
 
 `/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/study/S3FindingProjectDirByClasspathTest.class`
 
@@ -244,7 +244,7 @@ I can analyze this long path string into 4 segments, as follows:
 
 -   `study/S3FindingProjectDirByClasspathTest.class`: the test class
 
-### "Code Source Path Elements" differs in runtime environments
+### "Code Source Path Elements Under Project Directory" differs according to runtime environments
 
 Read the source of `getLocationWhereThisClassIsFound` method of [study.S3FindingProjectDirByClasspathTest](https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java). The method has a fragment:
 
@@ -252,7 +252,7 @@ Read the source of `getLocationWhereThisClassIsFound` method of [study.S3Finding
             String projectDir =
                     url.toString().replace(codeSourcePathElementsUnderProjectDirectory,"");
 
-Here you find a string literal `build/classes/java/test/`, which is a concatenation of path elements under the project directory, is valid only in a Gradle project in Java language. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IntelliJ IDEA, Eclipse, NetBeans, etc). The "Code Source Path Elements" is dependent on the runtime environment. If I want my test classes to be able to find the subProject’s directory runtime, my test classes have to try the possible values of "Code Source Path Elements" to match the actual URL of the CodeSource of the test class at runtime.
+Here you find a string literal `build/classes/java/test/`, which is a concatenation of path elements under the project directory, is valid only in a Gradle project in Java language. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IntelliJ IDEA, Eclipse, NetBeans, etc). The CSPEUPD is dependent on the runtime environment. If I want my test classes to be able to find the subProject’s directory runtime, my test classes have to try the possible values of CSPEUPD to match the actual URL of the CodeSource of the test class at runtime.
 
 Well, it is a complicated processing. This requires good programming efforts.
 
@@ -300,14 +300,14 @@ How the `com.kazurayam.unittest.ProjectDirectoryResolver` class find the path of
 
         @Test
         public void test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
-            List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
+            List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPEUPD =
                     new ProjectDirectoryResolver().getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
-            assertThat(listOfCSPE).isNotNull();
-            assertThat(listOfCSPE.size()).isGreaterThanOrEqualTo(2);
+            assertThat(listOfCSPEUPD).isNotNull();
+            assertThat(listOfCSPEUPD.size()).isGreaterThanOrEqualTo(2);
             String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
             log.info("[" + methodName + "]");
-            for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
-                log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspe);
+            for (CodeSourcePathElementsUnderProjectDirectory cspeupd : listOfCSPEUPD) {
+                log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspeupd);
             }
         }
 
@@ -335,10 +335,10 @@ This is the list of `com.kazurayam.unittest.CodeSourcePathElementsUnderProjectDi
                     new CodeSourcePathElementsUnderProjectDirectory("out", "bin"));
             String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
             log.info("[" + methodName + "]");
-            List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
+            List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPEUPD =
                     pdr.getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
-            for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
-                log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspe);
+            for (CodeSourcePathElementsUnderProjectDirectory cspeupd : listOfCSPEUPD) {
+                log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspeupd);
             }
         }
 
@@ -359,7 +359,8 @@ This will print the following in the console:
 Please find "out/bin/" is inserted in the list. The "out/bin/" is a Code Source Path Elements generated by IntelliJ IDEA as its native Java project hierarchy.
 
 You can add any more patterns of "Code Source Path Elements" as you like.
-=== Example-B1 Locating the default output directory
+
+### Example-B1 Locating the default output directory
 
 I want to create a directory named `test-output` under the project directory. I would let my test classes to write files into the directory. I want to for output files `test-output` directory by calling `getOutputDir()`.
 
@@ -399,7 +400,7 @@ The default name of the **output directory** is `test-output`. You can explicitl
 
 With `toHomeRelativePath(Path p)` method, you can convert a full path string into a path string realtive to the Home directory of the OS user. This is useful for documentation purposes.
 
-### Example4 Creating a custom output directory
+### Example-B2 Creating a custom output directory
 
 The `com.kazurayam.unittest.TestOutputOrganizer` creates a directory with `getOutputDirectory()` and the default name is `test-output`. You may want some other name. Of course you can do it.
 
@@ -413,9 +414,9 @@ The `com.kazurayam.unittest.TestOutputOrganizer` creates a directory with `getOu
     import java.io.IOException;
     import java.nio.file.Path;
 
-    public class Ex04Test {
+    public class ExampleB2Test {
 
-        Logger log = LoggerFactory.getLogger(Ex04Test.class);
+        Logger log = LoggerFactory.getLogger(ExampleB2Test.class);
 
         @Test
         public void test_getOutputDir_custom() throws IOException {
@@ -439,14 +440,14 @@ The `com.kazurayam.unittest.TestOutputOrganizer` creates a directory with `getOu
         }
     }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex04Test.java)
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB2Test.java)
 
 This will print the following in the console:
 
     [test_getOutputDir_custom] ~/github/unittest-helper/app/test-output-another
     [test_getOutputDir_custom_more] ~/github/unittest-helper/app/build/tmp/testOutput
 
-### Example5 Writing a file into the default output directory
+### Example-C1 Writing a file into the default output directory
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -460,9 +461,9 @@ This will print the following in the console:
     import java.nio.file.Path;
     import java.util.List;
 
-    public class Ex05Test {
+    public class ExampleC1Test {
 
-        Logger log = LoggerFactory.getLogger(Ex05Test.class);
+        Logger log = LoggerFactory.getLogger(ExampleC1Test.class);
 
         @Test
         public void test_write_a_file_into_the_default_output_directory() throws Exception {
@@ -476,14 +477,14 @@ This will print the following in the console:
         }
     }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex05.java)
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC1.java)
 
 This will print the following in the console:
 
     [test_write_into_the_default_output_directory] ~/github/unittest-helper/app/test-output/sample.txt
     [Hello, world!]
 
-### Example6 Writing a file into a subdirectory under the default output directory
+### Example-C2 Create a subdirectory under the default output directory, write a file into it
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -497,9 +498,9 @@ This will print the following in the console:
     import java.nio.file.Path;
     import java.util.List;
 
-    public class Ex06Test {
+    public class ExampleC2Test {
 
-        Logger log = LoggerFactory.getLogger(Ex06Test.class);
+        Logger log = LoggerFactory.getLogger(ExampleC2Test.class);
 
         @Test
         public void test_write_into_subdir_under_the_default_output_directory() throws Exception {
@@ -517,7 +518,7 @@ This will print the following in the console:
 
     }
 
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex06Test.java)
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC2Test.java)
 
 This will print the following in the console:
 
@@ -577,7 +578,8 @@ This will print the following in the console:
     [Hello, world!]
 
 The `Path getOutputDirectory()` method makes sure that the directory is existing. If not present, the method will silently create it.
-=== Example8 Sub-directory which stands for the Fully Qualified Class Name of the test class
+
+### Example8 Sub-directory which stands for the Fully Qualified Class Name of the test class
 
 It is a good idea to create a layer of sub-directories, under the output directory, which stands for the Fully Qualified Class Name of the test classes. Please have a look at the following image.
 
@@ -738,7 +740,8 @@ Here you can see
     -   `testMethod3`
 
 3.  Even if you repeat executing this test, you would see only single txt file named with timestamp in each method directory, because `too.cleanMethodOutputDirectory()` cleans up the directory everytime the methods are invoked.
-    === Example10 A helper method that translates a absolute Path to a Home Relative string
+
+### Example10 A helper method that translates a absolute Path to a Home Relative string
 
 A Path object can be turned into an absolute path string like:
 
@@ -874,7 +877,8 @@ The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecurs
 [source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex12Test.java)
 
 The `cleanDirectoryRecursively(Path dir)` of `TestOutputOrganizer` class is a static method, that removes the specified directory recursively. The dir will become not present. The **dir** can be any arbitrary Path outside the project.
-=== Example13 Copying a source directory to a target directory recursively
+
+### Example13 Copying a source directory to a target directory recursively
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -914,7 +918,8 @@ The `cleanDirectoryRecursively(Path dir)` of `TestOutputOrganizer` class is a st
     }
 
 I know I can do the same dir-to-dir copy by [FileUtils of Apache Commons IO](https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/FileUtils.html#copyDirectory(java.io.File,java.io.File)). If I use the `TestOutputOrganizer.copyDir(Path source, Path target)`, I can simplify the `dependencies` of my project. That’s a small but good thing.
-=== Example14 Factory class that creates customized TestOutputOrganizer
+
+### Example14 Factory class that creates customized TestOutputOrganizer
 
 It is a good practice for you to define a factory class that creates an instance of `TestOutputOrganizer` with your custom parameters for your own project. Use the factory throughout your project. Then you can standardize the organization of test outputs.
 

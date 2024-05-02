@@ -6,12 +6,23 @@
   <component name="ChangeListManager">
     <list default="true" id="74a392ca-ad77-4490-be5e-7086c3e22f8f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex04Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB2Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex05Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC1Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/Ex06Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC2Test.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex01.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ex01.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ex02.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ex02.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Example-A3.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-A3.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Example-B1.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-B1.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ex04.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-B2.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ex05.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-C1.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ex06.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Example-C2.adoc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/index_.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index_.adoc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/solution.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/solution.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/ProjectDirectoryResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/ProjectDirectoryResolver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/StringSequence.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/StringSequence.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/TestOutputOrganizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/TestOutputOrganizer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/ProjectDirectoryResolverTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/ProjectDirectoryResolverTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,7 +255,7 @@
       <workItem from="1714428482254" duration="3332000" />
       <workItem from="1714435579766" duration="11347000" />
       <workItem from="1714563826143" duration="25000" />
-      <workItem from="1714603559253" duration="11487000" />
+      <workItem from="1714603559253" duration="14504000" />
     </task>
     <servers />
   </component>

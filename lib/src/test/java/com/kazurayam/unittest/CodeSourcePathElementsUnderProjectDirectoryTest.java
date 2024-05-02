@@ -11,24 +11,24 @@ public class CodeSourcePathElementsUnderProjectDirectoryTest {
 
     @Test
     public void testConstructor_single_string() {
-        CodeSourcePathElementsUnderProjectDirectory cspe =
+        CodeSourcePathElementsUnderProjectDirectory cspeupd =
                 new CodeSourcePathElementsUnderProjectDirectory("build/classes/java/test");
-        assertThat(cspe.toString()).isEqualTo("build/classes/java/test/");
+        assertThat(cspeupd.toString()).isEqualTo("build/classes/java/test/");
     }
 
     @Test
     public void testConstructor_multiple_strings() {
-        CodeSourcePathElementsUnderProjectDirectory cspe =
+        CodeSourcePathElementsUnderProjectDirectory cspeupd =
                 new CodeSourcePathElementsUnderProjectDirectory(
                         "build", "classes", "java", "test");
-        assertThat(cspe.toString()).isEqualTo("build/classes/java/test/");
+        assertThat(cspeupd.toString()).isEqualTo("build/classes/java/test/");
     }
 
     @Test
     public void testConstructor_ListOfStrings() {
-        CodeSourcePathElementsUnderProjectDirectory cspe =
+        CodeSourcePathElementsUnderProjectDirectory cspeupd =
                 new CodeSourcePathElementsUnderProjectDirectory(
                         Arrays.asList("build", "classes", "java", "test"));
-        assertThat(cspe.toString()).isEqualTo("build/classes/java/test/");
+        assertThat(cspeupd.toString()).isEqualTo("build/classes/java/test/");
     }
 }

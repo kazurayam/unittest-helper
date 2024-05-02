@@ -24,14 +24,14 @@ public final class ProjectDirectoryResolverTest {
 
     @Test
     public void test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
-        List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
+        List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPEUPD =
                 new ProjectDirectoryResolver().getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
-        assertThat(listOfCSPE).isNotNull();
-        assertThat(listOfCSPE.size()).isGreaterThanOrEqualTo(2);
+        assertThat(listOfCSPEUPD).isNotNull();
+        assertThat(listOfCSPEUPD.size()).isGreaterThanOrEqualTo(2);
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         log.info("[" + methodName + "]");
-        for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
-            log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspe);
+        for (CodeSourcePathElementsUnderProjectDirectory cspeupd : listOfCSPEUPD) {
+            log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspeupd);
         }
     }
 
@@ -42,10 +42,10 @@ public final class ProjectDirectoryResolverTest {
                 new CodeSourcePathElementsUnderProjectDirectory("out", "bin"));
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         log.info("[" + methodName + "]");
-        List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
+        List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPEUPD =
                 pdr.getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
-        for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
-            log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspe);
+        for (CodeSourcePathElementsUnderProjectDirectory cspeupd : listOfCSPEUPD) {
+            log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspeupd);
         }
     }
 }

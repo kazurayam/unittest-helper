@@ -259,7 +259,7 @@ public final class TestOutputOrganizer {
         private final FileSystem fileSystem;
         private final Class<?> clazz;
         private Path projectDirectory;
-        private List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE;
+        private List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPEUPD;
         private String outputDirectoryPathRelativeToProject;
         private Optional<String> subPathUnderOutputDirectory = Optional.empty();
         private Boolean isByFullyQualifiedClassName;
@@ -283,7 +283,7 @@ public final class TestOutputOrganizer {
             this.fileSystem = fileSystem;
             this.clazz = clazz;
             this.projectDirectory = null;
-            this.listOfCSPE = new ArrayList<>();
+            this.listOfCSPEUPD = new ArrayList<>();
             this.outputDirectoryPathRelativeToProject = DEFAULT_OUTPUT_DIRECTORY_RELATIVE_TO_PROJECT;
             this.subPathUnderOutputDirectory = Optional.empty();
             this.isByFullyQualifiedClassName = false;
@@ -295,12 +295,12 @@ public final class TestOutputOrganizer {
          * @return the reference to this Builder instance
          */
         public Builder addCodeSourcePathElementsUnderProjectDirectory(
-                CodeSourcePathElementsUnderProjectDirectory cspe) {
-            Objects.requireNonNull(cspe);
-            if (cspe.isEmpty()) {
-                throw new IllegalArgumentException("cspe is empty");
+                CodeSourcePathElementsUnderProjectDirectory cspeupd) {
+            Objects.requireNonNull(cspeupd);
+            if (cspeupd.isEmpty()) {
+                throw new IllegalArgumentException("cspeupd is empty");
             }
-            this.listOfCSPE.add(cspe);
+            this.listOfCSPEUPD.add(cspeupd);
             return this;
         }
 
@@ -359,8 +359,8 @@ public final class TestOutputOrganizer {
          */
         public TestOutputOrganizer build() {
             ProjectDirectoryResolver pdr = new ProjectDirectoryResolver(fileSystem);
-            for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
-                pdr.addCodeSourcePathElementsUnderProjectDirectory(cspe);
+            for (CodeSourcePathElementsUnderProjectDirectory cspeupd : listOfCSPEUPD) {
+                pdr.addCodeSourcePathElementsUnderProjectDirectory(cspeupd);
             }
             this.projectDirectory = pdr.resolveProjectDirectoryViaClasspath(clazz);
             return new TestOutputOrganizer(this);
