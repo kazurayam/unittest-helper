@@ -10,7 +10,7 @@
 
 include::problem_to_solve.adoc[]
 
-== Examples
+== Usage examples
 
 include::ex01.adoc[]
 include::ex02.adoc[]

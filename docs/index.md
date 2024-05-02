@@ -250,9 +250,9 @@ Here you find a string literal `build/classes/java/test/` which is a valid path 
 
 The `com.kazurayam.unittest.ProjectDirectoryResolver` class provides a solution to this issue.
 
-## Examples
+## Usage examples
 
-# === Example1 Locating a file path via Current Working Directory
+### Example1 Locating a file path via Current Working Directory
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -300,7 +300,7 @@ Is the **current working directory** equal to the **project directory** ? --- Us
 
 So I do not like my unit-tests to depend on the current working directory. But any other way?
 
-## Example2 Resolving the project directory resolved via classpath
+### Example2 Resolving the project directory resolved via classpath
 
 I want my tests to be able to resolve the path of the project directory so that my tests can locate temporary output files surely under the project directory. And I want my tests to be independent from the **current working directory**. I want to find out the project directory’s path value based on the path value of the class file of the test itself. The following code shows it is possible.
 
@@ -336,7 +336,7 @@ This will print the following in the console:
 
 How the `com.kazurayam.unittest.ProjectDirectoryResolver` class find the path of project directory via classpath? --- I will describe the detail later. For now, let me talk about how to utilize this library.
 
-## Example3 Locating the default output directory
+### Example3 Locating the default output directory
 
 I want to create a directory named `test-output` under the project directory. I would let my test classes to write files into the directory. I want to for output files `test-output` directory by calling `getOutputDir()`.
 
@@ -376,7 +376,7 @@ The default name of the **output directory** is `test-output`. You can explicitl
 
 With `toHomeRelativePath(Path p)` method, you can convert a full path string into a path string realtive to the Home directory of the OS user. This is useful for documentation purposes.
 
-## Example4 Creating a custom output directory
+### Example4 Creating a custom output directory
 
 The `com.kazurayam.unittest.TestOutputOrganizer` creates a directory with `getOutputDirectory()` and the default name is `test-output`. You may want some other name. Of course you can do it.
 
@@ -423,7 +423,7 @@ This will print the following in the console:
     [test_getOutputDir_custom] ~/github/unittest-helper/app/test-output-another
     [test_getOutputDir_custom_more] ~/github/unittest-helper/app/build/tmp/testOutput
 
-## Example5 Writing a file into the default output directory
+### Example5 Writing a file into the default output directory
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -460,7 +460,7 @@ This will print the following in the console:
     [test_write_into_the_default_output_directory] ~/github/unittest-helper/app/test-output/sample.txt
     [Hello, world!]
 
-## Example6 Writing a file into a subdirectory under the default output directory
+### Example6 Writing a file into a subdirectory under the default output directory
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -506,7 +506,7 @@ You can create layers of sub-directories under the output directory managed by t
             // you need to make sure that the parent directory exists
             Files.createDirectories(file.getParent());
 
-## Example7 Writing a file into a custom output directory
+### Example7 Writing a file into a custom output directory
 
     package com.kazurayam.unittesthelperdemo;
 
@@ -626,7 +626,7 @@ This test prints the following:
     [test_write_a_file] classOutputDir: ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.Ex08Test
     [test_write_a_file] created a file ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.Ex08Test/sample.txt
 
-## Example9 One more sub-directory which stands for the method name of the test class
+### Example9 One more sub-directory which stands for the method name of the test class
 
 The Example8 showed that you can create a sub-directory which stands for the FQCN of the test class. You can add one more sub-directory which stands for the method name. This helps organizing the outputs from a test class further.
 
@@ -758,7 +758,7 @@ This test prints the following output in the console:
     file absolute: /Users/kazurayam/github/unittest-helper/app/test-output/sample1.txt
     file relative: ~/github/unittest-helper/app/test-output/sample1.txt
 
-## Example11 Cleaning the output directory recursively
+### Example11 Cleaning the output directory recursively
 
 The `TestOutputOrganizer` class implements
 
@@ -813,7 +813,7 @@ This will print the following in the console:
     classOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex10Test
     methodOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.Ex10Test/testMethod1
 
-## Example12 Removing arbitrary directory recursively
+### Example12 Removing arbitrary directory recursively
 
 The `TestOutputOrganizer` class implements a static method `cleanDirectoryRecursively()` method which removes any directory recursively. See the following sample test class.
 
