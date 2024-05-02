@@ -15,11 +15,11 @@
 
 ## Problems to solve
 
-Let me explain a problem with a sample code.
+Let me explain the problem that I am focused with a sample code.
 
 I cloned the [unittest-helper](https://github.com/kazurayam/unittest-helper) project onto my Mac machine.
 
-Please note that this project is a [Gradle Multi-Project](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html), where the root directory `unittest-helper` contains a few sub-directories `lib`, `app` and `preliminary-study`. Each of these 3 directories contain `build.gradle` file. Gradle "Multi-Project" is just a usual style of project structure nowadays. It is nothing exceptional.
+Please note that this project is a [Gradle Multi-Project](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html), where the root directory `unittest-helper` contains a few sub-directories `lib`, `app` and `preliminary-study`. Each of these 3 directories contain `build.gradle` file. Multi-Project is just a usual style of Gradle project structure nowadays. It is no exceptional.
 
 Please find <https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.java>:
 
@@ -58,15 +58,15 @@ Please find <https://github.com/kazurayam/unittest-helper/preliminary-study/src/
         }
     }
 
-1.  This code is a unit-test class in Java.
+-   This code is a unit-test class in Java.
 
-2.  This test reads a Java System Property named `browserType` specified in the commandline option
+-   This test tries to read a Java System Property named `browserType` specified in the commandline option
 
-3.  This test creates a directory named `test-output`. The `test-output` directory will be located under the so-called Current Working Directory, which is identified by the System Property `user.dir`.
+-   This test creates a directory named `test-output`. The `test-output` directory will be located under the so-called **Current Working Directory** which is identified by the System Property `user.dir`.
 
-4.  This test writes the value of System Property `browserType` into a file named `browserType.txt` which is located in the `test-output` directory.
+-   This test writes the value of System Property `browserType` into a file named `browserType.txt` which is located in the `test-output` directory.
 
-You can find how the task `testS2` is defined in the <https://github.com/kazurayam/unittest-helper/preliminary-study/build.gradle>
+You can find how the Gradle task `testS2` is defined in the <https://github.com/kazurayam/unittest-helper/preliminary-study/build.gradle>
 
     tasks.register("testS2", Test) {
         useTestNG()                                  // (1)
@@ -76,11 +76,15 @@ You can find how the task `testS2` is defined in the <https://github.com/kazuray
         outputs.upToDateWhen { false }               // (5)
     }
 
-1\) I declared that I want to use NestNG to run my test cases in the `testS2` task.
-2) I specifically chose a class of which className starts with `S2`.
-3) I passed all entries of `System.properties` into the `testS2` task
-4) I specified to show all of messages from the test classes to stdout to be printed in the console
-5) I specified Gradle to run the `testS2` task even if there is no change in the input.
+1.  I declared that I want to use NestNG to run my test cases in the `testS2` task.
+
+2.  I specifically chose a class of which className starts with `S2`.
+
+3.  I passed all entries of `System.properties`, including the ones given as a commandline parameter by `-DbrowserType=XXXX`, into the `testS2` task
+
+4.  I requested Gradle show all of messages from the test classes to stdout to be printed in the console
+
+5.  I forced Gradle to run the `testS2` task even if there is no change in the input.
 
 I opened the Terminal app, and ran the following commands.
 
@@ -123,17 +127,21 @@ Gradle allows us another way of invoking the same task `testS2`, as follows:
     BUILD SUCCESSFUL in 3s
     2 actionable tasks: 1 executed, 1 up-to-date
 
-Please note that the output directory `test-output` was located in the **root project’s directory** `unittest-helper/`.
+I am surprised to find that, in the case2, the output directory `test-output` was located in the **root project’s directory**; like `unittest-helper/test-output`.
 
-### Problem: Current Working Directory is not necessarily equal to the subproject’s directory
+### Problem: Current Working Directory is not reliable: it moves sometimes
 
-I want my test class `study.S2WritingSystemPropertyValueIntoFileInTheOutputDireoctyTest` to create the directory `test-output` always under the subproject’s directory. In the Case1, I got `unittest-helper/preliminary-study/test-output`, with which I am OK. However, in the Case2, I got `unittest-helper/test-output`. I am not happy with the result.
+I want my test class `study.S2WritingSystemPropertyValueIntoFileInTheOutputDireoctyTest` to create the directory `test-output` steadily under the subproject’s directory.
+
+In the Case1, I got `unittest-helper/preliminary-study/test-output`, with which I am OK. However, in the Case2, I got `unittest-helper/test-output`. I am not happy with the result.
 
 <figure>
 <img src="images/00_problem_to_solve.png" alt="00 problem to solve" />
 </figure>
 
-The source code of the test class `study.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest` was unchanged. But the result changed because I ran the test in the commandline a bit differently. In the Case1, I changed to the directory `unittest-helper/preliminary-study`, and in the Case2, I changed to the directory `unittest-helper`. And the important factor was that the `testS2` task had a line:
+In the Case2, I ran the same test class a bit differently. In the Case1, I ran it in the directory `unittest-helper/preliminary-study`, and in the Case2, I ran it in the directory `unittest-helper`.
+
+In the Case2, I got the `test-output` directory under the `unittest-helper` directory, which is the root project’s directory. Why did I get this difference? --- It is because the `testS2` task has a single line:
 
     tasks.register("testS2", Test) {
         ...
@@ -141,15 +149,15 @@ The source code of the test class `study.S2WritingSystemPropertyValueIntoFileInT
         ...
     }
 
-By this single line, Gradle captured all the values of System.properties at the timing when I invoked `gradle` command and the values were imported into the runtime environment where the test class `S2WrintingSystemPropertyValueIntoFileInTheOutputDirecvtoryTest` ran. In the Case1, the System Property `user.dir` had the value of `` …​/unittest-helpers/preliminary-study; and in the Case2, the `user.dir `` had the value of `…​/unittest-helper`. Therefore the directory `test-output` was located at the different layer of project structure.
+By this single line, Gradle captured all the values of System.properties at the timing when I invoked `gradle` command and the values were imported into the runtime environment where the test class `S2WrintingSystemPropertyValueIntoFileInTheOutputDirecvtoryTest` ran. In the Case1, the System Property `user.dir` had the value of `` /Users/kazurayam/github/unittest-helpers/preliminary-study; and in the Case2, the `user.dir `` had the value of `/Users/kazurayam/github/unittest-helper`. Therefore, the directory `test-output` was located at the different layer of project structure.
 
-### What I want
+### I want to locate the output directory under the subProject’s directory
 
-I want the `test-output` directory to be always under the subproject’s directory regardless at which directory the System property `user.dir` is set at runtime. **I should NOT rely on the `user.dir` to find out where the subproject directory is.**
+I want the `test-output` directory to be steadily located under the subproject’s directory `preliminary-study/` regardless at which directory the System property `user.dir` is set at runtime. For that intent, I do not like to rely on the value of System property `user.dir` to find out where the subproject directory is.
 
-### But how?
+### How can I find the supProject’s directory without `user.dir`?
 
-There is a narrow path for every test classes to find out where the project’s directory is without referring to the System property `user.dir`. I will show you a sample code how to.
+There is a method for a test classes to find out the location of project’s directory without referring to the System property `user.dir`. I will show you a sample code how to.
 
 Please find <https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java>:
 
@@ -180,9 +188,7 @@ Please find <https://github.com/kazurayam/unittest-helper/preliminary-study/src/
         }
     }
 
-You can run this test by `testS3` task defined in the `unittest-helper/preliminary-study/build.gradle`.
-
-I ran it, as follows:
+You can run this test by `testS3` task defined in the `unittest-helper/preliminary-study/build.gradle`. I ran it and got messages, as follows:
 
     $ pwd
     /Users/kazuakiurayama/github/unittest-helper/preliminary-study
@@ -214,11 +220,11 @@ And also I ran the same task at a different directory
     BUILD SUCCESSFUL in 2s
     2 actionable tasks: 1 executed, 1 up-to-date
 
-Please note that in both trial, the test class printed the path string as the project directory:
+As you see, in both cases, the test class printed the same path string as the project directory:
 
         project directory=file:/Users/kazuakiurayama/github/unittest-helper/preliminary-study/
 
-This is what I want to achieve. The test class `S3FindingProjectDirByClasspathTest` proved that it can find where the subproject’s directory is without refering to the System property `user.dir`. Please read the source of `getLocationWhereThisClassIsFound()` method to find out the coding technique.
+I like this result. The test class `S3FindingProjectDirByClasspathTest` proved that it can find where the subproject’s directory is without refering to the System property `user.dir`. Please read the source of `getLocationWhereThisClassIsFound()` method to find out the coding technique.
 
 ### Introducing "Code Source Path Elements"
 
