@@ -84,8 +84,8 @@ Read the source of `getLocationWhereThisClassIsFound` method of link:https://git
 
 ----
 
-Here you find a string literal `build/classes/java/test/`, which is a concatenation of path elements under the project directory, is valid only in a Gradle project in Java language. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IntelliJ IDEA, Eclipse, NetBeans, etc). The "Code Source Path Elements" is dependent on the runtime environment. If I want my test classes to be able to find the subProject's directory runtime, my test classes have to try the possible values of "Code Source Path Elements" to match the actual URL of the CodeSource of the test class at runtime. Well, complicated. This processing would require some programming efforts.
+Here you find a string literal `build/classes/java/test/`, which is a concatenation of path elements under the project directory, is valid only in a Gradle project in Java language. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IntelliJ IDEA, Eclipse, NetBeans, etc). The "Code Source Path Elements" is dependent on the runtime environment. If I want my test classes to be able to find the subProject's directory runtime, my test classes have to try the possible values of "Code Source Path Elements" to match the actual URL of the CodeSource of the test class at runtime.
+
+Well, it is a complicated processing. This requires good programming efforts.
 
 The `com.kazurayam.unittest.ProjectDirectoryResolver` class provides a solution to this technical issue.
-
-

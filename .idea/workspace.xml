@@ -5,10 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74a392ca-ad77-4490-be5e-7086c3e22f8f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/docs/Solution.adoc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/problem_to_solve.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/problem_to_solve.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/preliminary-study/src/test/java/study/S3FindingProjectDirByClasspathTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ex01.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ex01.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ex02.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ex02.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/index_.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index_.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/solution.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/solution.adoc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,103 +59,40 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1 (1).executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_ListOfStrings.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_multiple_strings.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ProjectDirectoryResolverTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.S1FindingProjectDirByCWDTest.resolvingDirBasedOnCWD.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.testIt.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;aspect.path.notification.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1 (1).executor": "Run",
+    "Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1.executor": "Run",
+    "Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_ListOfStrings.executor": "Run",
+    "Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_multiple_strings.executor": "Run",
+    "Gradle.ProjectDirectoryResolverTest.executor": "Run",
+    "Gradle.ProjectDirectoryResolverTest.test_addCodeSourcePathElementsUnderProjectDirectory.executor": "Run",
+    "Gradle.ProjectDirectoryResolverTest.test_getProjectDirViaClasspath.executor": "Run",
+    "Gradle.ProjectDirectoryResolverTest.test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory.executor": "Run",
+    "Gradle.S1FindingProjectDirByCWDTest.resolvingDirBasedOnCWD.executor": "Run",
+    "Gradle.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.testIt.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "aspect.path.notification.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/kazuakiurayama/github/unittest-helper/docs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager" selected="Gradle.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.testIt">
-    <configuration name="CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1 (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":lib:test" />
-            <option value="--tests" />
-            <option value="&quot;com.kazurayam.unittest.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_ListOfStrings" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":lib:test" />
-            <option value="--tests" />
-            <option value="&quot;com.kazurayam.unittest.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_ListOfStrings&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_multiple_strings" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":lib:test" />
-            <option value="--tests" />
-            <option value="&quot;com.kazurayam.unittest.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_multiple_strings&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/docs" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.ProjectDirectoryResolverTest.test_addCodeSourcePathElementsUnderProjectDirectory">
     <configuration name="ProjectDirectoryResolverTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -167,6 +107,78 @@
             <option value=":lib:test" />
             <option value="--tests" />
             <option value="&quot;com.kazurayam.unittest.ProjectDirectoryResolverTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="ProjectDirectoryResolverTest.test_addCodeSourcePathElementsUnderProjectDirectory" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":app:test" />
+            <option value="--tests" />
+            <option value="&quot;com.kazurayam.unittesthelperdemo.ProjectDirectoryResolverTest.test_addCodeSourcePathElementsUnderProjectDirectory&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="ProjectDirectoryResolverTest.test_getProjectDirViaClasspath" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":app:test" />
+            <option value="--tests" />
+            <option value="&quot;com.kazurayam.unittesthelperdemo.ProjectDirectoryResolverTest.test_getProjectDirViaClasspath&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="ProjectDirectoryResolverTest.test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":app:test" />
+            <option value="--tests" />
+            <option value="&quot;com.kazurayam.unittesthelperdemo.ProjectDirectoryResolverTest.test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -203,11 +215,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.ProjectDirectoryResolverTest.test_addCodeSourcePathElementsUnderProjectDirectory" />
+        <item itemvalue="Gradle.ProjectDirectoryResolverTest.test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory" />
+        <item itemvalue="Gradle.ProjectDirectoryResolverTest.test_getProjectDirViaClasspath" />
         <item itemvalue="Gradle.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.testIt" />
         <item itemvalue="Gradle.ProjectDirectoryResolverTest" />
-        <item itemvalue="Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_ListOfStrings" />
-        <item itemvalue="Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor_multiple_strings" />
-        <item itemvalue="Gradle.CodeSourcePathElementsUnderProjectDirectoryTest.testConstructor1 (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -232,7 +244,7 @@
       <workItem from="1714428482254" duration="3332000" />
       <workItem from="1714435579766" duration="11347000" />
       <workItem from="1714563826143" duration="25000" />
-      <workItem from="1714603559253" duration="9515000" />
+      <workItem from="1714603559253" duration="11487000" />
     </task>
     <servers />
   </component>

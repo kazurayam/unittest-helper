@@ -252,61 +252,15 @@ Read the source of `getLocationWhereThisClassIsFound` method of [study.S3Finding
             String projectDir =
                     url.toString().replace(codeSourcePathElementsUnderProjectDirectory,"");
 
-Here you find a string literal `build/classes/java/test/`, which is a concatenation of path elements under the project directory, is valid only in a Gradle project in Java language. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IntelliJ IDEA, Eclipse, NetBeans, etc). The "Code Source Path Elements" is dependent on the runtime environment. If I want my test classes to be able to find the subProject’s directory runtime, my test classes have to try the possible values of "Code Source Path Elements" to match the actual URL of the CodeSource of the test class at runtime. Well, complicated. This processing would require some programming efforts.
+Here you find a string literal `build/classes/java/test/`, which is a concatenation of path elements under the project directory, is valid only in a Gradle project in Java language. Different string literals would be required for other Languages (Groovy, Kotlin), for other Build Tools (Gradle, Maven, Ant), for other IDEs (IntelliJ IDEA, Eclipse, NetBeans, etc). The "Code Source Path Elements" is dependent on the runtime environment. If I want my test classes to be able to find the subProject’s directory runtime, my test classes have to try the possible values of "Code Source Path Elements" to match the actual URL of the CodeSource of the test class at runtime.
+
+Well, it is a complicated processing. This requires good programming efforts.
 
 The `com.kazurayam.unittest.ProjectDirectoryResolver` class provides a solution to this technical issue.
 
-## Usage examples
+## Sample Codes
 
-### Example1 Locating a file path via Current Working Directory
-
-    package com.kazurayam.unittesthelperdemo;
-
-    import org.junit.jupiter.api.Test;
-
-    import java.nio.charset.StandardCharsets;
-    import java.nio.file.Files;
-    import java.nio.file.Path;
-    import java.nio.file.Paths;
-    import org.slf4j.LoggerFactory;
-    import org.slf4j.Logger;
-
-    public class OutputIntoCurrentWorkingDirectoryTest {
-
-        Logger log = LoggerFactory.getLogger(OutputIntoCurrentWorkingDirectoryTest.class);
-
-        @Test
-        public void test_show_CWD() {
-            Path p = Paths.get(".");
-            log.info("[test_show_CWD] " + p.toAbsolutePath().normalize());
-        }
-
-        /*
-         * will create a file `<projectDir>/sample1.txt`
-         */
-        @Test
-        public void test_write_under_current_working_directory() throws Exception {
-            Path p = Paths.get("sample1.txt");
-            Files.write(p, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-            System.out.println("[test_write_under_current_working_directory] p = " + p.toAbsolutePath());
-        }
-
-    }
-
-[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/OutputIntoCurrentWorkingDirectoryTest.java)
-
-This code calls `Paths.get("sample1_txt")` to resolve the path of output file. Many developers would do the same in their own codes. This code prints the following message:
-
-    > Task :app:testClasses
-    [test_write_under_current_working_directory] p = ~/github/unittest-helper/app/sample1.txt
-
-The call to `Paths.get("sample1.txt")` regards the parameter `sample1.txt` as relative to the runtime **Current Working Directory**. In the above case, the current working directory WILL be set `~/github/unittest-helper/app/`. And the path is equal to the project directory. So the `Paths.get("sample1.txt")` will return a Path object of `~/github.unittest-helper/app/sample1.txt`.
-
-Is the **current working directory** equal to the **project directory** ? --- Usually yes. But sometimes not. It depends on the runtime environment. When the current working directory is different from the project directory, we will be really confused.
-
-So I do not like my unit-tests to depend on the current working directory. But any other way?
-
-### Example2 Resolving the project directory resolved via classpath
+### Example1 Resolving the project directory resolved via classpath
 
 I want my tests to be able to resolve the path of the project directory so that my tests can locate temporary output files surely under the project directory. And I want my tests to be independent from the **current working directory**. I want to find out the project directory’s path value based on the path value of the class file of the test itself. The following code shows it is possible.
 
@@ -342,7 +296,70 @@ This will print the following in the console:
 
 How the `com.kazurayam.unittest.ProjectDirectoryResolver` class find the path of project directory via classpath? --- I will describe the detail later. For now, let me talk about how to utilize this library.
 
-### Example3 Locating the default output directory
+### Example2 Printing the list of registered "Code Source Path Elements"
+
+        @Test
+        public void test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
+            List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
+                    new ProjectDirectoryResolver().getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
+            assertThat(listOfCSPE).isNotNull();
+            assertThat(listOfCSPE.size()).isGreaterThanOrEqualTo(2);
+            String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+            log.info("[" + methodName + "]");
+            for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
+                log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspe);
+            }
+        }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java)
+
+This will print the following in the console:
+
+    [test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory]
+    CodeSourcePathElementsUnderProjectDirectory: target/test-classes/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/java/test/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/java/functionalTest/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/groovy/test/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/groovy/functionalTest/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/kotlin/test/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/kotlin/functionalTest/
+
+This is the list of `com.kazurayam.unittest.CodeSourcePathElementsUnderProjectDirectory` objects registered in the `com.kazurayam.unittest.ProjectDirectoryResolver` class as default.
+
+### Example2' adding a custom instance of "Code Source Path Elements"
+
+        @Test
+        public void test_addCodeSourcePathElementsUnderProjectDirectory() {
+            ProjectDirectoryResolver pdr = new ProjectDirectoryResolver();
+            pdr.addCodeSourcePathElementsUnderProjectDirectory(
+                    new CodeSourcePathElementsUnderProjectDirectory("out", "bin"));
+            String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+            log.info("[" + methodName + "]");
+            List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPE =
+                    pdr.getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory();
+            for (CodeSourcePathElementsUnderProjectDirectory cspe : listOfCSPE) {
+                log.info("CodeSourcePathElementsUnderProjectDirectory: " + cspe);
+            }
+        }
+
+[source](https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java)
+
+This will print the following in the console:
+
+    [test_addCodeSourcePathElementsUnderProjectDirectory]
+    CodeSourcePathElementsUnderProjectDirectory: target/test-classes/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/java/test/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/java/functionalTest/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/groovy/test/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/groovy/functionalTest/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/kotlin/test/
+    CodeSourcePathElementsUnderProjectDirectory: build/classes/kotlin/functionalTest/
+    CodeSourcePathElementsUnderProjectDirectory: out/bin/
+
+Please find "out/bin/" is inserted in the list. The "out/bin/" is a Code Source Path Elements generated by IntelliJ IDEA as its native Java project hierarchy.
+
+You can add any more patterns of "Code Source Path Elements" as you like.
+=== Example3 Locating the default output directory
 
 I want to create a directory named `test-output` under the project directory. I would let my test classes to write files into the directory. I want to for output files `test-output` directory by calling `getOutputDir()`.
 
