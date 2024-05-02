@@ -6,7 +6,7 @@ I would assume that you have a clone of the link:https://github.com/kazurayam/un
 
 Please note that this project is a link:https://docs.gradle.org/current/userguide/intro_multi_project_builds.html[Gradle Multi-Project], where the root directory `unittest-helper` contains a few sub-directories `lib`, `app` and `preliminary-study`. Each of these 3 directories contain `build.gradle` file. Multi-Project is just a usual style of Gradle project structure nowadays. It is no exceptional.
 
-Please find link:https://github.com/kazurayam/unittest-helper/preliminary-study/src/test/java/study/S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.java[]:
+Please find link:https://github.com/kazurayam/unittest-helper/blob/develop/preliminary-study/src/test/java/study/S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.java[unittest-helper/preliminary-stydy/src/test/java/study/S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.java]:
 [source,java]
 ----
 include::../preliminary-study/src/test/java/study/S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.java[]

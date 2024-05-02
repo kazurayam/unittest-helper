@@ -28,7 +28,7 @@ dependencies {
 
 ## Long explanation
 
-- [English](https://kazurayam.github.io/unittest-helper/)
+- [English](https://kazurayam.github.io/unittest-helper)
 
 ## Javadoc
 
