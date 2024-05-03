@@ -20,7 +20,7 @@ public class TestOutputOrganizerUsingTestNGTest {
 
     private final TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(this.getClass())
-                    .subPathUnderOutputDirectory(this.getClass()).build();
+                    .subOutputDirectory(this.getClass()).build();
 
     @Test
     public void test_resolveMethodOutputDirectory(Method method) {

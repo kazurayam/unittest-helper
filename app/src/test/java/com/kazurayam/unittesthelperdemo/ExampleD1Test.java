@@ -13,7 +13,7 @@ public class ExampleD1Test {
     private static final Logger log = LoggerFactory.getLogger(ExampleD1Test.class);
     private static final TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(ExampleD1Test.class)
-                    .subPathUnderOutputDirectory(ExampleD1Test.class)
+                    .subOutputDirectory(ExampleD1Test.class)
                     .build();
     @BeforeAll
     public static void beforeAll() throws Exception {

@@ -29,7 +29,7 @@ public final class TestOutputOrganizer {
     private final FileSystem fileSystem;
     private final Path projectDirectory;
     private final String outputDirectoryPathRelativeToProject;
-    private final Optional<String> subPathUnderOutputDirectory;
+    private final Optional<String> outputSubDirectoryPath;
     private final Boolean isByFullyQualifiedClassName;
 
     /**
@@ -39,7 +39,7 @@ public final class TestOutputOrganizer {
         this.fileSystem = builder.fileSystem;
         this.projectDirectory = builder.projectDirectory;
         this.outputDirectoryPathRelativeToProject = builder.outputDirectoryPathRelativeToProject;
-        this.subPathUnderOutputDirectory = builder.subPathUnderOutputDirectory;
+        this.outputSubDirectoryPath = builder.subOutputDirectoryPath;
         this.isByFullyQualifiedClassName = builder.isByFullyQualifiedClassName;
     }
 
@@ -65,7 +65,10 @@ public final class TestOutputOrganizer {
      * which is relative to the project directory.
      */
     public Path resolveOutputDirectory() {
-        return getProjectDirectory().resolve(outputDirectoryPathRelativeToProject);
+        return getProjectDirectory()
+                .resolve(outputDirectoryPathRelativeToProject)
+                .toAbsolutePath()
+                .normalize();
     }
 
     public Path createOutputDirectory() throws IOException {
@@ -89,8 +92,8 @@ public final class TestOutputOrganizer {
     }
 
     //--------------------------------------------------------------------------
-    public Optional<String> getSubPathUnderOutputDirectory() {
-        return subPathUnderOutputDirectory;
+    public Optional<String> getOutputSubDirectoryPath() {
+        return outputSubDirectoryPath;
     }
 
     /**
@@ -99,12 +102,12 @@ public final class TestOutputOrganizer {
      * if the subDirpath is not set, then will return the same as getOutputDir()
      * @return Path of output sub directory
      */
-    public Path resolveOutputSubDirectory() {
-        return this.subPathUnderOutputDirectory.map(s -> resolveOutputDirectory().resolve(s))
+    public Path resolveSubOutputDirectory() {
+        return this.outputSubDirectoryPath.map(s -> resolveOutputDirectory().resolve(s))
                     .orElseGet(this::resolveOutputDirectory);
     }
 
-    public Path createOutputSubDirectory() throws IOException {
+    public Path createSubOutputDirectory() throws IOException {
         Path d = resolveOutputDirectory();
         Files.createDirectories(d);
         return d;
@@ -117,8 +120,8 @@ public final class TestOutputOrganizer {
      * @return the reference to this TestOutputOrganizer instance
      * @throws IOException during removing files/directories
      */
-    public Path cleanOutputSubDirectory() throws IOException {
-        Path outputSubDir = this.createOutputSubDirectory();
+    public Path cleanSubOutputDirectory() throws IOException {
+        Path outputSubDir = this.createSubOutputDirectory();
         DeleteDir.deleteDirectoryRecursively(outputSubDir);
         Files.createDirectories(outputSubDir);
         return outputSubDir;
@@ -126,8 +129,8 @@ public final class TestOutputOrganizer {
 
     //--------------------------------------------------------------------------
     public Path resolveClassOutputDirectory() {
-        if (this.subPathUnderOutputDirectory != null && this.isByFullyQualifiedClassName) {
-            return resolveOutputSubDirectory();
+        if (this.outputSubDirectoryPath.isPresent() && this.isByFullyQualifiedClassName) {
+            return resolveSubOutputDirectory();
         } else {
             throw new IllegalStateException("getClassOutputDirectory will be operational " +
                     "only when you specify the subDirPath to the Builder " +
@@ -261,7 +264,7 @@ public final class TestOutputOrganizer {
         private Path projectDirectory;
         private List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPEUPD;
         private String outputDirectoryPathRelativeToProject;
-        private Optional<String> subPathUnderOutputDirectory = Optional.empty();
+        private Optional<String> subOutputDirectoryPath = Optional.empty();
         private Boolean isByFullyQualifiedClassName;
 
         /**
@@ -285,7 +288,7 @@ public final class TestOutputOrganizer {
             this.projectDirectory = null;
             this.listOfCSPEUPD = new ArrayList<>();
             this.outputDirectoryPathRelativeToProject = DEFAULT_OUTPUT_DIRECTORY_RELATIVE_TO_PROJECT;
-            this.subPathUnderOutputDirectory = Optional.empty();
+            this.subOutputDirectoryPath = Optional.empty();
             this.isByFullyQualifiedClassName = false;
         }
 
@@ -305,51 +308,33 @@ public final class TestOutputOrganizer {
         }
 
         /**
-         * e.g., you can pass Paths.get("build/tmp/testOutput")
-         * to specify the output dir location
-         *
-         * @param outputDirectoryPathRelativeToProject e.g, "build/tmp/testOutput".
-         *                      This could be relative to the project directory.
-         *
-         * @return the reference to this TestOutputOrganizer.Builder instance
-         */
-        public Builder outputDirectoryPathRelativeToProject(
-                String outputDirectoryPathRelativeToProject) {
-            Objects.requireNonNull(outputDirectoryPathRelativeToProject);
-            Path odp = fileSystem.getPath(outputDirectoryPathRelativeToProject);
-            if (odp.isAbsolute()) {
-                throw new IllegalArgumentException(
-                        "outputDirectoryPathRelativeToProject should not be absolute: " +
-                                outputDirectoryPathRelativeToProject);
-            }
-            this.outputDirectoryPathRelativeToProject =
-                    outputDirectoryPathRelativeToProject;
-            return this;
-        }
-
-        /**
-         * optional.
-         * set a sub-directory path under the output directory.
+         * optional. default to "./test-output".
+         * set a relative path of under the output directory.
          *
          * @param subPath e.g., Paths.get(this.getClass().getName()) or
          *               Paths.get("com.kazurayam.unittesthelperdemo.WithHelperTest")
          * @return the reference to this Builder.Builder instance
          */
-        public Builder subPathUnderOutputDirectory(String subPath, String ... more) {
+        public Builder outputDirectoryRelativeToProject(String subPath, String ... more) {
             Objects.requireNonNull(subPath);
             Path sdp = fileSystem.getPath(subPath, more);
             if (sdp.isAbsolute()) {
                 throw new IllegalArgumentException(
-                        "subPathUnderOutputDirectory must not be absolute: " + subPath);
+                        "outputDirectoryRelativeToProject must NOT be absolute: " + subPath);
             }
-            this.subPathUnderOutputDirectory = Optional.of(subPath);
-            this.isByFullyQualifiedClassName = false;
+            this.outputDirectoryPathRelativeToProject = sdp.toString();
             return this;
         }
 
-        public Builder subPathUnderOutputDirectory(Class<?> clazz) {
+        public Builder subOutputDirectory(String subDirectory) {
+            Objects.requireNonNull(subDirectory);
+            this.subOutputDirectoryPath = Optional.of(subDirectory);
+            return this;
+        }
+
+        public Builder subOutputDirectory(Class<?> clazz) {
             Objects.requireNonNull(clazz);
-            this.subPathUnderOutputDirectory = Optional.of(clazz.getName());
+            this.subOutputDirectoryPath = Optional.of(clazz.getName());
             this.isByFullyQualifiedClassName = true;
             return this;
         }

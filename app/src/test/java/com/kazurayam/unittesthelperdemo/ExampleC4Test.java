@@ -19,8 +19,8 @@ public class ExampleC4Test {
     private static final Logger log = LoggerFactory.getLogger(ExampleC4Test.class);
     private static final TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(ExampleC4Test.class)
-                    .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
-                    .subPathUnderOutputDirectory(ExampleC4Test.class)
+                    .outputDirectoryRelativeToProject("build/tmp/testOutput")
+                    .subOutputDirectory(ExampleC4Test.class)
                     .build();
 
     @BeforeAll

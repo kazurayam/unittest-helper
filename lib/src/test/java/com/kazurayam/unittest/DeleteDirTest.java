@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -17,26 +18,27 @@ public class DeleteDirTest {
     @BeforeAll
     static void setupClass() throws IOException {
         too = new TestOutputOrganizer.Builder(DeleteDirTest.class)
-                .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
-                .subPathUnderOutputDirectory(CopyDirTest.class).build();
-        too.cleanOutputSubDirectory();
+                .outputDirectoryRelativeToProject("build/tmp/testOutput")
+                .subOutputDirectory(CopyDirTest.class).build();
+        too.cleanSubOutputDirectory();
     }
 
+
+    /**
+     * call the static method cleanDirectoryRecursively(Path) of
+     * DeleteDir class to remove a directory recursively
+     */
     @Test
-    void test_deleteDirectoryRecursively() throws IOException {
+    public void test_deleteDirectoryRecursively() throws IOException {
         // given
-        Path sourceDir = too.resolveOutputSubDirectory().resolve("source");
-        Path sourceFile = too.resolveOutputSubDirectory().resolve("source/foo/hello.txt");
-        Files.createDirectories(sourceFile.getParent());
-        Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-        Path targetDir = too.resolveOutputSubDirectory().resolve("target");
-        Path targetFile = too.resolveOutputSubDirectory().resolve("target/foo/hello.txt");
-        Files.walkFileTree(sourceDir, new CopyDir(sourceDir, targetDir));
-        assertThat(targetFile).exists();
+        Path dir = FileSystems.getDefault().getPath("build/work");
+        Files.createDirectories(dir);
+        Path file = dir.resolve("foo.txt");
+        Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         // when
-        DeleteDir.deleteDirectoryRecursively(targetDir);
+        DeleteDir.deleteDirectoryRecursively(dir);
         // then
-        assertThat(targetFile).doesNotExist();
+        assertThat(file).doesNotExist();
+        assertThat(dir).doesNotExist();
     }
-
 }

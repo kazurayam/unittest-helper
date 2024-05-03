@@ -19,7 +19,7 @@ public class ExampleC5Test {
     private static final Logger log = LoggerFactory.getLogger(ExampleC5Test.class);
     private static final TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(ExampleC5Test.class)
-                    .subPathUnderOutputDirectory(ExampleC5Test.class)
+                    .subOutputDirectory(ExampleC5Test.class)
                     .build();
     private static LocalDateTime timestamp;
 

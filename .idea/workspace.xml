@@ -5,7 +5,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbc5a4fc-b015-4a08-86d1-ae07c327d7b6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrgainzerBuilderTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerMiscTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB2Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB2Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC3Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC3Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC4Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC4Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC5Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC5Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleD1Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleD1Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF2Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF2Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/OutputIntoDedicatedDirectoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/OutputIntoDedicatedDirectoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/io/github/someone/examples/SampleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/io/github/someone/examples/SampleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/io/github/someone/examples/TestOutputOrganizerFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/io/github/someone/examples/TestOutputOrganizerFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/allclasses-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/allclasses-index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/allpackages-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/allpackages-index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.Option.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.Option.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/DeleteDir.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/DeleteDir.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/ProjectDirectoryResolver.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/ProjectDirectoryResolver.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/StringSequence.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/StringSequence.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.Builder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.Builder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/help-doc.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/help-doc.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/index-all.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/member-search-index.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/member-search-index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/overview-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/overview-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/lib/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/TestOutputOrganizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/TestOutputOrganizer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/CopyDirTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/CopyDirTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/DeleteDirTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/DeleteDirTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerUsingTestNGTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerUsingTestNGTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +49,11 @@
   </component>
   <component name="ComposerSettings">
     <execution />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
   </component>
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
@@ -25,15 +65,66 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2fved0gquljzH4Xu8aHnHQx0YkZ" />
+  <component name="ProjectViewState">
+    <option name="compactDirectories" value="true" />
+    <option name="foldersAlwaysOnTop" value="false" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+    <option name="showVisibilityIcons" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "node.js.selected.package.tslint": "(autodetect)"
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "aspect.path.notification.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-17.0.10-corretto-17.0.10-f644763e9732-24582b8d" />
+        <option value="jdk-21.0.1-temurin-21.0.1-f644763e9732-03660637" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cbc5a4fc-b015-4a08-86d1-ae07c327d7b6" name="Changes" comment="" />
+      <created>1714686062277</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1714686062277</updated>
+      <workItem from="1714686065384" duration="7802000" />
+    </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

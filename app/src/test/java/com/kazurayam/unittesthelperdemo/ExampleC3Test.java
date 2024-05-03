@@ -20,7 +20,7 @@ public class ExampleC3Test {
     public void test_write_into_the_custom_output_directory() throws Exception {
         TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirectoryPathRelativeToProject("build/tmp/testOutput").build();
+                        .outputDirectoryRelativeToProject("build/tmp/testOutput").build();
         Path file = too.createOutputDirectory().resolve("sample.txt");
         // you do not have to make sure that the parent directory exists
         // Files.createDirectories(file.getParent());

@@ -19,7 +19,7 @@ public class SampleTest {
 
     private static TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(SampleTest.class)
-                    .subPathUnderOutputDirectory(SampleTest.class).build();
+                    .subOutputDirectory(SampleTest.class).build();
 
     private static DateTimeFormatter dtf;
     private static final Logger log = LoggerFactory.getLogger(SampleTest.class);

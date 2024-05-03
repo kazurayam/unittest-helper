@@ -56,7 +56,7 @@ public class OutputIntoDedicatedDirectoryTest {
     @Test
     public void test_getOutputDir_custom() throws IOException {
         TestOutputOrganizer too2 = new TestOutputOrganizer.Builder(this.getClass())
-                .outputDirectoryPathRelativeToProject("test-output-another")
+                .outputDirectoryRelativeToProject("test-output-another")
                 .build();
         Path outputDir = too2.createOutputDirectory();
         log.info("[test_getOutputDir_custom] " +
@@ -70,7 +70,7 @@ public class OutputIntoDedicatedDirectoryTest {
     public void test_write_into_custom_directory() throws Exception {
         TestOutputOrganizer too3 =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
+                        .outputDirectoryRelativeToProject("build/tmp/testOutput")
                         .build();
         Path file = too3.createOutputDirectory().resolve("sample.txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
@@ -82,7 +82,7 @@ public class OutputIntoDedicatedDirectoryTest {
     public void test_write_into_another_custom_directory() throws Exception {
         TestOutputOrganizer too4 =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirectoryPathRelativeToProject("test-output-another")
+                        .outputDirectoryRelativeToProject("test-output-another")
                         .build();
         Path outputDir = too4.createOutputDirectory();
         Files.createDirectories(outputDir);

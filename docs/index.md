@@ -425,7 +425,7 @@ The `com.kazurayam.unittest.TestOutputOrganizer` creates a directory with `getOu
         public void test_getOutputDir_custom() throws IOException {
             TestOutputOrganizer too =
                     new TestOutputOrganizer.Builder(this.getClass())
-                            .outputDirectoryPathRelativeToProject("test-output-another")
+                            .outputDirectoryRelativeToProject("test-output-another")
                             .build();
             Path outputDir = too.createOutputDirectory();
             log.info("[test_getOutputDir_custom] " +
@@ -435,7 +435,7 @@ The `com.kazurayam.unittest.TestOutputOrganizer` creates a directory with `getOu
         @Test
         public void test_getOutputDir_custom_more() throws IOException {
             TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-                    .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
+                    .outputDirectoryRelativeToProject("build/tmp/testOutput")
                     .build();
             Path outputDir = too.createOutputDirectory();
             log.info("[test_getOutputDir_custom_more] " +
@@ -557,7 +557,7 @@ You can create layers of sub-directories under the output directory managed by t
         public void test_write_into_the_custom_output_directory() throws Exception {
             TestOutputOrganizer too =
                     new TestOutputOrganizer.Builder(this.getClass())
-                            .outputDirectoryPathRelativeToProject("build/tmp/testOutput").build();
+                            .outputDirectoryRelativeToProject("build/tmp/testOutput").build();
             Path file = too.createOutputDirectory().resolve("sample.txt");
             // you do not have to make sure that the parent directory exists
             // Files.createDirectories(file.getParent());
@@ -616,8 +616,8 @@ The following code shows how to use "ClassOutputDirectory" managed by `TestOutpu
         private static final Logger log = LoggerFactory.getLogger(ExampleC4Test.class);
         private static final TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(ExampleC4Test.class)
-                        .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
-                        .subPathUnderOutputDirectory(ExampleC4Test.class)
+                        .outputDirectoryRelativeToProject("build/tmp/testOutput")
+                        .subOutputDirectory(ExampleC4Test.class)
                         .build();
 
         @BeforeAll
@@ -680,7 +680,7 @@ The Example-C4 showed that you can create a subdirectory which stands for the Fu
         private static final Logger log = LoggerFactory.getLogger(ExampleC5Test.class);
         private static final TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(ExampleC5Test.class)
-                        .subPathUnderOutputDirectory(ExampleC5Test.class)
+                        .subOutputDirectory(ExampleC5Test.class)
                         .build();
         private static LocalDateTime timestamp;
 
@@ -772,7 +772,7 @@ These methods remove the respective directories recursively and re-create them. 
         private static final Logger log = LoggerFactory.getLogger(ExampleD1Test.class);
         private static final TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(ExampleD1Test.class)
-                        .subPathUnderOutputDirectory(ExampleD1Test.class)
+                        .subOutputDirectory(ExampleD1Test.class)
                         .build();
         @BeforeAll
         public static void beforeAll() throws Exception {
@@ -901,7 +901,7 @@ The `cleanDirectoryRecursively(Path dir)` of `DeleteDir` class removes the speci
 
         private static final TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(ExampleF2Test.class)
-                        .subPathUnderOutputDirectory(ExampleF2Test.class)
+                        .subOutputDirectory(ExampleF2Test.class)
                         .build();
 
         @Test
@@ -942,8 +942,8 @@ See the following code for sample "factory" class.
 
         public static TestOutputOrganizer create(Class<?> clazz) {
             return new TestOutputOrganizer.Builder(clazz)
-                    .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
-                    .subPathUnderOutputDirectory(clazz.getName())
+                    .outputDirectoryRelativeToProject("build/tmp/testOutput")
+                    .subOutputDirectory(clazz.getName())
                         // e.g, "io.github.somebody.somestuff.SampleTest"
                     .build();
         }
@@ -974,7 +974,7 @@ The following code is using the Factory.
 
         private static TestOutputOrganizer too =
                 new TestOutputOrganizer.Builder(SampleTest.class)
-                        .subPathUnderOutputDirectory(SampleTest.class).build();
+                        .subOutputDirectory(SampleTest.class).build();
 
         private static DateTimeFormatter dtf;
         private static final Logger log = LoggerFactory.getLogger(SampleTest.class);

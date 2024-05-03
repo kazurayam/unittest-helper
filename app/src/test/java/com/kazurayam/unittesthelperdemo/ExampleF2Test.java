@@ -14,7 +14,7 @@ public class ExampleF2Test {
 
     private static final TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(ExampleF2Test.class)
-                    .subPathUnderOutputDirectory(ExampleF2Test.class)
+                    .subOutputDirectory(ExampleF2Test.class)
                     .build();
 
     @Test

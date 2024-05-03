@@ -10,8 +10,8 @@ public class TestOutputOrganizerFactory {
 
     public static TestOutputOrganizer create(Class<?> clazz) {
         return new TestOutputOrganizer.Builder(clazz)
-                .outputDirectoryPathRelativeToProject("build/tmp/testOutput")
-                .subPathUnderOutputDirectory(clazz.getName())
+                .outputDirectoryRelativeToProject("build/tmp/testOutput")
+                .subOutputDirectory(clazz.getName())
                     // e.g, "io.github.somebody.somestuff.SampleTest"
                 .build();
     }
