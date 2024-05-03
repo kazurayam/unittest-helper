@@ -5,42 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbc5a4fc-b015-4a08-86d1-ae07c327d7b6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrgainzerBuilderTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerMiscTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB2Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB2Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC3Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC3Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC4Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC4Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC5Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC5Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleD1Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleD1Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF2Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF2Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/OutputIntoDedicatedDirectoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/kazurayam/unittesthelperdemo/OutputIntoDedicatedDirectoryTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/io/github/someone/examples/SampleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/io/github/someone/examples/SampleTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/io/github/someone/examples/TestOutputOrganizerFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/io/github/someone/examples/TestOutputOrganizerFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/allclasses-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/allclasses-index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/allpackages-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/allpackages-index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.Option.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.Option.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/DeleteDir.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/DeleteDir.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/ProjectDirectoryResolver.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/ProjectDirectoryResolver.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/StringSequence.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/StringSequence.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.Builder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.Builder.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/help-doc.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/help-doc.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/index-all.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/member-search-index.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/member-search-index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/api/overview-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/overview-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/lib/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/TestOutputOrganizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/TestOutputOrganizer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/CopyDirTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/CopyDirTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/DeleteDirTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/DeleteDirTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerUsingTestNGTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/com/kazurayam/unittest/TestOutputOrganizerUsingTestNGTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,10 +44,10 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2fved0gquljzH4Xu8aHnHQx0YkZ" />
   <component name="ProjectViewState">
     <option name="compactDirectories" value="true" />
@@ -91,19 +57,19 @@
     <option name="showMembers" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "aspect.path.notification.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;aspect.path.notification.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

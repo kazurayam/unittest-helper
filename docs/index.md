@@ -5,7 +5,7 @@
 
 -   author: kazurayam
 
--   version: 0.4.0
+-   version: 0.4.1
 
 -   source project: <https://github.com/kazurayam/unittest-helper>
 
