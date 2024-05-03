@@ -12,6 +12,8 @@ test {
         }
     }
 
+    systemProperties System.properties
+
     testLogging {
         events "passed", "skipped", "failed"
         showStandardStreams = true

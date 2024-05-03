@@ -1,0 +1,26 @@
+=== Example-D1 Cleaning the output directory recursively
+
+The `TestOutputOrganizer` class implements
+
+- `cleanOutputDirectory()`
+- `cleanClassOutputDirectory()`
+- `cleanMethodOutputDirectory(String methodName)`
+
+These methods remove the respective directories recursively and re-create them. See the following sample test class.
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleD1Test.java[]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleD1Test.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+projectDir=~/github/unittest-helper/app
+outputDirectory=~/github/unittest-helper/app/test-output
+classOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleD1Test
+methodOutputDirectory=~/github/unittest-helper/app/test-output/com.kazurayam.unittesthelperdemo.ExampleD1Test/testMethod1
+----
+

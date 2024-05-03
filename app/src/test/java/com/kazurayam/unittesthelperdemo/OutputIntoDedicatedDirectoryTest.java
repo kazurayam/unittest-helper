@@ -12,13 +12,14 @@ import java.nio.file.Path;
 
 public class OutputIntoDedicatedDirectoryTest {
 
-    Logger log = LoggerFactory.getLogger(OutputIntoDedicatedDirectoryTest.class);
+    private static Logger log = LoggerFactory.getLogger(OutputIntoDedicatedDirectoryTest.class);
+
+    private static TestOutputOrganizer too =
+            new TestOutputOrganizer.Builder(OutputIntoDedicatedDirectoryTest.class).build();
 
     @Test
     public void test_getProjectDir() {
-        TestOutputOrganizer too =
-                new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path projectDir = too.getProjectDir();
+        Path projectDir = too.getProjectDirectory();
         log.info("[test_getProjectDir] " + projectDir);
         log.info("[test_getProjectDir] " +
                 too.toHomeRelativeString(projectDir));
@@ -26,29 +27,18 @@ public class OutputIntoDedicatedDirectoryTest {
 
     @Test
     public void test_getOutputDir_as_default() throws IOException {
-        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path outputDir = too.getOutputDirectory();
+        Path outputDir = too.createOutputDirectory();
         log.info("[test_getOutputDir_as_default] " +
                 too.toHomeRelativeString(outputDir));
     }
 
-    @Test
-    public void test_getOutputDir_custom() throws IOException {
-        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass())
-                .outputDirPath("test-output-another")
-                .build();
-        Path outputDir = too.getOutputDirectory();
-        log.info("[test_getOutputDir_custom] " +
-                too.toHomeRelativeString(outputDir));
-    }
 
     /*
      * will create a file `<projectDir>/test-output/sample.txt`
      */
     @Test
     public void test_write_a_file_into_the_default_output_directory() throws Exception {
-        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path file = too.getOutputDirectory().resolve("sample.txt");
+        Path file = too.createOutputDirectory().resolve("sample.txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         System.out.println("[test_write_into_the_default_output_directory] " +
                 too.toHomeRelativeString(file));
@@ -56,12 +46,21 @@ public class OutputIntoDedicatedDirectoryTest {
 
     @Test
     public void test_write_into_subdir_under_the_default_output_directory() throws Exception {
-        TestOutputOrganizer too = new TestOutputOrganizer.Builder(this.getClass()).build();
-        Path file = too.getOutputDirectory().resolve("sub/sample.txt");
+        Path file = too.createOutputDirectory().resolve("sub/sample.txt");
         Files.createDirectories(file.getParent());
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         log.info("[test_write_into_subdir_under_the_default_output_directory] " +
                 too.toHomeRelativeString(file));
+    }
+
+    @Test
+    public void test_getOutputDir_custom() throws IOException {
+        TestOutputOrganizer too2 = new TestOutputOrganizer.Builder(this.getClass())
+                .outputDirectoryRelativeToProject("test-output-another")
+                .build();
+        Path outputDir = too2.createOutputDirectory();
+        log.info("[test_getOutputDir_custom] " +
+                too2.toHomeRelativeString(outputDir));
     }
 
     /*
@@ -69,27 +68,27 @@ public class OutputIntoDedicatedDirectoryTest {
      */
     @Test
     public void test_write_into_custom_directory() throws Exception {
-        TestOutputOrganizer too =
+        TestOutputOrganizer too3 =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirPath("build/tmp/testOutput")
+                        .outputDirectoryRelativeToProject("build/tmp/testOutput")
                         .build();
-        Path file = too.getOutputDirectory().resolve("sample.txt");
+        Path file = too3.createOutputDirectory().resolve("sample.txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         System.out.println("[test_write_into_custom_directory] " +
-                too.toHomeRelativeString(file));
+                too3.toHomeRelativeString(file));
     }
 
     @Test
     public void test_write_into_another_custom_directory() throws Exception {
-        TestOutputOrganizer too =
+        TestOutputOrganizer too4 =
                 new TestOutputOrganizer.Builder(this.getClass())
-                        .outputDirPath("test-output-another")
+                        .outputDirectoryRelativeToProject("test-output-another")
                         .build();
-        Path outputDir = too.getOutputDirectory();
+        Path outputDir = too4.createOutputDirectory();
         Files.createDirectories(outputDir);
         Path file = outputDir.resolve("sample.txt");
         Files.write(file, "Hello, world!".getBytes(StandardCharsets.UTF_8));
         System.out.println("[test_write_into_another_custom_dir] " +
-                too.toHomeRelativeString(file));
+                too4.toHomeRelativeString(file));
     }
 }

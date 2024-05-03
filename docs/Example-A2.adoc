@@ -1,0 +1,23 @@
+=== Example-A2 Printing the list of registered "Code Source Path Elements Under Project Directory"
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java[lines=25..36]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+[test_getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory]
+CodeSourcePathElementsUnderProjectDirectory: target/test-classes/
+CodeSourcePathElementsUnderProjectDirectory: build/classes/java/test/
+CodeSourcePathElementsUnderProjectDirectory: build/classes/java/functionalTest/
+CodeSourcePathElementsUnderProjectDirectory: build/classes/groovy/test/
+CodeSourcePathElementsUnderProjectDirectory: build/classes/groovy/functionalTest/
+CodeSourcePathElementsUnderProjectDirectory: build/classes/kotlin/test/
+CodeSourcePathElementsUnderProjectDirectory: build/classes/kotlin/functionalTest/
+----
+
+This is the list of `com.kazurayam.unittest.CodeSourcePathElementsUnderProjectDirectory` objects registered in the `com.kazurayam.unittest.ProjectDirectoryResolver` class as default.

@@ -1,0 +1,28 @@
+=== Example-C4 Create subdirectory which stands for the Fully Qualified Class Name of test class
+
+It is a good idea to create a layer of sub-directories, under the output directory, which stands for the Fully Qualified Class Name of the test classes. Please have a look at the following image.
+
+image:images/well-organized-test-outputs.png[]
+
+This directory organization is nice because we can easily see which test class created which file.
+
+Also this organization allows you to name files with duplicating names, for example `my-pdf.pdf`. In the above screenshot, you can find 3 files of that name in 3 different sub-directories.
+
+The following code shows how to use "ClassOutputDirectory" managed by `TestOutputOrganizer`.
+
+[source,java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC4Test.java[]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleC4Test.java[source]
+
+Please find that this test calls the `getClassOutputDirectory()` method and the `cleanClassOutputDirectory()` method of `TestOutputOrganizer` class. In order to make these methods operational, you MUST specify `.subDirPath(Clazz<?> testClass)` to the `TestOutputOrganizer.Builder`.
+
+
+This test prints the following:
+[source]
+----
+[test_write_a_file] classOutputDir: ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.ExampleC4Test
+[test_write_a_file] created a file ~/github/unittest-helper/app/build/tmp/testOutput/com.kazurayam.unittesthelperdemo.ExampleC4Test/sample.txt
+----
+

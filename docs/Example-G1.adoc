@@ -1,0 +1,29 @@
+=== Example-G1 Factory class that instantiates a customized TestOutputOrganizer
+
+It is a good practice for you to define a factory class that creates an instance of `com.kazurayam.unittest.TestOutputOrganizer` with your customized parameters for your own project. Use the factory throughout your project. Then you can standardize the organization of test outputs.
+
+See the following code for sample "factory" class.
+
+[source]
+----
+include::../app/src/test/java/io/github/someone/examples/TestOutputOrganizerFactory.java[]
+----
+
+This `TestOutputOrganizerFactory` class implements only a single static method `create(Class)` method which will instantiate a `com.kazurayam.unittest.TestOutputOrganizer` class with customized parameter values.
+
+The following code is using the Factory.
+
+[source]
+----
+include::../app/src/test/java/io/github/someone/examples/SampleTest.java[lines=1..42]
+----
+
+When you ran the test, the output directory will look like this:
+
+[source]
+----
+app/build/tmp/testOutput
+└── io.github.someone.examples.SampleTest
+    └── test_write_file
+        └── sample_20231103_094817.txt
+----

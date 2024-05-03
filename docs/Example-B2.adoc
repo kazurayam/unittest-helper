@@ -1,0 +1,18 @@
+
+=== Example-B2 Creating a custom output directory
+
+The `com.kazurayam.unittest.TestOutputOrganizer` creates a directory with `getOutputDirectory()` and the default name is `test-output`. You may want some other name. Of course you can do it.
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB2Test.java[]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB2Test.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+[test_getOutputDir_custom] ~/github/unittest-helper/app/test-output-another
+[test_getOutputDir_custom_more] ~/github/unittest-helper/app/build/tmp/testOutput
+----

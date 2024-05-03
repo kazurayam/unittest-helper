@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.kazurayam'
-version '0.3.3'
+version '0.4.1'
 
 ext {
     isReleaseVersion = !version.endsWith("SNAPSHOT")
@@ -25,11 +25,15 @@ test {
             excludeTags "$excludedGroups"
         }
     }
-
     testLogging {
         events "passed", "skipped", "failed"
         showStandardStreams = true
     }
+}
+
+tasks.register("testng", Test) {
+    useTestNG()
+    include "**/*TestNG*"
 }
 
 sourceSets {
@@ -72,6 +76,8 @@ ext {
 
     junit5Version = "5.10.0"
     assertjVersion = "3.24.2"
+
+    testngVersion = "7.10.1"
 }
 
 dependencies {
@@ -80,6 +86,7 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter:${junit5Version}")
     testImplementation("org.assertj:assertj-core:${assertjVersion}")
+    testImplementation("org.testng:testng:${testngVersion}")
 
     functionalTestImplementation("org.slf4j:slf4j-api:${slf4jVersion}")
     functionalTestImplementation("org.slf4j:slf4j-simple:${slf4jVersion}")

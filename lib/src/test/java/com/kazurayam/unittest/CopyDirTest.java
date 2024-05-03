@@ -17,19 +17,20 @@ public class CopyDirTest {
     @BeforeAll
     static void setupClass() throws IOException {
         too = new TestOutputOrganizer.Builder(CopyDirTest.class)
-                .outputDirPath("build/tmp/testOutput")
-                .subDirPath(CopyDirTest.class.getName()).build();
-        too.cleanOutputSubDirectory();
+                .outputDirectoryRelativeToProject("build/tmp/testOutput")
+                .subOutputDirectory(CopyDirTest.class).build();
+        too.cleanSubOutputDirectory();
     }
 
     @Test
-    void test_constructor() throws IOException {
+    void test_visitorConstructor() throws IOException {
         // given
-        Path sourceDir = too.resolveOutput("source");
-        Path sourceFile = too.resolveOutput("source/foo/hello.txt");
+        Path sourceDir = too.resolveSubOutputDirectory().resolve("source");
+        Path sourceFile = too.resolveSubOutputDirectory().resolve("source/foo/hello.txt");
+        Files.createDirectories(sourceFile.getParent());
         Files.write(sourceFile, "Hello, world!".getBytes(StandardCharsets.UTF_8));
-        Path targetDir = too.resolveOutput("target");
-        Path targetFile = too.resolveOutput("target/foo/hello.txt");
+        Path targetDir = too.resolveSubOutputDirectory().resolve("target");
+        Path targetFile = too.resolveSubOutputDirectory().resolve("target/foo/hello.txt");
         // when
         Files.walkFileTree(sourceDir, new CopyDir(sourceDir, targetDir));
         // then

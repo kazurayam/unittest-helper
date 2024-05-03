@@ -3,7 +3,6 @@ package com.kazurayam.unittest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystem;
@@ -12,10 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -40,7 +37,7 @@ public final class ProjectDirectoryResolver {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectDirectoryResolver.class);
     private final FileSystem fileSystem;
-    private final List<List<String>> sublistPatterns;
+    private final List<CodeSourcePathElementsUnderProjectDirectory> listOfCSPEUPD;
 
     /**
      *
@@ -51,37 +48,38 @@ public final class ProjectDirectoryResolver {
 
     public ProjectDirectoryResolver(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
-        this.sublistPatterns = new ArrayList<>();
-        sublistPatterns.add(Arrays.asList("target", "test-classes"));   // Maven
-        sublistPatterns.add(Arrays.asList("build", "classes", "java", "test"));  // Gradle, Java
-        sublistPatterns.add(Arrays.asList("build", "classes", "java", "functionalTest"));  // Gradle, Java
-        sublistPatterns.add(Arrays.asList("build", "classes", "groovy", "test"));  // Gradle, Groovy
-        sublistPatterns.add(Arrays.asList("build", "classes", "groovy", "functionalTest"));  // Gradle, Groovy
-        sublistPatterns.add(Arrays.asList("build", "classes", "kotlin", "test"));  // Gradle, Kotlin
-        sublistPatterns.add(Arrays.asList("build", "classes", "kotlin", "functionalTest"));  // Gradle, Kotlin
+        listOfCSPEUPD = new ArrayList<>();
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.MAVEN_TEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_JAVA_TEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_JAVA_FUNCTIONALTEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_GROOVY_TEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_GROOVY_FUNCTIONALTEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_KOTLIN_TEST);
+        listOfCSPEUPD.add(CodeSourcePathElementsUnderProjectDirectory.GRADLE_KOTLIN_FUNCTIONALTEST);
     }
 
     /**
      *
-     * @param sublistPattern e.g, ["bin", "groovy"], ["bin", "keyword"], ["bin", "lib"], ["bin", "listener"], ["bin", "testcase"]
+     * @param cspeupd e.g, CodeSourcePathElementsUnderProjectDirectory of ["build", "classes", "main", "java"]
+     *
      */
-    public void addSublistPattern(List<String> sublistPattern) {
-        Objects.requireNonNull(sublistPattern);
-        if (sublistPattern.isEmpty()) {
-            throw new IllegalArgumentException("sublistPattern must not be null");
+    public void addCodeSourcePathElementsUnderProjectDirectory(CodeSourcePathElementsUnderProjectDirectory cspeupd) {
+        Objects.requireNonNull(cspeupd);
+        if (cspeupd.isEmpty()) {
+            throw new IllegalArgumentException("codeSourcePathElementsUnderProjectDirectory must not be null");
         }
-        this.sublistPatterns.add(sublistPattern);
+        this.listOfCSPEUPD.add(cspeupd);
     }
 
     /**
      *
      * @return the list of Sublist Patterns including both builtin and ones you added
      */
-    public List<List<String>> getSublistPatterns() {
-        List<List<String>> clone = new ArrayList<>();
-        for (List<String> l : sublistPatterns) {
-            List<String> e = new ArrayList<>(l);
-            clone.add(e);
+    public List<CodeSourcePathElementsUnderProjectDirectory>
+    getRegisteredListOfCodeSourcePathElementsUnderProjectDirectory() {
+        List<CodeSourcePathElementsUnderProjectDirectory> clone = new ArrayList<>();
+        for (CodeSourcePathElementsUnderProjectDirectory cspeupd : listOfCSPEUPD) {
+            clone.add(new CodeSourcePathElementsUnderProjectDirectory(cspeupd));
         }
         return clone;
     }
@@ -99,7 +97,7 @@ public final class ProjectDirectoryResolver {
      * @param clazz the Class object based on which the project dir is resolved
      * @return a java.nio.file.Path instance which is derived by clazz.getProtectionDomain().getCodeSource().getLocation()
      */
-    public final Path getCodeSourceAsPath(Class<?> clazz) {
+    public Path getCodeSourcePathOf(Class<?> clazz) {
         CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
         URL url = codeSource.getLocation();
         try {
@@ -130,36 +128,46 @@ public final class ProjectDirectoryResolver {
      *
      * @param clazz the Class object based on which the project dir is resolved
      * @return a java.nio.file.Path instance that represents the project directory.
-     *         if the project is a Gradle Multiproject, then this method returns the
+     *         if the project is a Gradle Multi-Project, then this method returns the
      *         path of the subproject's root dir.
      */
-    public Path getProjectDirViaClasspath(Class<?> clazz) {
-        Path codeSourcePath = this.getCodeSourceAsPath(clazz);
-        logger.debug("[getProjectDirViaClasspath] codeSourcePath=" + codeSourcePath);
+    public Path resolveProjectDirectoryViaClasspath(Class<?> clazz) {
+        // methodName == "resolveProjectDirectoryViaClasspath"
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        //
+        Path codeSourcePath = this.getCodeSourcePathOf(clazz);
+        // e.g, codeSourcePath is "/Users/kazurayam/github/unittest-helper/lib/build/classes/java/test/"
+        logger.trace(String.format("[%s] codeSourcePath=%s", methodName, codeSourcePath));
+        //
         Path root = codeSourcePath.getRoot();
-        logger.debug("[getProjectDirViaClasspath] root=" + root);   // root will be C:\ on Windows.
-                                                                   // root wil be null on mac and linux
-        // e.g.
-        // on Mac, "/Users/uraya/github/unittest-helper/lib/build/classes/java/test"
-        // on Win, "C:\\Users\\uraya\\github\\unittest-helper\\lib\\build\\classes\\java\\test"
-        List<String> nameElements = toNameElements(codeSourcePath);
-        logger.debug("[getProjectDirViaClasspath] nameElements=" + nameElements);
+        // root="/" on Mac/Linux
+        // root="C:\\" on Windows
+        logger.trace(String.format("[%s] root=%s", methodName, root));
+        //
+        List<String> nameElements = toPathElementNames(codeSourcePath);
+        // nameElements : ["Users","kazurayam","github","unittest-helper","lib","build","classes","java","test"]
+        logger.trace(String.format("[%s] nameElements=%s", methodName, nameElements));
         StringSequence ss = new StringSequence(nameElements);
         int boundary = -1;
-        for (List<String> sublistPattern : this.sublistPatterns) {
-            int indexOfBuildDir = ss.indexOfSubsequence(sublistPattern);
+        for (CodeSourcePathElementsUnderProjectDirectory cspe : this.listOfCSPEUPD) {
+            int indexOfBuildDir = ss.indexOf(cspe);
             if (indexOfBuildDir > 0) {
                 boundary = indexOfBuildDir;
-                logger.trace(String.format("sublistPattern %s is found in the code source path %s at the index %d",
-                        sublistPattern, ss, boundary));
+                logger.trace(String.format(
+                        "[%s] CodeSourcePathElementsUnderProjectDirectory %s is found in the CodeSource %s at the index %d",
+                        methodName,
+                        cspe, ss, boundary));
                 break;
             } else {
-                logger.trace(String.format("sublistPattern %s is NOT found in the code source path %s",
-                        sublistPattern, ss));
+                logger.trace(String.format(
+                        "[%s] sublistPattern %s is NOT found in the code source path %s",
+                        methodName,
+                        cspe, ss));
             }
         }
         if (boundary == -1) {
-            throw new IllegalStateException("unable to resolve the project directory via classpath");
+            throw new IllegalStateException(String.format(
+                    "[%s] unable to resolve the project directory via classpath", methodName));
         }
         // build the project dir to return as the result
         Path w = root;
@@ -169,12 +177,17 @@ public final class ProjectDirectoryResolver {
         return w;   // e.g, /Users/myname/oreilly/selenium-webdriver-java/selenium-webdriver-junit4
     }
 
-    private static List<String> toNameElements(Path codeSourcePath) {
-        List<String> nameElements = new ArrayList<>();
+    /**
+     * Convert a Path into a List<String>, which is a list of path elements that comprises the given Path
+     *
+     * @param codeSourcePath e.g., "/Users/kazurayam/github/unittest-helper/build/classes/test/java"
+     * @return e.g, ["Users","kazurayam","github","unittest-helper","build","classes","test","java"]
+     */
+    private static List<String> toPathElementNames(Path codeSourcePath) {
+        List<String> pathElementNames = new ArrayList<>();
         for (Path p : codeSourcePath) {
-            nameElements.add(p.getFileName().toString());
+            pathElementNames.add(p.getFileName().toString());
         }
-        return nameElements;
+        return pathElementNames;
     }
-
 }

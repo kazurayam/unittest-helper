@@ -1,0 +1,112 @@
+== Problems to solve
+
+Let me show you a set of sample codes to explain the problem that I am focused.
+
+I would assume that you have a clone of the link:https://github.com/kazurayam/unittest-helper[unittest-helper] project on your machine.
+
+Please note that this project is a link:https://docs.gradle.org/current/userguide/intro_multi_project_builds.html[Gradle Multi-Project], where the root directory `unittest-helper` contains a few sub-directories `lib`, `app` and `preliminary-study`. Each of these 3 directories contain `build.gradle` file. Multi-Project is just a usual style of Gradle project structure nowadays. It is no exceptional.
+
+Please find link:https://github.com/kazurayam/unittest-helper/blob/develop/preliminary-study/src/test/java/study/S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.java[unittest-helper/preliminary-stydy/src/test/java/study/S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.java]:
+[source,java]
+----
+include::../preliminary-study/src/test/java/study/S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest.java[]
+----
+
+- This code is a unit-test class in Java.
+- This test tries to read a Java System Property named `browserType` specified in the commandline option
+- This test creates a directory named `test-output`. The `test-output` directory will be located under the so-called *Current Working Directory* which is identified by the System Property `user.dir`.
+- This test writes the value of System Property `browserType` into a file named `browserType.txt` which is located in the `test-output` directory.
+
+
+You can find how the Gradle task `testS2` is defined in the link:https://github.com/kazurayam/unittest-helper/blob/develop/preliminary-study/build.gradle[unittest-helper/preliminary-study/build.gradle]
+
+[code,groovy]
+----
+tasks.register("testS2", Test) {
+    useTestNG()                                  // (1)
+    include "**/S2*"                             // (2)
+    systemProperties System.properties           // (3)
+    testLogging { showStandardStreams = true }   // (4)
+    outputs.upToDateWhen { false }               // (5)
+}
+----
+
+1. I declared that I want to use NestNG to run my test cases in the `testS2` task.
+2. I specifically chose a class of which className starts with `S2`.
+3. I passed all entries of `System.properties`, including the ones given as a commandline parameter by `-DbrowserType=XXXX`, into the `testS2` task
+4. I requested Gradle to show all messages emitted by the test classes into the stdout to be printed in the console
+5. I forced Gradle to run the `testS2` task even if there is no change in the input.
+
+I opened the Terminal app, and ran the following commands.
+
+=== Case1: with the subproject's directory as Current Working Directory
+
+[source,commandline]
+----
+$ cd ~/github/unittest-helper
+$ cd preliminary-study
+$ pwd
+/Users/kazurayam/github/unittest-helper/preliminary-study
+$ gradle testS2 -DbrowserType=Chrome
+
+> Task :preliminary-study:testS2
+
+Gradle suite > Gradle test > study.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest > testIt STANDARD_OUT
+    System.property("browserType")=Chrome
+    file path=~/github/unittest-helper/preliminary-study/test-output/browserType.txt
+    file content=Chrome
+
+BUILD SUCCESSFUL in 2s
+2 actionable tasks: 1 executed, 1 up-to-date
+----
+
+Please note that the output directory `test-output` was located in the **subproject's directory** `unittest-helper/preliminary-study/`.
+
+=== Case2: with the root project's directory as Current Working Directory
+
+Gradle allows us another way of invoking the same task `testS2`, as follows:
+
+[source,commandline]
+----
+$ pwd
+/Users/kazuakiurayama/github/unittest-helper
+:~/github/unittest-helper (issue36 *)
+$ gradle :preliminary-study:testS2 -DbrowserType=FireFox
+
+> Task :preliminary-study:testS2
+
+Gradle suite > Gradle test > study.S2WritingSystemPropertyValueIntoFileInTheOutputDirectoryTest > testIt STANDARD_OUT
+    System.property("browserType")=FireFox
+    file path=~/github/unittest-helper/test-output/browserType.txt
+    file content=FireFox
+
+BUILD SUCCESSFUL in 3s
+2 actionable tasks: 1 executed, 1 up-to-date
+----
+
+I am surprised to find that, in the case2, the output directory `test-output` was located in the **root project's directory**; like `unittest-helper/test-output`.
+
+=== Problem: Current Working Directory is not reliable: it moves sometimes
+
+I want my test class `study.S2WritingSystemPropertyValueIntoFileInTheOutputDireoctyTest` to create the directory `test-output` steadily under the subproject's directory.
+
+In the Case1, I got `unittest-helper/preliminary-study/test-output`, with which I am OK. However, in the Case2, I got `unittest-helper/test-output`. I am not happy with the result.
+
+image::images/00_problem_to_solve.png[]
+
+In two cases I ran the same test class just a little bit bit differently. In the Case1, I ran the test while the Current Working Directory is `unittest-helper/preliminary-study`, and in the Case2, I ran the test while the CWD is `unittest-helper`.
+
+In the Case2, I got the `test-output` directory under the `unittest-helper` directory, which is the root project's directory. Why did I get this result? ... It is because the `testS2` task in the `build.gradle` has a single line:
+
+[code,groovy]
+----
+tasks.register("testS2", Test) {
+    ...
+    systemPropert System.properties
+    ...
+}
+----
+
+By this single line, Gradle captured all the values of System.properties at the timing when I invoked `gradle` command and the values were transferred into the runtime environment where the test class `S2WrintingSystemPropertyValueIntoFileInTheOutputDirecvtoryTest` ran. In the Case1, the System Property `user.dir` had the value of `/Users/kazurayam/github/unittest-helpers/preliminary-study; and in the Case2, the `user.dir` had the value of `/Users/kazurayam/github/unittest-helper`. Therefore, in two cases, the test class got different value of `System.getProperty("user.dir")`.
+
+The Current Working Directory, which is resolved `System.getProperty("user.dir")`, can move sometimes; not very much reliable for a test class to find where the "project directory" is. This is the problem I am focused.

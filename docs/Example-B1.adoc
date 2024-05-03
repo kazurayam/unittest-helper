@@ -1,0 +1,24 @@
+
+=== Example-B1 Locating the default output directory
+
+I want to create a directory named `test-output` under the project directory. I would let my test classes to write files into the directory. I want to for output files `test-output` directory by calling `getOutputDir()`.
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB1Test.java[]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleB1Test.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+[test_getOutputDir_as_default] /Users/kazurayam/github/unittest-helper/app/test-output
+[test_getOutputDir_as_default] ~/github/unittest-helper/app/test-output
+----
+
+The default name of the *output directory* is `test-output`. You can explicitly set the name of of the output directory. I will explain it later.
+
+With `toHomeRelativePath(Path p)` method, you can convert a full path string into a path string realtive to the Home directory of the OS user. This is useful for documentation purposes.
+
+

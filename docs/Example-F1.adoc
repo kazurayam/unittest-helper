@@ -1,0 +1,11 @@
+=== Example-F1 Removing a  directory recursively
+
+The `com.kazurayam.unittest.DeleteDir` class implements a static method `cleanDirectoryRecursively(Path)` method which removes any directory recursively. See the following sample test class.
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF1Test.java[]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleF1Test.java[source]
+
+The `cleanDirectoryRecursively(Path dir)` of `DeleteDir` class removes the specified directory and its content files/directories recursively. The dir will disappear. If you want to recreate the `dir` as empty dir, use `java.nio.file.Files.createDirectories(Path dir)`.

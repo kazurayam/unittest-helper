@@ -1,0 +1,19 @@
+=== Example-A1 Resolving the project directory resolved via classpath
+
+I want my tests to be able to resolve the path of the project directory so that my tests can locate temporary output files surely under the project directory. And I want my tests to be independent of the *current working directory*. I want to find out the project directory's path value based on the path value of the class file of the test itself. The following code shows it is possible.
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java[lines=1..23]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ProjectDirectoryResolverTest.java[source]
+
+This will print the following in the console:
+
+[source]
+----
+projectDir: /Users/kazurayam/github/unittest-helper/app
+----
+
+How the `com.kazurayam.unittest.ProjectDirectoryResolver` class find the path of project directory via classpath? --- I will describe the detail later. For now, let me talk about how to utilize this library.
+

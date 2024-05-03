@@ -1,0 +1,31 @@
+=== Example-E1 A helper method that translates an absolute Path to a `user.home`-relative string
+
+A Path object can be turned into an absolute path string like:
+
+[source]
+----
+/Users/kazurayam/github/unittest-helper/lib/
+----
+
+In this string you can find my personal name "kazurayam". When I write some document, often I need to copy the output message and paste it into documents. However, I hesitate exposing my personal name public. I would prefer present a path in *Home Relative string* which starts with a tilde character, like:
+
+[source]
+----
+~/github/unittest-helper/lib/
+----
+
+The `TestOutputOrganizer` class provides a helper method that translte a Path object into a Home Relative string. See the following example:
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleE1Test.java[]
+----
+
+This test prints the following output in the console:
+
+[source]
+----
+file absolute: /Users/kazurayam/github/unittest-helper/app/test-output/sample1.txt
+file relative: ~/github/unittest-helper/app/test-output/sample1.txt
+----
+
