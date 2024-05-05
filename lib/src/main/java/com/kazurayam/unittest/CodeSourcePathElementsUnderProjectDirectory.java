@@ -8,7 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * <PRE>
+ * This class gives a categorical name to the part {@code "build/classes/java/test/"} in a URL string
+ * of CodeSource object of a Java class, like
+ * {@code "file:/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/"}
+ *
+ * <pre>{@code
  * import java.net.URL;
  * import java.security.CodeSource;
  * import java.security.ProjectionDomain;
@@ -23,16 +27,17 @@ import java.util.List;
  *         System.out.println("codeSource URL=" + url.toString());
  *     }
  * }
- * </PRE>
+ * }</pre>
+ *
  * This will print something like this:
- * <PRE>
+ *
+ * <pre>{@code
  * codeSource URL=file:/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/
- * </PRE>
+ * }</pre>
  *
- * I call "file:/Users/kazurayam/github/unittest-helper/preliminary-study/" as the "Project Directory",
- * "build/classes/java/test/" as the "CodeSource Path Elements Under Project Directory".
+ * I call {@code file:/Users/kazurayam/github/unittest-helper/preliminary-study/} as the "Project Directory",
+ * {@code build/classes/java/test/} as the "CodeSource Path Elements Under Project Directory".
  *
- * This class gives a categorical name to the part "build/classes/java/test/" here.
  *
  */
 public final class CodeSourcePathElementsUnderProjectDirectory {

@@ -6,7 +6,23 @@
   <component name="ChangeListManager">
     <list default="true" id="cbc5a4fc-b015-4a08-86d1-ae07c327d7b6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/allclasses-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/allclasses-index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/allpackages-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/allpackages-index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.Option.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.Option.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/CopyDir.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/DeleteDir.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/DeleteDir.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/ProjectDirectoryResolver.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/ProjectDirectoryResolver.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/StringSequence.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/StringSequence.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.Builder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.Builder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/TestOutputOrganizer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/com/kazurayam/unittest/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/help-doc.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/help-doc.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/index-all.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/overview-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/overview-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/java/com/kazurayam/unittest/CodeSourcePathElementsUnderProjectDirectory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,6 +103,7 @@
       <option name="presentableId" value="Default" />
       <updated>1714686062277</updated>
       <workItem from="1714686065384" duration="7802000" />
+      <workItem from="1714870664381" duration="360000" />
     </task>
     <servers />
   </component>
