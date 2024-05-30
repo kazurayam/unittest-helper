@@ -20,6 +20,8 @@ include::Example-A2.adoc[]
 
 include::Example-A3.adoc[]
 
+include::Example-A4.adoc[]
+
 include::Example-B1.adoc[]
 
 include::Example-B2.adoc[]

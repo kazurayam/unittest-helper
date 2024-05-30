@@ -78,7 +78,9 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="java.lang内のクラスまたはインタフェース" class="external-link">Object</a></span></div>
 <div class="block">This class gives a categorical name to the part <code>"build/classes/java/test/"</code> in a URL string
  of CodeSource object of a Java class, like
- <code>"file:/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/"</code>
+ <code>"file:/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/"</code>.
+ The CodeSourcePathElementUnderProjectDirectory (CSPEUPD for short) is dependent on the environment
+ in which the class runs.
 
  <pre><code>
  import java.net.URL;

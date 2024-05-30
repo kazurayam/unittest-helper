@@ -1,0 +1,9 @@
+=== Example-A4 Specifying the project directory explicitly
+
+If your project has a unique directory tree (not a Maven/Gradle project), you can not depend on the project-directory-resolution via classpath. Instead, you can construct a `TestOutputOrganizer` object while specifying a concrete `Path` as the project directory.
+
+[source, java]
+----
+include::../app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleA4Test.java[]
+----
+link:https://github.com/kazurayam/unittest-helper/blob/develop/app/src/test/java/com/kazurayam/unittesthelperdemo/ExampleA4Test.java[source]
