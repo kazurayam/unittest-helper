@@ -339,6 +339,13 @@ public final class TestOutputOrganizer {
             return this;
         }
 
+        public Builder projectDirectory(Path projectDirectory) {
+            Objects.requireNonNull(projectDirectory);
+            assert Files.exists(projectDirectory);
+            this.projectDirectory = projectDirectory;
+            return this;
+        }
+
         /**
          * @return TestOutputOrganizer object
          */
@@ -347,7 +354,9 @@ public final class TestOutputOrganizer {
             for (CodeSourcePathElementsUnderProjectDirectory cspeupd : listOfCSPEUPD) {
                 pdr.addCodeSourcePathElementsUnderProjectDirectory(cspeupd);
             }
-            this.projectDirectory = pdr.resolveProjectDirectoryViaClasspath(clazz);
+            if (this.projectDirectory == null) {
+                this.projectDirectory = pdr.resolveProjectDirectoryViaClasspath(clazz);
+            }
             return new TestOutputOrganizer(this);
         }
     }

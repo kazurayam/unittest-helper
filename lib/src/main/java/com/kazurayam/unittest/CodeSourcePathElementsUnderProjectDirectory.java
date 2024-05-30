@@ -10,7 +10,9 @@ import java.util.List;
 /**
  * This class gives a categorical name to the part {@code "build/classes/java/test/"} in a URL string
  * of CodeSource object of a Java class, like
- * {@code "file:/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/"}
+ * {@code "file:/Users/kazurayam/github/unittest-helper/preliminary-study/build/classes/java/test/"}.
+ * The CodeSourcePathElementUnderProjectDirectory (CSPEUPD for short) is dependent on the environment
+ * in which the class runs.
  *
  * <pre>{@code
  * import java.net.URL;
